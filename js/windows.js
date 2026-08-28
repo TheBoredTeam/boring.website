@@ -366,14 +366,23 @@
       spec.height || Math.min(420, Math.max(320, root.clientHeight - 60));
     w.style.width = cw + "px";
     w.style.height = ch + "px";
+    /* Clamp to >=0: the 480px min-width floor makes the center-cascade
+       formula go negative on viewports narrower than cw (e.g. -52px at
+       375px). No-op at >=480px wide, where the formula is already >=0. */
     w.style.left =
-      typeof spec.left === "number"
-        ? Math.round(spec.left) + "px"
-        : Math.round((root.clientWidth - cw) / 2 + count * 24) + "px";
+      Math.max(
+        0,
+        typeof spec.left === "number"
+          ? Math.round(spec.left)
+          : Math.round((root.clientWidth - cw) / 2 + count * 24),
+      ) + "px";
     w.style.top =
-      typeof spec.top === "number"
-        ? Math.round(spec.top) + "px"
-        : Math.round((root.clientHeight - ch) / 2 + count * 24) + "px";
+      Math.max(
+        0,
+        typeof spec.top === "number"
+          ? Math.round(spec.top)
+          : Math.round((root.clientHeight - ch) / 2 + count * 24),
+      ) + "px";
     w.style.zIndex = String(++zCounter);
 
     var rec = {

@@ -54,8 +54,6 @@
       '<path d="M4 9v6h4l5 4V5L8 9H4z"/>' +
       '<path d="M16 8.8a4.4 4.4 0 0 1 0 6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
     play: '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
-    pause: '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',
-    next: '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18l8.5-6L6 6v12zM16 6h2v12h-2z"/></svg>',
   };
 
   /* Spotlight's fixed app registry: label + glyph + the exact tb:open-app detail. */
@@ -674,7 +672,11 @@
     });
     refreshVolume();
 
-    /* (4e) music mini-player row: art tile + labels + transport buttons */
+    /* (4e) music mini-player row: art tile + labels + one action button.
+       The notch's Spotify embed is cross-origin, so playback can't be driven
+       from here — the button opens the notch player panel instead (play lives
+       inside Spotify's own iframe). The static ▶ glyph is honest: embed
+       playback state is unknowable (tb:music-state always says false). */
     var musicRow = el('div', 'tb-cc-music');
     var art = el('span', 'tb-cc-art');
     var artEmoji = el('span', 'tb-cc-art-emoji');
@@ -688,13 +690,10 @@
     var mBtns = el('span', 'tb-cc-mbtns');
     var mPlay = el('button', 'tb-cc-mbtn');
     mPlay.type = 'button';
-    mPlay.setAttribute('aria-label', 'Play or pause music');
-    var mNext = el('button', 'tb-cc-mbtn');
-    mNext.type = 'button';
-    mNext.innerHTML = GLYPHS.next;
-    mNext.setAttribute('aria-label', 'Next station');
+    mPlay.innerHTML = GLYPHS.play;
+    mPlay.setAttribute('aria-label', 'Show music player');
+    mPlay.title = 'Show music player in the notch';
     mBtns.appendChild(mPlay);
-    mBtns.appendChild(mNext);
     musicRow.appendChild(art);
     musicRow.appendChild(mTexts);
     musicRow.appendChild(mBtns);
@@ -702,12 +701,11 @@
 
     function refreshMusic() {
       var api = musicApi();
-      var ok = !!(api && typeof api.toggle === 'function' && typeof api.next === 'function');
+      var ok = !!(api && typeof api.state === 'function');
       musicRow.classList.toggle('tb-cc-disabled', !ok);
       mPlay.disabled = !ok;
-      mNext.disabled = !ok;
       var st = null;
-      if (ok && typeof api.state === 'function') {
+      if (ok) {
         try { st = api.state(); } catch (e) { /* guard */ }
       }
       var station = st && st.station;
@@ -722,16 +720,13 @@
         artEmoji.textContent = '🎵';
         mName.textContent = ok ? 'Not Playing' : 'Not loaded';
       }
-      mPlay.innerHTML = (st && st.playing) ? GLYPHS.pause : GLYPHS.play;
     }
 
+    /* TBMusic.toggle() is a documented no-op on the embed build, so the real
+       expand path is the tb:open-app event the notch listens for. */
     mPlay.addEventListener('click', function () {
-      var api = musicApi();
-      if (api && typeof api.toggle === 'function') { api.toggle(); refreshMusic(); }
-    });
-    mNext.addEventListener('click', function () {
-      var api = musicApi();
-      if (api && typeof api.next === 'function') { api.next(); refreshMusic(); }
+      openApp('music');
+      closeCC();
     });
     window.addEventListener('tb:music-state', refreshMusic);
     refreshMusic();

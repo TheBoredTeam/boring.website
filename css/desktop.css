@@ -1,0 +1,78 @@
+/* css/desktop.css — macOS-style desktop folder icons.
+   Lives inside #icons-root (positioned in main.css: fixed top-right,
+   z-index 2 — above the wallpaper (0), below windows (10)). The root is
+   click-through, so each icon re-enables pointer events. */
+
+.tb-desk-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 84px;
+  margin: 0 0 16px;
+  padding: 6px 2px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font-family: var(--tb-font);
+  cursor: default;
+  pointer-events: auto;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.tb-desk-icon-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 4px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35));
+  pointer-events: none;
+}
+
+.tb-desk-icon-label {
+  max-width: 80px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Selected state: dimmed glyph + blue label pill, macOS style. */
+.tb-desk-icon.tb-selected .tb-desk-icon-img {
+  filter: brightness(.78) drop-shadow(0 2px 4px rgba(0, 0, 0, .35));
+}
+
+.tb-desk-icon.tb-selected .tb-desk-icon-label {
+  background: rgba(20, 90, 200, .85);
+  text-shadow: none;
+}
+
+/* Phone (≤768px): shrink the folder icons so they don't dominate a 375px
+   screen — they stay visible (desktop-parody signature). The selected-state
+   filter and label pill are size-independent, so they carry over unchanged. */
+@media (max-width: 768px) {
+  .tb-desk-icon {
+    width: 62px;
+    margin: 0 0 10px;
+    padding: 4px 2px 3px;
+  }
+
+  .tb-desk-icon-img {
+    width: 46px;
+    height: 46px;
+  }
+
+  .tb-desk-icon-label {
+    max-width: 60px;
+    padding: 1px 4px;
+    font-size: 10px;
+  }
+}

@@ -198,3 +198,64 @@
 #promo-root .tb-promo-office-link:hover {
   text-decoration: underline;
 }
+
+/* ---------- 4. sticky note (yellow paper overrides the shared dark-glass chrome) ---------- */
+
+/* the whole note is one <a>; warm-yellow paper, slight tilt, no blur */
+#promo-root .tb-promo-card--sticky {
+  display: block;
+  padding: 16px 14px 12px;
+  border-radius: 3px;
+  background: #fef3a0;
+  border: 1px solid rgba(120, 100, 0, 0.18);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28), 0 1px 3px rgba(0, 0, 0, 0.15);
+  color: #3a3524;
+  text-decoration: none;
+  transform: rotate(-2deg);
+  transition: transform 0.18s ease;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+#promo-root .tb-promo-card--sticky:hover {
+  transform: rotate(-1deg) translateY(-2px);
+}
+
+/* pin straddles the note's top edge (sticks ~8px above it, into the 14px
+   column gap — never reaches the previous card) */
+#promo-root .tb-promo-sticky-pin {
+  display: block;
+  width: 18px;
+  margin: -24px auto 2px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+#promo-root .tb-promo-sticky-line {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #3a3524;
+}
+
+#promo-root .tb-promo-sticky-url {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b5300;
+}
+
+#promo-root .tb-promo-card--sticky:hover .tb-promo-sticky-url {
+  text-decoration: underline;
+}
+
+/* phones: the promo column becomes a centered feed (css/main.css) — keep
+   the note note-sized instead of a full-width banner. The -2deg tilt stays
+   inside the feed's 10px side padding, so no horizontal overflow. */
+@media (max-width: 768px) {
+  #promo-root .tb-promo-card--sticky {
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

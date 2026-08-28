@@ -1,17 +1,22 @@
 /* js/promo.js — left-edge promo column. Owned by Dev 4 (Promo Column).
    Mounts one container into #promo-root (positioned by css/main.css; the
-   root is click-through, .tb-promo re-enables pointer events). Three
+   root is click-through, .tb-promo re-enables pointer events). Four
    cards: the boring.notch DOWNLOAD card (the star), a Discord invite
-   banner, and a theboringoffice banner. All outbound hrefs come from
+   banner, a theboringoffice banner, and a yellow sticky note (the whole
+   note links to office.theboring.name). All outbound hrefs come from
    window.TB_CONFIG.links and degrade to '#' (discord degrades to a
-   non-interactive "invite soon" pill) when config is absent — zero
-   console errors either way. */
+   non-interactive "invite soon" pill; the sticky note falls back to its
+   hardcoded URL) when config is absent — zero console errors either way. */
 (function () {
   'use strict';
 
   /* ---------- static data ---------- */
 
   var ICON_SRC = 'assets/icons/boring-notch.png';
+
+  /* sticky note target — same URL as TB_CONFIG.links.office; hardcoded
+     fallback so the note still links out when config never loads */
+  var STICKY_URL = 'https://office.theboring.name';
 
   /* Inline SVG down-arrow for the download button (no emoji — this glyph
      is what the bob keyframes animate). */
@@ -156,6 +161,26 @@
     return card;
   }
 
+  /* ---------- 4. sticky note (the whole note is one outbound link) ---------- */
+
+  function renderSticky(links) {
+    var note = outbound(
+      el('a', 'tb-promo-card tb-promo-card--sticky'),
+      link(links, 'office') || STICKY_URL);
+
+    /* 📌 straddles the top edge via negative margin (see css/promo.css) */
+    note.appendChild(el('span', 'tb-promo-sticky-pin', '📌'));
+
+    var text = el('div', 'tb-promo-sticky-text');
+    text.appendChild(
+      el('div', 'tb-promo-sticky-line', 'built with 💛 by the majdoors'));
+    text.appendChild(
+      el('div', 'tb-promo-sticky-url', 'office.theboring.name'));
+    note.appendChild(text);
+
+    return note;
+  }
+
   /* ---------- mount ---------- */
 
   function init() {
@@ -167,6 +192,7 @@
     col.appendChild(renderDownload(links));
     col.appendChild(renderDiscord(links));
     col.appendChild(renderOffice(links));
+    col.appendChild(renderSticky(links));
     root.appendChild(col);
   }
 

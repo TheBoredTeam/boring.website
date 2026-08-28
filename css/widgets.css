@@ -382,3 +382,16 @@
   font-size: 10px;
   color: rgba(255, 255, 255, 0.5);
 }
+
+/* ---------- phones: hide the whole column ---------- */
+
+/* ≤768px: the widget gallery is desktop-only, macOS-style — a phone screen
+   has no room for a 330px column, so the entire column is hidden instead of
+   squeezed. (#widgets-root itself is transparent + click-through via
+   main.css, so hiding the grid removes everything visible; no inner widget
+   is independently position:fixed.) */
+@media (max-width: 768px) {
+  #widgets-root .tb-widgets {
+    display: none;
+  }
+}
