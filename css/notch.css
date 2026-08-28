@@ -1,7 +1,8 @@
-/* css/notch.css — Dev B: MacBook-style notch music player (boring.notch reference).
+/* css/notch.css — MacBook-style notch music player (boring.notch reference).
    All selectors scoped under #notch-root (positioned fixed top-center by Dev A).
-   States: A = idle slim pill, B = collapsed wide bar (art + EQ), C = expanded
-   floating panel. Font stack inherited from the page (var(--tb-font) on body). */
+   States: collapsed = slim black pill (art + title + static EQ silhouette),
+   expanded = floating panel (Spotify iframe embed + week calendar + events).
+   Font stack inherited from the page (var(--tb-font) on body). */
 
 #notch-root .tb-notch,
 #notch-root .tb-notch * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -9,7 +10,7 @@
 #notch-root .tb-notch {
   position: relative;
   width: 200px;
-  height: 34px;
+  height: 36px;
   margin-top: 0;
   background: #000;
   color: #fff;
@@ -25,19 +26,19 @@
   -webkit-user-select: none;
 }
 
-/* State B — collapsed, active: real-MacBook-notch size (same slim pill as
-   idle; only the internals appear — no size jump when playback starts) */
+/* Collapsed with playlist content: wider pill (art + title + EQ silhouette) */
 #notch-root .tb-notch.has-played:not(.expanded) {
-  width: 215px;
-  height: 34px;
+  width: 320px;
+  height: 36px;
   border-radius: 0 0 18px 18px;
 }
 
-/* State C — expanded: compact panel hanging flush from the top edge */
+/* Expanded: compact panel hanging flush from the top edge —
+   26px top row + 152px Spotify embed body + paddings/margins = 210px */
 #notch-root .tb-notch.expanded {
   width: min(92vw, 580px);
-  height: 176px;
-  min-height: 168px;
+  height: 210px;
+  min-height: 206px;
   margin-top: 0;
   border-radius: 0 0 28px 28px;
   cursor: default;
@@ -47,59 +48,40 @@
 #notch-root .tb-notch-collapsed {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
   padding: 5px 10px;
   transition: opacity 0.2s ease;
 }
 #notch-root .tb-notch.expanded .tb-notch-collapsed { opacity: 0; pointer-events: none; }
 
-/* idle + never played: plain black pill, nothing inside */
-#notch-root .tb-notch:not(.has-played) .tb-collapsed-art,
-#notch-root .tb-notch:not(.has-played) .tb-notch-eq { display: none; }
-
 #notch-root .tb-collapsed-art {
   position: relative;
   width: 22px; height: 22px; border-radius: 6px; flex: 0 0 auto;
   display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #191414, #1DB954); /* Spotify ink → green */
 }
 #notch-root .tb-collapsed-art-emoji { font-size: 13px; line-height: 1; }
-
-/* the source badge is expanded-panel-only — noise at real-notch scale */
-#notch-root .tb-notch-collapsed .tb-src-badge { display: none; }
-
-/* source badge overlapping the artwork's bottom-right corner */
-#notch-root .tb-src-badge {
-  position: absolute; right: -4px; bottom: -4px;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: #111; border: 2px solid #000;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; line-height: 1;
-}
-#notch-root .tb-src-badge-lg {
-  width: 22px; height: 22px; right: -5px; bottom: -5px; font-size: 12px;
+#notch-root .tb-collapsed-art-img {
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 6px; display: block;
 }
 
-/* 5-bar equalizer: white + animating while playing, frozen + #333 when paused */
+#notch-root .tb-collapsed-title {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 11px; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Static EQ silhouette: decorative only. The embed's real playback state is
+   unknowable from the parent page, so the bars never animate (an always-on
+   animation would falsely imply music is playing). */
 #notch-root .tb-notch-eq { display: flex; align-items: flex-end; gap: 2px; height: 12px; flex: 0 0 auto; }
-#notch-root .tb-notch-eq span {
-  width: 2.5px; height: 100%; border-radius: 1.5px; background: #333;
-  transform: scaleY(0.23); /* ~3px of the 12px track */
-  transform-origin: bottom;
-  animation: tb-eq-bounce 1.1s ease-in-out infinite;
-  animation-play-state: paused;
-}
-/* colorful while playing, frozen #333 (base rule) when paused */
-#notch-root .tb-notch.playing .tb-notch-eq span { animation-play-state: running; }
-#notch-root .tb-notch.playing .tb-notch-eq span:nth-child(1) { background: #ff5f57; }
-#notch-root .tb-notch.playing .tb-notch-eq span:nth-child(2) { background: #febc2e; }
-#notch-root .tb-notch.playing .tb-notch-eq span:nth-child(3) { background: #28c840; }
-#notch-root .tb-notch.playing .tb-notch-eq span:nth-child(4) { background: #0a84ff; }
-#notch-root .tb-notch.playing .tb-notch-eq span:nth-child(5) { background: #bf5af2; }
-#notch-root .tb-notch-eq span:nth-child(1) { animation-duration: 0.9s; }
-#notch-root .tb-notch-eq span:nth-child(2) { animation-duration: 1.3s; animation-delay: 0.10s; }
-#notch-root .tb-notch-eq span:nth-child(3) { animation-duration: 0.8s; animation-delay: 0.25s; }
-#notch-root .tb-notch-eq span:nth-child(4) { animation-duration: 1.2s; animation-delay: 0.05s; }
-#notch-root .tb-notch-eq span:nth-child(5) { animation-duration: 1.0s; animation-delay: 0.35s; }
-@keyframes tb-eq-bounce { 0%, 100% { transform: scaleY(0.23); } 50% { transform: scaleY(1); } }
+#notch-root .tb-notch-eq span { width: 2.5px; border-radius: 1.5px; background: #333; }
+#notch-root .tb-notch-eq span:nth-child(1) { height: 45%; }
+#notch-root .tb-notch-eq span:nth-child(2) { height: 80%; }
+#notch-root .tb-notch-eq span:nth-child(3) { height: 100%; }
+#notch-root .tb-notch-eq span:nth-child(4) { height: 60%; }
+#notch-root .tb-notch-eq span:nth-child(5) { height: 35%; }
 
 /* ---------- expanded panel internals ---------- */
 #notch-root .tb-notch-expanded {
@@ -137,69 +119,18 @@
 #notch-root .tb-battery-fill { fill: #fff; }
 #notch-root .tb-battery-tip { fill: rgba(255, 255, 255, 0.45); }
 
-/* body row: artwork + track meta + calendar */
+/* body row: Spotify embed + calendar */
 #notch-root .tb-panel-body {
   display: flex; gap: 18px; margin-top: 8px;
   flex: 1 1 auto; min-height: 0;
 }
 
-#notch-root .tb-player-art {
-  position: relative;
-  width: 104px; height: 104px; flex: 0 0 104px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+/* Spotify's compact player — 12px radius per Spotify's own embed snippet */
+#notch-root .tb-spotify-wrap { flex: 1 1 auto; min-width: 0; }
+#notch-root .tb-spotify-embed {
+  display: block; width: 100%; height: 152px;
+  border: none; border-radius: 12px;
 }
-#notch-root .tb-player-art-emoji { font-size: 44px; line-height: 1; }
-
-#notch-root .tb-player-info {
-  flex: 1; min-width: 0;
-  display: flex; flex-direction: column; justify-content: center;
-}
-#notch-root .tb-player-name {
-  font-size: 16px; font-weight: 700; color: #fff;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-#notch-root .tb-player-tag {
-  font-size: 12px; color: #9a9a9a; margin-top: 2px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-#notch-root .tb-player-sub { font-size: 11px; color: #6e6e6e; margin-top: 2px; }
-
-#notch-root .tb-player-progress {
-  height: 4px; background: #2c2c2e; border-radius: 999px;
-  margin-top: 8px; overflow: hidden;
-}
-#notch-root .tb-player-progress-fill {
-  height: 100%; width: 0; background: #fff; border-radius: 999px;
-  transition: width 0.5s linear;
-}
-#notch-root .tb-player-times {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-top: 5px; font-size: 11px; color: #9a9a9a;
-}
-#notch-root .tb-player-live {
-  display: flex; align-items: center; gap: 5px;
-  color: #ff3b30; font-size: 11px; letter-spacing: 0.06em;
-}
-#notch-root .tb-notch.playing .tb-live-dot { animation: tb-live-pulse 1.6s ease-in-out infinite; }
-@keyframes tb-live-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-
-/* transport: plain white SVG glyphs, no circle backgrounds */
-#notch-root .tb-player-controls { display: flex; align-items: center; gap: 24px; margin-top: 8px; }
-#notch-root .tb-btn {
-  font: inherit; background: none; border: none; padding: 0; cursor: pointer;
-  color: #fff; display: flex; align-items: center; justify-content: center;
-  transition: color 0.15s ease, transform 0.15s ease;
-}
-#notch-root .tb-btn:active { transform: scale(0.92); }
-#notch-root .tb-btn svg { display: block; }
-#notch-root .tb-btn-shuffle, #notch-root .tb-btn-airplay { color: #ccc; }
-#notch-root .tb-btn-shuffle:hover, #notch-root .tb-btn-airplay:hover { color: #fff; }
-#notch-root .tb-btn-shuffle svg, #notch-root .tb-btn-airplay svg { width: 16px; height: 16px; }
-#notch-root .tb-btn-prev svg, #notch-root .tb-btn-next svg { width: 18px; height: 18px; }
-#notch-root .tb-btn-play svg { width: 22px; height: 22px; }
-#notch-root .tb-btn-airplay { cursor: default; }
 
 /* calendar section: month header, weekday header, one real week row, events */
 #notch-root .tb-cal-section {
@@ -248,20 +179,20 @@
 
 @media (prefers-reduced-motion: reduce) {
   #notch-root .tb-notch { transition: none; }
-  #notch-root .tb-notch-eq span,
-  #notch-root .tb-notch.playing .tb-live-dot { animation: none; }
 }
 
 /* ---- responsive: phones ----
    Desktop rules above are untouched; everything below only applies inside
    these media queries. The expanded panel is a horizontal flex row
-   (104px art + player + min-250px calendar) clipped by .tb-notch's
+   (Spotify embed + min-250px calendar) clipped by .tb-notch's
    overflow:hidden — on a phone the calendar column would be clipped away
-   anyway, so it drops out and the player keeps the full width. */
+   anyway, so it drops out and the embed keeps the full width. The embed's
+   height is fixed at 152px, so the expanded 210px panel height is kept at
+   every viewport width. */
 @media (max-width: 768px) {
   /* collapsed pill + expanded panel scale with the viewport */
   #notch-root .tb-notch { width: 180px; height: 32px; }
-  #notch-root .tb-notch.has-played:not(.expanded) { width: 195px; height: 32px; }
+  #notch-root .tb-notch.has-played:not(.expanded) { width: 300px; height: 32px; }
   #notch-root .tb-notch.expanded { width: min(94vw, 580px); }
 
   #notch-root .tb-notch-expanded { padding: 10px 14px; }
@@ -269,22 +200,10 @@
 
   /* calendar column is the overflow source on narrow widths */
   #notch-root .tb-cal-section { display: none; }
-
-  #notch-root .tb-player-art {
-    width: 88px; height: 88px; flex: 0 0 88px;
-  }
-  #notch-root .tb-player-art-emoji { font-size: 38px; }
-  #notch-root .tb-player-controls { gap: 18px; }
 }
 
 @media (max-width: 480px) {
-  /* smaller phones: shave the expanded panel's fixed height a little so it
-     stays proportional, transport buttons keep ~26px touch targets */
-  #notch-root .tb-notch.expanded { height: 160px; min-height: 156px; }
-  #notch-root .tb-player-art {
-    width: 76px; height: 76px; flex: 0 0 76px;
-  }
-  #notch-root .tb-player-art-emoji { font-size: 32px; }
-  #notch-root .tb-player-controls { gap: 14px; margin-top: 6px; }
+  /* smaller phones: panel keeps the embed's fixed height; only the top-row
+     glyph spacing tightens */
   #notch-root .tb-panel-top-right { gap: 8px; }
 }

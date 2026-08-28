@@ -1,11 +1,16 @@
-/* js/notch.js — Dev B: MacBook-style notch music player (the star feature).
-   Reworked to match the boring.notch reference: collapsed idle = slim black pill,
-   collapsed active = wide black bar (artwork left, EQ right), expanded = floating
-   near-full-width panel (player + week calendar + events).
-   Mount: #notch-root (positioned by Dev A). Data: window.TB_CONFIG (manager-owned).
-   Exposes window.TBMusic per shared contract v1. Listens 'tb:open-app' (app==='music'
-   only); dispatches 'tb:music-state' on every play/pause/station change.
-   EQ bars are pure CSS animation (no WebAudio — CORS-safe). */
+/* js/notch.js — MacBook-style notch music player (the star feature).
+   Music source: a Spotify playlist via Spotify's free keyless iframe Embed
+   (no API keys, no OAuth). The embed is cross-origin, so playback control
+   lives INSIDE Spotify's own iframe — there is no <audio> element and no
+   custom transport bar. The collapsed pill shows the playlist's oEmbed
+   title/artwork (fetched at runtime; emoji + fallback title when offline).
+   States: collapsed = slim black pill (art + title + static EQ silhouette),
+   expanded = floating panel (Spotify embed + week calendar + events).
+   Mount: #notch-root (positioned by Dev A). Data: window.TB_CONFIG.music.
+   Exposes window.TBMusic per shared contract v1 (transport fns are no-ops by
+   design — the embed can't be driven from the parent page). Listens
+   'tb:open-app' (app==='music' only); dispatches 'tb:music-state' with
+   playing:false (real playback state inside the embed is unknowable). */
 (function () {
   'use strict';
 
@@ -16,14 +21,12 @@
     home: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
     tray: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-2 .89-2 2v11c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>',
     mirror: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 3H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11z"/></svg>',
-    gear: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>',
-    shuffle: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>',
-    prev: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>',
-    play: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
-    pause: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',
-    next: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 18l8.5-6L6 6v12zM16 6h2v12h-2z"/></svg>',
-    airplay: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 22h12l-6-6zM21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4v-2H3V5h18v12h-4v2h4c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>'
+    gear: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>'
   };
+
+  /* Canonical embed source; TB_CONFIG.music.embedUrl is the same URL, kept
+     here as a fallback so a broken config key can't blank the player. */
+  var FALLBACK_EMBED_URL = 'https://open.spotify.com/embed/playlist/2iFVkT5FwlAPxDpmAZIEQr?utm_source=generator';
 
   /* Battery outline + tip are static; the inner fill rect's width tracks level. */
   var BATTERY_SVG =
@@ -44,10 +47,10 @@
     if (!mount) return; // mount point missing — degrade silently
 
     var cfg = (typeof window.TB_CONFIG !== 'undefined') ? window.TB_CONFIG : null;
-    var stations = (cfg && Array.isArray(cfg.stations)) ? cfg.stations : [];
+    var music = (cfg && cfg.music) ? cfg.music : null;
 
     /* Config absent/unusable: static black pill + no-op API, zero console noise. */
-    if (!stations.length) {
+    if (!music) {
       mount.innerHTML = '<div class="tb-notch tb-notch-static" aria-hidden="true"></div>';
       window.TBMusic = {
         play: function () {}, pause: function () {}, toggle: function () {},
@@ -58,30 +61,28 @@
     }
 
     /* state */
-    var idx = 0;            // index into stations[]
-    var playing = false;    // actually playing (driven by media events)
-    var shouldPlay = false; // user intent: stream should be playing
     var expanded = false;
-    var hasPlayed = false;  // first successful play happened at least once
-    var elapsed = 0;        // seconds on current station
-    var buffering = false;
-    var failCount = 0;      // consecutive stream failures
-    var statusText = null;  // overrides elapsed readout when non-null
-
-    var audio = new Audio();
-    audio.preload = 'none';
-    audio.volume = 0.8;
+    var volume = 0.8; // tracked only so the menubar CC slider stays alive
+    var embedUrl = (typeof music.embedUrl === 'string' && music.embedUrl) || FALLBACK_EMBED_URL;
+    /* Pseudo-station reported to peers (menubar Control Center tile). The name
+       upgrades to the real playlist title once the oEmbed fetch resolves. */
+    var station = {
+      id: 'spotify-playlist',
+      name: music.fallbackTitle || 'Spotify Playlist',
+      emoji: '🎧',
+      grad: ['#191414', '#1DB954'] // Spotify ink → green
+    };
 
     /* DOM */
     mount.innerHTML = [
-      '<div class="tb-notch" role="region" aria-label="Music player">',
-      /* State B — collapsed wide bar: artwork left, EQ right, nothing else */
+      '<div class="tb-notch has-played" role="region" aria-label="Music player">',
+      /* Collapsed pill: playlist artwork + title + static EQ silhouette */
       '<div class="tb-notch-collapsed">',
-      '<div class="tb-collapsed-art"><span class="tb-collapsed-art-emoji"></span>',
-      '<span class="tb-src-badge">📻</span></div>',
+      '<div class="tb-collapsed-art"><span class="tb-collapsed-art-emoji">🎧</span></div>',
+      '<span class="tb-collapsed-title"></span>',
       '<div class="tb-notch-eq"><span></span><span></span><span></span><span></span><span></span></div>',
       '</div>',
-      /* State C — expanded floating panel */
+      /* Expanded floating panel */
       '<div class="tb-notch-expanded">',
       '<div class="tb-panel-top">',
       '<div class="tb-panel-top-left">',
@@ -94,21 +95,13 @@
       '<span class="tb-battery"><span class="tb-battery-pct">100%</span>' + BATTERY_SVG + '</span>',
       '</div></div>',
       '<div class="tb-panel-body">',
-      '<div class="tb-player-art"><span class="tb-player-art-emoji"></span>',
-      '<span class="tb-src-badge tb-src-badge-lg">📻</span></div>',
-      '<div class="tb-player-info">',
-      '<div class="tb-player-name"></div><div class="tb-player-tag"></div>',
-      '<div class="tb-player-sub">Streaming live · lofi radio</div>',
-      '<div class="tb-player-progress"><div class="tb-player-progress-fill"></div></div>',
-      '<div class="tb-player-times"><span class="tb-player-elapsed">0:00</span>',
-      '<span class="tb-player-live"><span class="tb-live-dot">●</span>LIVE</span></div>',
-      '<div class="tb-player-controls">',
-      '<button type="button" class="tb-btn tb-btn-shuffle" title="Shuffle" aria-label="Shuffle station">' + ICONS.shuffle + '</button>',
-      '<button type="button" class="tb-btn tb-btn-prev" title="Previous" aria-label="Previous station">' + ICONS.prev + '</button>',
-      '<button type="button" class="tb-btn tb-btn-play" title="Play" aria-label="Play or pause">' + ICONS.play + '</button>',
-      '<button type="button" class="tb-btn tb-btn-next" title="Next" aria-label="Next station">' + ICONS.next + '</button>',
-      '<span class="tb-btn tb-btn-airplay" title="AirPlay" aria-hidden="true">' + ICONS.airplay + '</span>',
-      '</div></div>',
+      /* Spotify's own player: free keyless embed, transport lives inside it */
+      '<div class="tb-spotify-wrap">',
+      '<iframe class="tb-spotify-embed" src="' + embedUrl + '" ',
+      'width="100%" height="152" frameborder="0" allowfullscreen ',
+      'allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" ',
+      'loading="lazy" title="Spotify playlist player"></iframe>',
+      '</div>',
       '<div class="tb-cal-section">',
       '<div class="tb-cal-head"><span class="tb-cal-month"></span><span class="tb-cal-year"></span></div>',
       '<div class="tb-cal-weekwrap">',
@@ -122,125 +115,54 @@
       '<span class="tb-event-text">☕ Built by boring humans</span>',
       '<span class="tb-event-when">All-day</span></div>',
       '<div class="tb-event"><span class="tb-event-bar tb-event-bar-purple"></span>',
-      '<span class="tb-event-text">🎧 lofi beats all day</span>',
+      '<span class="tb-event-text">🎧 Spotify beats all day</span>',
       '<span class="tb-event-when">All-day</span></div>',
       '</div></div></div></div></div>'
     ].join('');
 
     var notch = mount.querySelector('.tb-notch');
     var artThumb = mount.querySelector('.tb-collapsed-art');
-    var artThumbEmoji = mount.querySelector('.tb-collapsed-art-emoji');
-    var artTile = mount.querySelector('.tb-player-art');
-    var artTileEmoji = mount.querySelector('.tb-player-art-emoji');
-    var nameEl = mount.querySelector('.tb-player-name');
-    var tagEl = mount.querySelector('.tb-player-tag');
-    var fillEl = mount.querySelector('.tb-player-progress-fill');
-    var elapsedEl = mount.querySelector('.tb-player-elapsed');
+    var titleEl = mount.querySelector('.tb-collapsed-title');
     var btnHome = mount.querySelector('.tb-btn-home');
-    var btnShuffle = mount.querySelector('.tb-btn-shuffle');
-    var btnPrev = mount.querySelector('.tb-btn-prev');
-    var btnPlay = mount.querySelector('.tb-btn-play');
-    var btnNext = mount.querySelector('.tb-btn-next');
     var batteryPctEl = mount.querySelector('.tb-battery-pct');
     var batteryFillEl = mount.querySelector('.tb-battery-fill');
     var monthEl = mount.querySelector('.tb-cal-month');
     var yearEl = mount.querySelector('.tb-cal-year');
     var weekrowEl = mount.querySelector('.tb-cal-weekrow');
 
-    /* rendering */
-    function renderStation() {
-      var st = stations[idx];
-      if (st.art) {
-        /* real album-art image (e.g. the boring.notch channel avatar) */
-        var img = 'url("' + st.art + '")';
-        artThumb.style.background = img;
-        artThumb.style.backgroundSize = 'cover';
-        artThumb.style.backgroundPosition = 'center';
-        artThumbEmoji.textContent = '';
-        artTile.style.background = img;
-        artTile.style.backgroundSize = 'cover';
-        artTile.style.backgroundPosition = 'center';
-        artTileEmoji.textContent = '';
-      } else {
-        var grad = 'linear-gradient(135deg,' + st.grad[0] + ',' + st.grad[1] + ')';
-        artThumb.style.background = grad;
-        artThumbEmoji.textContent = st.emoji;
-        artTile.style.background = grad;
-        artTileEmoji.textContent = st.emoji;
-      }
-      nameEl.textContent = st.name;
-      tagEl.textContent = st.tag;
-    }
-
-    function fmtTime(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-
-    function renderTimes() {
-      if (statusText) elapsedEl.textContent = statusText;
-      else if (buffering) elapsedEl.textContent = 'Buffering…';
-      else elapsedEl.textContent = fmtTime(elapsed);
-      /* Live streams have no duration: the fill sweeps a 60s window as the
-         "elapsed portion" indicator (never a fraction of total length). */
-      fillEl.style.width = (((elapsed % 60) / 60) * 100).toFixed(1) + '%';
-    }
-
-    function render() {
-      notch.classList.toggle('playing', playing);
-      notch.classList.toggle('has-played', hasPlayed);
-      btnPlay.innerHTML = playing ? ICONS.pause : ICONS.play;
-      btnPlay.title = playing ? 'Pause' : 'Play';
-      renderTimes();
-    }
+    titleEl.textContent = station.name;
 
     function dispatchState() {
       try {
         window.dispatchEvent(new CustomEvent('tb:music-state', {
-          detail: { playing: playing, stationId: stations[idx] ? stations[idx].id : null }
+          detail: { playing: false, stationId: station.id }
         }));
       } catch (e) { /* never break a peer */ }
     }
 
-    /* transport */
-    function play() {
-      shouldPlay = true;
-      if (!audio.src) audio.src = stations[idx].streamUrl;
-      /* Autoplay policy: play() is only called from a user-gesture handler chain
-         (click / tb:open-app) or the error-retry chain a user gesture started.
-         Rejections are caught to keep the console clean. */
-      var p = audio.play();
-      if (p && typeof p.catch === 'function') p.catch(function () {});
-    }
-
-    function pause() { shouldPlay = false; audio.pause(); } // real pause — src kept
-    function toggle() { if (playing) pause(); else play(); }
-
-    function changeStation(newIdx, autoplay) {
-      idx = ((newIdx % stations.length) + stations.length) % stations.length;
-      elapsed = 0;
-      buffering = false;
-      statusText = null;
-      renderStation();
-      audio.src = stations[idx].streamUrl;
-      if (autoplay) play();
-      render();
-      dispatchState();
-    }
-
-    function randomOther() {
-      if (stations.length < 2) return idx;
-      var n;
-      do { n = Math.floor(Math.random() * stations.length); } while (n === idx);
-      return n;
-    }
-
-    function nextStation() { failCount = 0; changeStation(idx + 1, shouldPlay); }
-    function prevStation() { failCount = 0; changeStation(idx - 1, shouldPlay); }
-    function shuffleStation() { failCount = 0; changeStation(randomOther(), shouldPlay); }
-
-    function setVolume(v) {
-      v = Number(v);
-      if (isNaN(v)) return;
-      v = Math.min(1, Math.max(0, v));
-      audio.volume = v;
+    /* oEmbed: keyless playlist metadata (title + thumbnail) for the pill.
+       Any failure leaves the emoji artwork + fallback title in place. */
+    function loadMeta() {
+      if (typeof fetch !== 'function' || !music.oembedUrl) return;
+      fetch(music.oembedUrl)
+        .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+        .then(function (meta) {
+          if (!meta) return;
+          if (typeof meta.title === 'string' && meta.title) {
+            station.name = meta.title;
+            titleEl.textContent = meta.title;
+          }
+          if (typeof meta.thumbnail_url === 'string' && meta.thumbnail_url) {
+            var img = new Image();
+            img.className = 'tb-collapsed-art-img';
+            img.alt = '';
+            img.src = meta.thumbnail_url; // hotlinked, per oEmbed terms
+            artThumb.innerHTML = '';
+            artThumb.appendChild(img);
+          }
+          dispatchState(); // peers (menubar CC tile) refresh the label
+        })
+        .catch(function () { /* offline/blocked: emoji + fallback title stay */ });
     }
 
     /* expand / collapse */
@@ -248,8 +170,9 @@
     function collapse() { expanded = false; notch.classList.remove('expanded'); }
 
     notch.addEventListener('click', function (e) {
-      /* Clicks on real controls or decorative glyphs must not toggle the panel. */
-      if (e.target.closest('button, input, a, .tb-circle-btn, .tb-top-glyph, .tb-btn-airplay, .tb-cal-chev')) return;
+      /* Clicks on real controls or decorative glyphs must not toggle the panel.
+         (Clicks inside the cross-origin embed iframe never reach this page.) */
+      if (e.target.closest('button, input, a, iframe, .tb-circle-btn, .tb-top-glyph, .tb-cal-chev')) return;
       if (expanded) collapse(); else expand();
     });
 
@@ -260,76 +183,12 @@
     });
 
     btnHome.addEventListener('click', collapse);
-    btnPlay.addEventListener('click', toggle);
-    btnNext.addEventListener('click', nextStation);
-    btnPrev.addEventListener('click', prevStation);
-    btnShuffle.addEventListener('click', shuffleStation);
 
     /* contract events */
     window.addEventListener('tb:open-app', function (e) {
       if (!e || !e.detail || e.detail.app !== 'music') return;
-      expand();
-      play(); // originates from a click in a peer module — gesture-safe
+      expand(); // the user presses play inside the embed itself
     });
-
-    /* audio events */
-    audio.addEventListener('playing', function () {
-      playing = true;
-      hasPlayed = true;
-      buffering = false;
-      statusText = null;
-      failCount = 0;
-      render();
-      dispatchState();
-    });
-
-    audio.addEventListener('pause', function () {
-      playing = false;
-      render();
-      dispatchState();
-    });
-
-    audio.addEventListener('waiting', function () {
-      if (!shouldPlay) return;
-      buffering = true;
-      renderTimes();
-    });
-
-    audio.addEventListener('canplay', function () {
-      if (!buffering) return;
-      buffering = false;
-      renderTimes();
-    });
-
-    audio.addEventListener('error', function () {
-      if (!shouldPlay || !audio.error) return; // intentional stop or stale event
-      failCount += 1;
-      if (failCount >= 3) {
-        shouldPlay = false;
-        playing = false;
-        buffering = false;
-        statusText = 'All streams offline';
-        failCount = 0;
-        try { audio.pause(); } catch (e) { /* ignore */ }
-        render();
-        dispatchState();
-        return;
-      }
-      statusText = 'Stream offline — trying next…';
-      renderTimes();
-      setTimeout(function () {
-        if (!shouldPlay) return;
-        changeStation(idx + 1, true);
-      }, 2000);
-    });
-
-    /* elapsed ticker */
-    setInterval(function () {
-      if (playing && !buffering) {
-        elapsed += 1;
-        renderTimes();
-      }
-    }, 1000);
 
     /* widgets */
     function buildCalendar() {
@@ -366,41 +225,28 @@
       } catch (e) { fallback(); }
     }
 
-    /* contract API */
+    /* contract API — transport fns are no-ops by design: Spotify's cross-origin
+       embed exposes no parent-page control surface (that needs Premium + OAuth
+       via the Web Playback SDK). Kept so menubar's Control Center tile stays
+       wired and harmless. */
     window.TBMusic = {
-      play: play,
-      pause: pause,
-      toggle: toggle,
-      next: nextStation,
-      prev: prevStation,
-      setVolume: setVolume,
-      state: function () { return { playing: playing, station: stations[idx] || null }; }
+      play: function () {},
+      pause: function () {},
+      toggle: function () {},
+      next: function () {},
+      prev: function () {},
+      setVolume: function (v) {
+        v = Number(v);
+        if (isNaN(v)) return;
+        volume = Math.min(1, Math.max(0, v));
+      },
+      state: function () { return { playing: false, station: station, volume: volume }; }
     };
 
     /* boot */
-    renderStation();
-    render();
     buildCalendar();
     initBattery();
-
-    /* Default state: the notch boots LOOKING like it's playing (album art +
-       EQ animating, pause glyph, dock dot + menubar glyph lit). Real audio
-       may only start inside a user gesture, so the first pointerdown /
-       touchstart / keydown anywhere silently arms true playback; from then
-       on the normal media-event state machine drives everything. */
-    hasPlayed = true;
-    playing = true;
-    shouldPlay = true;
-    render();
+    loadMeta();
     dispatchState();
-    var armEvents = ['pointerdown', 'touchstart', 'keydown'];
-    function disarm() {
-      armEvents.forEach(function (t) { window.removeEventListener(t, arm, true); });
-    }
-    function arm() {
-      disarm();
-      play();
-    }
-    armEvents.forEach(function (t) { window.addEventListener(t, arm, true); });
   }
 })();

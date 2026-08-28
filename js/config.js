@@ -57,56 +57,15 @@ window.TB_CONFIG = {
       .catch(function () { clearTimeout(timer); done(FALLBACK); });
   },
 
-  /* All stream URLs verified live (HTTP 200/206, audio/mpeg) on 2026-08-28. */
-  stations: [
-    {
-      id: 'lofi-radio',
-      name: 'Lofi Radio',
-      tag: 'beats to code to · lofi',
-      streamUrl: 'https://stream.zeno.fm/f3wvbbqmdg8uv',
-      emoji: '🌙',
-      grad: ['#232526', '#414345'],
-      art: 'assets/album-art.jpg',
-    },
-    {
-      id: 'lofi-cafe',
-      name: 'Lofi Café',
-      tag: 'coffee & chill · lofi',
-      streamUrl: 'https://play.streamafrica.net/lofiradio',
-      emoji: '☕',
-      grad: ['#b79891', '#94716b'],
-    },
-    {
-      id: 'chillhop',
-      name: 'Chillhop',
-      tag: 'jazzy beats · ilovemusic',
-      streamUrl: 'https://streams.ilovemusic.de/iloveradio17.mp3',
-      emoji: '🎷',
-      grad: ['#355c7d', '#6c5b7b'],
-    },
-    {
-      id: 'groove-salad',
-      name: 'Groove Salad',
-      tag: 'ambient beats · SomaFM',
-      streamUrl: 'https://ice1.somafm.com/groovesalad-128-mp3',
-      emoji: '🥗',
-      grad: ['#134e5e', '#71b280'],
-    },
-    {
-      id: 'fluid',
-      name: 'Fluid',
-      tag: 'future soul · SomaFM',
-      streamUrl: 'https://ice1.somafm.com/fluid-128-mp3',
-      emoji: '🌊',
-      grad: ['#1a2980', '#26d0ce'],
-    },
-    {
-      id: 'lush',
-      name: 'Lush',
-      tag: 'vocal chill · SomaFM',
-      streamUrl: 'https://ice1.somafm.com/lush-128-mp3',
-      emoji: '🌸',
-      grad: ['#c33764', '#1d2671'],
-    },
-  ],
+  /* Music: the notch embeds this Spotify playlist via Spotify's free keyless
+     iframe Embed (no API keys, no OAuth — playback happens inside Spotify's
+     own cross-origin player, so the site can't drive its transport). Pill
+     title/artwork come from the keyless oEmbed endpoint at runtime, with a
+     graceful emoji + fallbackTitle when that fetch fails (offline/blocked). */
+  music: {
+    playlistUrl: 'https://open.spotify.com/playlist/2iFVkT5FwlAPxDpmAZIEQr',
+    embedUrl: 'https://open.spotify.com/embed/playlist/2iFVkT5FwlAPxDpmAZIEQr?utm_source=generator',
+    oembedUrl: 'https://open.spotify.com/oembed?url=https://open.spotify.com/playlist/2iFVkT5FwlAPxDpmAZIEQr',
+    fallbackTitle: 'Spotify Playlist',
+  },
 };
