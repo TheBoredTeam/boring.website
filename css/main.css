@@ -1,0 +1,738 @@
+/* css/main.css — shell layers (wallpaper, mount points) + menu bar. Owner: Dev A. */
+
+:root {
+  --tb-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --tb-menubar-h: 28px;
+  --tb-glass: rgba(255, 255, 255, .16);
+  --tb-radius: 12px;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--tb-font);
+  /* lofi-purple fallback while (or if) the wallpaper image is missing */
+  background: linear-gradient(135deg, #2b1055 0%, #5f2c82 48%, #7597de 100%);
+}
+
+/* ---- mount-point layers ---- */
+
+#desktop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+/* wallpaper slideshow crossfade layers (built by js/menubar.js) */
+#desktop .tb-wall-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out; /* duration overridden inline by wallpaperFade */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #desktop .tb-wall-layer { transition: none; }
+}
+
+/* top-left Apple logo image in the menu bar (SVG fallback in js if missing) */
+#menubar-root .tb-apple-logo {
+  height: 15px;
+  width: auto;
+  display: block;
+}
+
+/* Desktop furniture layers: folders top-right, widget column below them.
+   z-index 2 → above the wallpaper (0), below windows (10). Roots are
+   click-through; children re-enable pointer events. */
+/* Icons layer spans the whole desktop so icons can be dragged anywhere;
+   icons position themselves absolutely inside it (desktop-icons.js). */
+#icons-root {
+  position: fixed;
+  top: calc(var(--tb-menubar-h) + 10px);
+  right: 14px;
+  bottom: 96px;
+  left: 14px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+#widgets-root {
+  position: fixed;
+  top: calc(var(--tb-menubar-h) + 10px);
+  right: 14px;
+  bottom: 96px;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Promo column: download card + banners down the LEFT edge (balances the
+   right-side widget column). Same z-2 furniture layer, click-through root. */
+#promo-root {
+  position: fixed;
+  top: calc(var(--tb-menubar-h) + 10px);
+  left: 14px;
+  bottom: 96px;
+  width: 300px;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#menubar-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--tb-menubar-h);
+  z-index: 20;
+}
+
+#notch-root {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+}
+
+#windows-root {
+  position: fixed;
+  inset: var(--tb-menubar-h) 0 0 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#windows-root > * {
+  pointer-events: auto;
+}
+
+#dock-root {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+}
+
+/* ---- menu bar ---- */
+
+.tb-menubar {
+  height: var(--tb-menubar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, .14);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  color: #fff;
+  font-size: 13px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.tb-menubar-left,
+.tb-menubar-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.tb-menubar-right {
+  gap: 14px;
+}
+
+.tb-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.tb-menu-label {
+  display: flex;
+  align-items: center;
+  height: calc(100% - 6px);
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-shadow: inherit;
+  cursor: default;
+}
+
+.tb-menu-label.tb-bold {
+  font-weight: 700;
+}
+
+.tb-menu.tb-open .tb-menu-label {
+  background: rgba(255, 255, 255, .22);
+}
+
+.tb-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 230px;
+  padding: 5px;
+  border-radius: 8px;
+  background: rgba(246, 246, 250, .84);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, .3), 0 0 0 .5px rgba(0, 0, 0, .15);
+  color: #1c1c1e;
+  text-shadow: none;
+}
+
+.tb-menu.tb-open .tb-dropdown {
+  display: block;
+}
+
+.tb-dropdown-item {
+  padding: 4px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.tb-dropdown-item:not(.tb-disabled):hover {
+  background: rgba(0, 0, 0, .08);
+}
+
+.tb-dropdown-item.tb-disabled {
+  color: rgba(60, 60, 67, .38);
+}
+
+.tb-dropdown-sep {
+  height: 1px;
+  margin: 5px 10px;
+  background: rgba(60, 60, 67, .16);
+}
+
+.tb-music-glyph {
+  display: none;
+}
+
+/* battery is a <button>: it toggles the Power popup */
+.tb-battery {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-shadow: inherit;
+  cursor: default;
+}
+
+.tb-battery.tb-open {
+  background: rgba(255, 255, 255, .22);
+}
+
+.tb-battery svg,
+.tb-wifi svg,
+.tb-spot-btn svg,
+.tb-cc-btn svg {
+  display: block;
+}
+
+.tb-spot-btn,
+.tb-cc-btn {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  cursor: default;
+}
+
+.tb-spot-btn.tb-open,
+.tb-cc-btn.tb-open {
+  background: rgba(255, 255, 255, .22);
+}
+
+/* Control Center panel: dark frosted (matches the reference clone) */
+.tb-cc-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 8px;
+  width: 300px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(30, 30, 32, .72);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, .3), 0 0 0 .5px rgba(0, 0, 0, .15);
+  border: 1px solid rgba(255, 255, 255, .18);
+  color: #fff;
+  text-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tb-cc-panel[hidden] {
+  display: none;
+}
+
+.tb-cc-slider {
+  width: 100%;
+  margin: 0;
+  accent-color: #0a84ff;
+}
+
+.tb-cc-slider:disabled {
+  opacity: .4;
+}
+
+/* two-part clock: date + time spans with a 6px gap */
+.tb-clock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- responsive: phones ----
+   Everything below only applies inside these media queries; desktop rules
+   above are untouched. nth-of-type indexes count the .tb-menu divs in the
+   left cluster in DOM order: 1=apple, 2=File, 3=Edit, 4=View, 5=Window,
+   6=Help (the bold site name is a span, not counted). */
+
+@media (max-width: 768px) {
+  :root {
+    --tb-menubar-h: 24px;
+  }
+
+  .tb-menubar {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .tb-menu-label {
+    padding: 0 6px;
+  }
+
+  .tb-menubar-right {
+    gap: 8px;
+  }
+
+  /* File/Edit/View contain only disabled items (pure parody filler) —
+     they drop out first so the working menus never wrap or overflow. */
+  .tb-menubar-left .tb-menu:nth-of-type(2),
+  .tb-menubar-left .tb-menu:nth-of-type(3),
+  .tb-menubar-left .tb-menu:nth-of-type(4) {
+    display: none;
+  }
+
+  /* battery icon stays, the percentage text goes */
+  .tb-battery-pct {
+    display: none;
+  }
+
+  .tb-dropdown {
+    min-width: 200px;
+    max-width: calc(100vw - 24px);
+  }
+
+  .tb-cc-panel {
+    width: min(300px, calc(100vw - 16px));
+    right: 4px;
+  }
+
+  /* clock keeps only the time — the full date wraps and crams the bar */
+  .tb-clock-date {
+    display: none;
+  }
+
+  /* PHONE LAYOUT: the desktop becomes a scrolling feed — promo cards and
+     widgets stack vertically (DOM order) in a centered column over the fixed
+     wallpaper; menubar/notch/dock stay pinned. No overlaps, ever. */
+  html, body {
+    overflow-y: auto;
+  }
+
+  body {
+    padding-top: calc(var(--tb-menubar-h) + 8px);
+    padding-bottom: 110px; /* clear the fixed dock */
+  }
+
+  #promo-root,
+  #widgets-root {
+    position: static;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: auto;
+    max-width: 560px;
+    margin: 0 auto 14px;
+    padding: 0 10px;
+    pointer-events: auto;
+    flex-direction: column;
+    display: flex;
+    gap: 14px;
+  }
+
+  /* desktop folder icons: dragging is a mouse game — they collide with the
+     feed on touch, so they're hidden on phones (folders remain reachable
+     via Spotlight and the Finder windows) */
+  #icons-root {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  /* small phones: left keeps just the apple menu + bold site name
+     (Window/Help links remain reachable from the dock), right drops wifi */
+  .tb-menubar-left .tb-menu:nth-of-type(5),
+  .tb-menubar-left .tb-menu:nth-of-type(6) {
+    display: none;
+  }
+
+  .tb-wifi {
+    display: none;
+  }
+}
+
+/* ---- Dev M: right-cluster rework (Power popup, Spotlight, CC grid, dim) ---- */
+
+/* DND crescent in the menu bar — hidden unless the CC DND toggle is on */
+.tb-dnd-glyph {
+  display: none;
+}
+
+/* battery icon with the ⚡ charging overlay */
+.tb-battery-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tb-battery-bolt {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  line-height: 1;
+  text-shadow: 0 0 2px rgba(0, 0, 0, .6);
+}
+
+/* Power popup: frosted, right-aligned under the bar */
+.tb-power-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 8px;
+  width: 220px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(30, 30, 32, .72);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, .3), 0 0 0 .5px rgba(0, 0, 0, .15);
+  border: 1px solid rgba(255, 255, 255, .18);
+  color: #fff;
+  text-shadow: none;
+}
+
+.tb-power-panel[hidden] {
+  display: none;
+}
+
+.tb-power-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tb-power-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, .6);
+}
+
+.tb-power-sep {
+  height: 1px;
+  margin: 8px 0;
+  background: rgba(255, 255, 255, .16);
+}
+
+.tb-power-prefs {
+  display: block;
+  width: 100%;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: default;
+}
+
+.tb-power-prefs:hover {
+  background: rgba(255, 255, 255, .12);
+}
+
+/* Spotlight overlay (appended to <body>, floats above windows) */
+.tb-spotlight {
+  position: fixed;
+  top: 28%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(600px, 92vw);
+  z-index: 60;
+  border-radius: 16px;
+  background: rgba(30, 30, 32, .72);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, .18);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .45);
+  color: #fff;
+  overflow: hidden;
+}
+
+.tb-spotlight[hidden] {
+  display: none;
+}
+
+.tb-spot-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.tb-spot-glyph {
+  font-size: 20px;
+}
+
+.tb-spot-input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-size: 20px;
+  font-family: var(--tb-font);
+}
+
+.tb-spot-input::placeholder {
+  color: rgba(255, 255, 255, .45);
+}
+
+.tb-spot-results {
+  padding: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+}
+
+.tb-spot-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: default;
+}
+
+.tb-spot-item.tb-spot-active {
+  background: rgba(255, 255, 255, .12);
+}
+
+.tb-spot-emoji {
+  width: 22px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.tb-spot-none {
+  padding: 10px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, .5);
+}
+
+/* full-screen dim driven by the CC brightness slider (z 15: above windows,
+   below the menu bar so the bar stays readable) */
+.tb-dim {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+
+/* CC 2×2 toggle grid */
+.tb-cc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.tb-cc-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 0 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .08);
+}
+
+.tb-cc-tbtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+  cursor: default;
+}
+
+.tb-cc-tbtn.tb-on {
+  background: #0a84ff;
+}
+
+.tb-cc-tlabel {
+  font-size: 10px;
+  color: rgba(255, 255, 255, .85);
+  text-align: center;
+}
+
+/* CC slider/battery rows */
+.tb-cc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .08);
+}
+
+.tb-cc-ricon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  flex: none;
+}
+
+.tb-cc-row .tb-cc-slider {
+  flex: 1;
+}
+
+.tb-cc-battpct {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* CC music mini-player row */
+.tb-cc-music {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .08);
+  box-sizing: border-box;
+}
+
+.tb-cc-music.tb-cc-disabled {
+  opacity: .5;
+}
+
+.tb-cc-art {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex: none;
+}
+
+.tb-cc-mtexts {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.tb-cc-mtitle {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tb-cc-mname {
+  font-size: 11px;
+  color: rgba(255, 255, 255, .6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tb-cc-mbtns {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.tb-cc-mbtn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+  cursor: default;
+}
+
+.tb-cc-mbtn:disabled {
+  opacity: .4;
+}
