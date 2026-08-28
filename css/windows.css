@@ -1,0 +1,136 @@
+/* css/windows.css — Dev D: in-page macOS window system (window chrome, traffic
+   lights, Safari address bar, fallback card). All classes prefixed tb-. */
+
+.tb-window {
+  position: absolute;
+  width: 620px; height: 420px;
+  min-width: 480px; min-height: 320px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background: rgba(246, 246, 248, 0.86);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  border-radius: 12px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  pointer-events: auto;
+  user-select: none; -webkit-user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0.35, 1), opacity 0.35s ease;
+}
+
+/* Only while a zoom toggle animates (keeps left/top off the always-on
+   transition so dragging stays 1:1 with the pointer). */
+.tb-window.tb-animating {
+  transition: left 0.35s cubic-bezier(0.32, 0.72, 0.35, 1),
+              top 0.35s cubic-bezier(0.32, 0.72, 0.35, 1),
+              width 0.35s cubic-bezier(0.32, 0.72, 0.35, 1),
+              height 0.35s cubic-bezier(0.32, 0.72, 0.35, 1),
+              transform 0.35s cubic-bezier(0.32, 0.72, 0.35, 1),
+              opacity 0.35s ease;
+}
+
+/* ---- Titlebar ---- */
+.tb-window-titlebar {
+  position: relative;
+  height: 38px; flex: 0 0 38px;
+  display: flex; align-items: center;
+  padding: 0 12px;
+  /* touch-only: keeps a titlebar finger-drag on the Pointer Events path
+     instead of being stolen as a scroll/pan gesture. No mouse effect. */
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+.tb-window-title {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 13px; font-weight: 600; color: #333;
+  pointer-events: none;
+}
+
+/* ---- Traffic lights ---- */
+.tb-window-traffic { display: flex; gap: 8px; align-items: center; z-index: 1; }
+.tb-tl {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: none; padding: 0; margin: 0;
+  cursor: default;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; line-height: 1;
+  color: rgba(0, 0, 0, 0.55);
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
+}
+.tb-tl-close { background: #FF5F57; }
+.tb-tl-min   { background: #FEBC2E; }
+.tb-tl-zoom  { background: #28C840; }
+.tb-tl::after { opacity: 0; transition: opacity 0.12s ease; }
+.tb-tl-close::after { content: "×"; }
+.tb-tl-min::after   { content: "−"; }
+.tb-tl-zoom::after  { content: "+"; }
+.tb-window-traffic:hover .tb-tl::after { opacity: 1; } /* macOS group hover */
+
+/* ---- Safari address bar (chrome:'safari' only) ---- */
+.tb-window-addressbar {
+  height: 34px; flex: 0 0 34px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.tb-ab-nav { font-size: 15px; color: rgba(0, 0, 0, 0.28); width: 18px; text-align: center; cursor: default; }
+.tb-ab-field {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+  height: 24px; border-radius: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  font-size: 12px; color: #333;
+  overflow: hidden; white-space: nowrap;
+}
+.tb-ab-lock { font-size: 10px; }
+.tb-ab-url { overflow: hidden; text-overflow: ellipsis; }
+.tb-ab-reload { font-size: 14px; color: rgba(0, 0, 0, 0.45); cursor: default; }
+
+/* ---- Content area ---- */
+.tb-window-content { flex: 1; overflow: auto; min-height: 0; }
+
+/* ---- Fallback card (TBApps missing or threw) ---- */
+.tb-fallback {
+  height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 24px; text-align: center;
+}
+.tb-fallback-emoji { font-size: 44px; }
+.tb-fallback-title { font-size: 15px; font-weight: 600; color: #333; }
+.tb-fallback-link { font-size: 13px; color: #0a6cff; text-decoration: none; }
+.tb-fallback-link:hover { text-decoration: underline; }
+.tb-fallback-plain { color: rgba(0, 0, 0, 0.4); }
+
+/* ---- responsive: phones ----
+   Desktop rules above are untouched; everything below only applies inside
+   these media queries. Windows keep their JS-set inline sizes on desktop;
+   here max-width/max-height clamp them into the viewport (max-* wins over
+   inline width/height). left/top stay inline so dragging keeps working —
+   the drag clamp always leaves >=60px of chrome reachable to drag back. */
+@media (max-width: 768px) {
+  .tb-window {
+    min-width: 0; min-height: 0;
+    /* force near-fullscreen geometry over any inline left/top/width/height
+       (boot positions are desktop-only) */
+    left: 8px !important;
+    top: calc(var(--tb-menubar-h) + 8px) !important;
+    width: calc(100vw - 16px) !important;
+    height: 70vh !important;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - var(--tb-menubar-h) - 96px);
+  }
+  /* taller titlebar + bigger traffic lights = reliable touch targets */
+  .tb-window-titlebar { height: 42px; flex: 0 0 42px; }
+  .tb-window-traffic { gap: 10px; }
+  .tb-tl { width: 16px; height: 16px; font-size: 12px; }
+  .tb-window-title { font-size: 12px; }
+  .tb-window-addressbar { height: 32px; flex: 0 0 32px; }
+}
+
+@media (max-width: 480px) {
+  .tb-window { max-width: 100vw; }
+  .tb-window-titlebar { padding: 0 10px; }
+}

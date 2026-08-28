@@ -1,0 +1,569 @@
+/* css/apps.css — in-window app content. Owned by Dev E.
+   Styles the GitHub replica (safari), download card, coffee card and
+   About This Mac card rendered by js/apps.js. All classes are tb-*. */
+
+/* ---------- shared bits ---------- */
+
+.tb-gh-page,
+.tb-card {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: #1f2328;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.tb-gh-page *,
+.tb-card * { box-sizing: border-box; }
+
+.tb-btn-primary {
+  display: inline-block;
+  background: #1f883d;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border: 1px solid rgba(31, 35, 40, 0.15);
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tb-btn-primary:hover { background: #1a7f37; }
+
+.tb-btn-secondary {
+  display: inline-block;
+  background: #f6f8fa;
+  color: #1f2328;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tb-btn-secondary:hover { background: #eef1f4; }
+
+.tb-app-unknown {
+  padding: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #6e7781;
+  text-align: center;
+}
+
+/* ---------- safari: GitHub repo page replica ---------- */
+
+.tb-gh-page {
+  background: #f6f8fa;
+  min-height: 100%;
+  padding: 16px 20px 28px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.tb-gh-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tb-gh-header-left { display: flex; align-items: center; gap: 6px; font-size: 18px; min-width: 0; }
+.tb-gh-book { font-size: 15px; opacity: 0.7; }
+.tb-gh-org { color: #0969da; text-decoration: none; font-weight: 400; }
+.tb-gh-repo { color: #0969da; text-decoration: none; font-weight: 600; }
+.tb-gh-org:hover,
+.tb-gh-repo:hover { text-decoration: underline; }
+.tb-gh-slash { color: #6e7781; }
+
+.tb-gh-pill {
+  font-size: 11px;
+  font-weight: 500;
+  color: #57606a;
+  border: 1px solid #d0d7de;
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-left: 4px;
+}
+
+.tb-gh-header-right { display: flex; gap: 6px; }
+
+.tb-gh-btn {
+  font-size: 12px;
+  color: #1f2328;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.tb-gh-btn b { font-weight: 600; margin-left: 2px; }
+
+.tb-gh-tabs { display: flex; gap: 4px; border-bottom: 1px solid #d0d7de; margin-bottom: 14px; }
+
+.tb-gh-tab {
+  font-size: 13px;
+  color: #1f2328;
+  padding: 8px 12px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+
+.tb-gh-tab-active { font-weight: 600; border-bottom-color: #fd8c73; }
+
+.tb-gh-branch-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+
+.tb-gh-branch-pill {
+  font-size: 12px;
+  font-weight: 500;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+.tb-gh-filecount { font-size: 12px; color: #6e7781; }
+
+.tb-gh-clone-wrap { position: relative; margin-bottom: 16px; }
+
+.tb-gh-code-btn {
+  background: #1f883d;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 6px 14px;
+  border: 1px solid rgba(31, 35, 40, 0.15);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tb-gh-code-btn:hover { background: #1a7f37; }
+
+.tb-gh-clone-box {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 5;
+  width: 320px;
+  max-width: 90%;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(140, 149, 159, 0.25);
+  padding: 12px;
+}
+
+.tb-gh-clone-label { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+.tb-gh-clone-row { display: flex; gap: 6px; }
+
+.tb-gh-clone-field {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: #1f2328;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+
+.tb-gh-copy-btn {
+  font-size: 12px;
+  font-family: inherit;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tb-gh-copy-btn:hover { background: #eef1f4; }
+
+.tb-gh-readme { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; overflow: hidden; }
+
+.tb-gh-readme-head {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-bottom: 1px solid #d0d7de;
+  background: #f6f8fa;
+}
+
+.tb-gh-readme-body { padding: 20px 24px 24px; }
+
+.tb-gh-h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #d8dee4;
+}
+
+.tb-gh-badges { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 14px; }
+.tb-badge { display: inline-flex; font-size: 11px; line-height: 1; border-radius: 4px; overflow: hidden; }
+.tb-badge i { font-style: normal; background: #555; color: #fff; padding: 4px 7px; }
+.tb-badge b { font-weight: 600; color: #fff; padding: 4px 7px; }
+.tb-badge-blue { background: #0969da; }
+.tb-badge-green { background: #1f883d; }
+.tb-badge-brown { background: #9a6700; }
+
+.tb-gh-p { margin: 0 0 14px; color: #1f2328; }
+.tb-gh-ul { margin: 0 0 18px; padding-left: 22px; }
+.tb-gh-ul li { margin-bottom: 4px; }
+
+/* ---------- generic centered cards (download / coffee / about) ---------- */
+
+.tb-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 100%;
+  background: #fff;
+}
+
+.tb-card-pad32 { padding: 32px; }
+.tb-card-pad28 { padding: 28px; }
+
+.tb-card-title { font-size: 20px; font-weight: 600; margin: 14px 0 6px; }
+.tb-card-sub { font-size: 13px; color: #6e7781; margin-bottom: 20px; }
+.tb-card-caption { font-size: 11px; color: #6e7781; margin-top: 12px; }
+.tb-card-h2 { font-size: 20px; font-weight: 600; margin: 14px 0 8px; }
+
+.tb-card-p {
+  font-size: 13px;
+  color: #3d4450;
+  max-width: 320px;
+  margin: 0 0 20px;
+}
+
+/* download card */
+
+.tb-dl-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 22%;
+  background: linear-gradient(145deg, #3a3a3c 0%, #000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.tb-dl-icon-img {
+  width: 96px;
+  height: 96px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 22%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.tb-btn-big { font-size: 15px; padding: 10px 22px; border-radius: 8px; }
+
+/* coffee card */
+
+.tb-coffee-icon { font-size: 64px; line-height: 1; }
+
+.tb-coffee-btn {
+  display: inline-block;
+  background: #ffdd00;
+  color: #1f2328;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.tb-coffee-btn:hover { filter: brightness(0.96); }
+
+/* about this mac */
+
+.tb-about-icon { font-size: 64px; line-height: 1; }
+.tb-about-name { font-size: 18px; font-weight: 600; margin: 12px 0 18px; }
+.tb-about-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.tb-about-row { display: flex; align-items: baseline; font-size: 13px; }
+
+.tb-about-label {
+  width: 110px;
+  text-align: right;
+  color: #6e7781;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.tb-about-value { text-align: left; color: #1f2328; }
+
+/* ---- responsive: phones ----
+   Desktop rules above are untouched; everything below only applies inside
+   these media queries. Cards/panes keep their layout, just narrower
+   paddings and nothing fixed wider than the window content box. */
+@media (max-width: 768px) {
+  /* GitHub replica */
+  .tb-gh-page { padding: 12px 14px 20px; }
+  .tb-gh-h1 { font-size: 22px; }
+  .tb-gh-readme-body { padding: 14px 16px 18px; }
+  .tb-gh-clone-box { width: min(320px, calc(100vw - 64px)); }
+  .tb-gh-tab { padding: 8px 8px; font-size: 12px; }
+
+  /* generic cards */
+  .tb-card-pad32 { padding: 22px 18px; }
+  .tb-card-pad28 { padding: 20px 16px; }
+  .tb-card-p { max-width: 100%; }
+
+  /* about this mac: label column narrows so values keep one line */
+  .tb-about-label { width: 88px; margin-right: 8px; }
+
+  /* any image inside app content never exceeds the window content box */
+  .tb-gh-page img,
+  .tb-card img { max-width: 100%; height: auto; }
+}
+
+/* folder windows: Finder-style file listing */
+.tb-finder { display: flex; flex-direction: column; height: 100%; background: #fff; }
+.tb-finder-list { flex: 1; overflow: auto; padding: 6px 0; }
+.tb-finder-row { display: flex; align-items: center; gap: 10px; padding: 6px 14px; }
+.tb-finder-row:hover { background: #e8e8ed; }
+.tb-finder-icon { width: 20px; text-align: center; font-size: 16px; }
+.tb-finder-name { flex: 1; font-size: 13px; color: #1d1d1f; }
+.tb-finder-meta { font-size: 12px; color: #86868b; }
+.tb-finder-count { padding: 6px 14px; font-size: 11px; color: #86868b; text-align: center; border-top: 1px solid #e5e5ea; }
+
+/* ---------- full Finder window (toolbar + sidebar + list + status) ---------- */
+
+.tb-fx {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: #1d1d1f;
+  text-align: left;
+}
+
+.tb-fx * { box-sizing: border-box; }
+
+/* toolbar: back/forward + breadcrumb */
+.tb-fx-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  flex-shrink: 0;
+  padding: 0 10px;
+  background: #f6f6f8;
+  border-bottom: 1px solid #e5e5ea;
+}
+
+.tb-fx-nav-btn {
+  width: 24px;
+  height: 22px;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 5px;
+  font-family: inherit;
+}
+
+.tb-fx-nav-btn:hover:not(:disabled) { background: #e8e8ed; }
+.tb-fx-nav-btn:disabled { color: #c7c7cc; cursor: default; }
+
+.tb-fx-crumbs {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tb-fx-crumb { font-size: 13px; color: #666; cursor: pointer; }
+.tb-fx-crumb:hover { text-decoration: underline; }
+
+.tb-fx-crumb-cur { font-weight: 600; color: #1d1d1f; cursor: default; }
+.tb-fx-crumb-cur:hover { text-decoration: none; }
+
+.tb-fx-sep { font-size: 13px; color: #86868b; }
+
+/* body: favorites sidebar + file list */
+.tb-fx-body { flex: 1; display: flex; min-height: 0; }
+
+.tb-fx-sidebar {
+  width: 120px;
+  flex-shrink: 0;
+  background: #f9f9fb;
+  border-right: 1px solid #e5e5ea;
+  padding: 8px 6px;
+  font-size: 12px;
+  overflow: auto;
+}
+
+.tb-fx-side-head {
+  font-size: 10px;
+  font-weight: 600;
+  color: #86868b;
+  letter-spacing: 0.4px;
+  padding: 0 6px 4px;
+}
+
+.tb-fx-side-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  color: #1d1d1f;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tb-fx-side-row:hover { background: #eeeef2; }
+.tb-fx-side-active, .tb-fx-side-active:hover { background: #e4e4e9; }
+
+.tb-fx-list { flex: 1; min-width: 0; background: #fff; overflow: auto; padding: 4px 0; }
+
+.tb-fx-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 14px;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.tb-fx-row:hover { background: #e8e8ed; }
+.tb-fx-row-sel, .tb-fx-row-sel:hover { background: #dcdce2; }
+
+.tb-fx-glyph { width: 24px; flex-shrink: 0; text-align: center; font-size: 18px; line-height: 1; }
+
+.tb-fx-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: #1d1d1f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tb-fx-meta { flex-shrink: 0; font-size: 12px; color: #86868b; text-align: right; }
+
+/* status bar */
+.tb-fx-status {
+  height: 22px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #86868b;
+  border-top: 1px solid #e5e5ea;
+}
+
+/* ---------- viewer: file preview (text + line numbers / image / cards) ---------- */
+
+.tb-pv {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: #1d1d1f;
+  text-align: left;
+}
+
+.tb-pv * { box-sizing: border-box; }
+
+.tb-pv-text { flex: 1; min-height: 0; overflow: auto; background: #fff; padding: 10px 0 14px; }
+
+.tb-pv-pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.55;
+  color: #1d1d1f;
+  white-space: pre;
+}
+
+.tb-pv-ln {
+  display: inline-block;
+  min-width: 3em;
+  padding-right: 10px;
+  margin-right: 10px;
+  text-align: right;
+  color: #aeaeb2;
+  border-right: 1px solid #ececf0;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.tb-pv-trunc {
+  margin-top: 6px;
+  padding: 8px 14px 0;
+  font-size: 11px;
+  color: #86868b;
+  text-align: center;
+  border-top: 1px solid #ececf0;
+}
+
+.tb-pv-image {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #1d1d1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tb-pv-img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.tb-pv-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 24px;
+  text-align: center;
+}
+
+.tb-pv-card-icon { font-size: 42px; line-height: 1; }
+.tb-pv-card-title { font-size: 15px; font-weight: 600; color: #1d1d1f; margin-top: 12px; }
+.tb-pv-card-sub { font-size: 12px; color: #86868b; margin-top: 6px; max-width: 260px; }
+
+/* ---------- video: embedded YouTube player ----------
+   Flush body: no padding, black behind the iframe. The window's own
+   overflow:hidden + border-radius clips the corners (as with every app). */
+
+.tb-video {
+  position: relative;
+  height: 100%;
+  background: #000;
+}
+
+.tb-video iframe { border: 0; display: block; }
