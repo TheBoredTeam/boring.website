@@ -561,6 +561,584 @@
     return root;
   }
 
+  /* ---------- messages / whatsapp: real testimonials, shared data ----------
+     Every quote below is a REAL Product Hunt comment about boring.notch,
+     collected from producthunt.com/posts/theboringnotch. Do not invent more. */
+
+  var MSG_PEOPLE = {
+    chris: { name: 'Chris Hicken', grad: 'linear-gradient(135deg,#5f7cff,#9b5bff)', quotes: [
+      'Great little project, clean design, and the open-source part makes it even cooler.',
+      'We all hated the notch when it arrived, and now here we are turning it into a productivity dashboard, mirror, and music hub.'
+    ]},
+    navam: { name: 'Navam', grad: 'linear-gradient(135deg,#ff9f43,#ff5e62)', quotes: [
+      'This is very cool. Installing it now!'
+    ]},
+    jim: { name: 'Jim Engine', grad: 'linear-gradient(135deg,#34c759,#0fa3a3)', quotes: [
+      "Thanks, I didn't know I would actually love something like that"
+    ]},
+    yudha: { name: 'Yudha', grad: 'linear-gradient(135deg,#ffd60a,#ff9f0a)', quotes: [
+      'But overall, this so cool, and love it!'
+    ]},
+    gabe: { name: 'Gabe Perez', grad: 'linear-gradient(135deg,#bf5af2,#ff375f)', quotes: [
+      'I chose boring.notch because it was a) Open Source b) had all the main features I used from NotchNook and c) Free!',
+      "It does everything I need so far. It's not quite as pretty as Alcove but it's just as functional."
+    ]},
+    bt: { name: 'boring team', grad: 'linear-gradient(135deg,#0a84ff,#5e5ce6)', quotes: [] }
+  };
+
+  /* the group thread, scripted in replay order */
+  var MSG_GROUP_SCRIPT = [
+    { kind: 'divider', text: 'Today 8:42 PM' },
+    { kind: 'in', who: 'chris' },
+    { kind: 'in', who: 'chris', quote: 1 },
+    { kind: 'in', who: 'navam' },
+    { kind: 'status', text: '⭐ 10.5k stars on GitHub · #3 Product of the Day' },
+    { kind: 'in', who: 'jim' },
+    { kind: 'in', who: 'yudha' },
+    { kind: 'in', who: 'gabe' },
+    { kind: 'in', who: 'gabe', quote: 1 },
+    { kind: 'out', text: "you're all the best 🙏 ❤️" },
+    { kind: 'receipt', text: 'Read 8:44 PM' }
+  ];
+
+  var MSG_REPLIES = [
+    '❤️',
+    'thanks for stopping by ✨',
+    '⭐ the repo if you liked it!',
+    '☕ fueled by your coffee'
+  ];
+
+  /* ---------- messages: iMessage replica, testimonials as a live chat ---------- */
+
+  function msgText(item) {
+    if (item.text) return item.text;
+    var p = MSG_PEOPLE[item.who];
+    return p ? p.quotes[item.quote || 0] : '';
+  }
+
+  function msgTyping() {
+    return el('div', 'tb-msg-bubble tb-msg-typing',
+      '<span class="tb-msg-dot"></span><span class="tb-msg-dot"></span><span class="tb-msg-dot"></span>');
+  }
+
+  function msgToggleTapback(bubble) {
+    var existing = bubble.querySelector('.tb-msg-tapback');
+    if (existing) {
+      bubble.removeChild(existing);
+    } else {
+      bubble.appendChild(el('span', 'tb-msg-tapback', '❤️'));
+    }
+  }
+
+  /* appends one scripted item; state tracks last sender for group labels
+     and reduced consecutive-bubble margins */
+  function msgAppend(content, item, state) {
+    if (item.kind === 'divider') {
+      var day = el('div', 'tb-msg-day');
+      day.textContent = item.text;
+      content.appendChild(day);
+      state.lastWho = null;
+      state.lastKind = 'divider';
+      return;
+    }
+    if (item.kind === 'status') {
+      var st = el('div', 'tb-msg-status');
+      st.textContent = item.text;
+      content.appendChild(st);
+      state.lastWho = null;
+      state.lastKind = 'status';
+      return;
+    }
+    if (item.kind === 'receipt') {
+      var rc = el('div', 'tb-msg-receipt');
+      rc.textContent = item.text;
+      content.appendChild(rc);
+      return;
+    }
+    var out = item.kind === 'out';
+    if (!out && state.lastWho !== item.who) {
+      var person = MSG_PEOPLE[item.who];
+      var label = el('div', 'tb-msg-sender');
+      label.textContent = person ? person.name.split(' ')[0] : '';
+      content.appendChild(label);
+    }
+    var same = state.lastWho === (out ? 'me' : item.who) && state.lastKind === item.kind;
+    var bubble = el('div', 'tb-msg-bubble tb-msg-anim' +
+      (out ? ' tb-msg-out' : '') + (same ? ' tb-msg-cont' : ''));
+    bubble.textContent = msgText(item);
+    if (!out) {
+      bubble.addEventListener('dblclick', function () { msgToggleTapback(bubble); });
+    }
+    content.appendChild(bubble);
+    state.lastWho = out ? 'me' : item.who;
+    state.lastKind = item.kind;
+  }
+
+  function renderMessages() {
+    var root = el('div', 'tb-msg');
+
+    /* left sidebar: header + 4 conversation rows */
+    var side = el('div', 'tb-msg-side');
+    side.appendChild(el('div', 'tb-msg-side-head', 'Messages'));
+    var convList = el('div', 'tb-msg-convs');
+    side.appendChild(convList);
+
+    /* main column: chat header + thread + input bar */
+    var main = el('div', 'tb-msg-main');
+    var head = el('div', 'tb-msg-chat-head');
+    var headName = el('div', 'tb-msg-chat-name');
+    head.appendChild(headName);
+    head.appendChild(el('div', 'tb-msg-chat-sub', 'from around the internet 🌐 · Product Hunt &amp; GitHub'));
+    var thread = el('div', 'tb-msg-thread');
+    var bar = el('div', 'tb-msg-inputbar');
+    var input = el('input', 'tb-msg-input');
+    input.type = 'text';
+    input.placeholder = 'iMessage';
+    input.setAttribute('aria-label', 'iMessage');
+    var send = el('button', 'tb-msg-send', '↑');
+    send.type = 'button';
+    send.setAttribute('aria-label', 'Send');
+    bar.appendChild(input);
+    bar.appendChild(send);
+    main.appendChild(head);
+    main.appendChild(thread);
+    main.appendChild(bar);
+
+    root.appendChild(side);
+    root.appendChild(main);
+
+    function scrollDown() {
+      try { thread.scrollTop = thread.scrollHeight; } catch (e) { /* shim-safe */ }
+    }
+
+    /* one content node per conversation; the group one fills live via replay */
+    var contents = {};
+    var convs = [
+      { id: 'group', name: 'boring notch fans 🎧', icon: '🎧',
+        grad: 'linear-gradient(135deg,#0a84ff,#5e5ce6)', time: '8:44 PM',
+        preview: "you're all the best 🙏 ❤️" },
+      { id: 'chris', who: 'chris', time: '8:31 PM', preview: MSG_PEOPLE.chris.quotes[0] },
+      { id: 'gabe', who: 'gabe', time: '8:36 PM', preview: MSG_PEOPLE.gabe.quotes[0] },
+      { id: 'navam', who: 'navam', time: '8:33 PM', preview: MSG_PEOPLE.navam.quotes[0] }
+    ];
+
+    /* the 1:1 threads are short: the person's quote(s), rendered instantly */
+    ['chris', 'gabe', 'navam'].forEach(function (who) {
+      var c = el('div', 'tb-msg-conv-thread');
+      var st = { lastWho: null, lastKind: null };
+      msgAppend(c, { kind: 'divider', text: 'Today 8:3' + (who === 'chris' ? '1' : (who === 'gabe' ? '6' : '3')) + ' PM' }, st);
+      MSG_PEOPLE[who].quotes.forEach(function (q, i) {
+        msgAppend(c, { kind: 'in', who: who, quote: i }, st);
+      });
+      contents[who] = c;
+    });
+    contents.group = el('div', 'tb-msg-conv-thread');
+
+    var rows = [];
+    var active = 'group';
+
+    function setActive(id) {
+      active = id;
+      rows.forEach(function (r) {
+        r.row.classList.toggle('tb-msg-conv-sel', r.id === id);
+      });
+      var conv = null;
+      for (var i = 0; i < convs.length; i++) {
+        if (convs[i].id === id) { conv = convs[i]; break; }
+      }
+      headName.textContent = conv ? (conv.name || MSG_PEOPLE[conv.who].name) : '';
+      clearKids(thread);
+      thread.appendChild(contents[id]);
+      scrollDown();
+    }
+
+    convs.forEach(function (conv) {
+      var name = conv.name || MSG_PEOPLE[conv.who].name;
+      var grad = conv.grad || MSG_PEOPLE[conv.who].grad;
+      var row = el('div', 'tb-msg-conv');
+      var avatar = el('div', 'tb-msg-avatar');
+      avatar.style.background = grad;
+      avatar.textContent = conv.icon || name.charAt(0);
+      var meta = el('div', 'tb-msg-conv-meta');
+      var top = el('div', 'tb-msg-conv-top');
+      var nameEl = el('span', 'tb-msg-conv-name');
+      nameEl.textContent = name;
+      var timeEl = el('span', 'tb-msg-conv-time');
+      timeEl.textContent = conv.time;
+      top.appendChild(nameEl);
+      top.appendChild(timeEl);
+      var prev = el('div', 'tb-msg-conv-prev');
+      prev.textContent = conv.preview;
+      meta.appendChild(top);
+      meta.appendChild(prev);
+      row.appendChild(avatar);
+      row.appendChild(meta);
+      row.addEventListener('click', function () { setActive(conv.id); });
+      convList.appendChild(row);
+      rows.push({ id: conv.id, row: row });
+    });
+
+    /* live replay: typing indicator ~420ms -> bubble slides in; next ~300ms.
+       Guards on root.isConnected so a closed window never throws. */
+    var groupState = { lastWho: null, lastKind: null };
+    function replay(i) {
+      if (!root.isConnected || i >= MSG_GROUP_SCRIPT.length) return;
+      var item = MSG_GROUP_SCRIPT[i];
+      if (item.kind === 'in') {
+        var typing = msgTyping();
+        contents.group.appendChild(typing);
+        scrollDown();
+        setTimeout(function () {
+          if (!root.isConnected) return;
+          if (typing.parentNode) typing.parentNode.removeChild(typing);
+          msgAppend(contents.group, item, groupState);
+          scrollDown();
+          setTimeout(function () { replay(i + 1); }, 300);
+        }, 420);
+      } else {
+        msgAppend(contents.group, item, groupState);
+        scrollDown();
+        setTimeout(function () { replay(i + 1); }, item.kind === 'out' ? 300 : 180);
+      }
+    }
+    setTimeout(function () { replay(0); }, 350);
+
+    /* the input works: your message + a rotating canned reply ~1.2s later */
+    var replyIdx = 0;
+    function sendMsg() {
+      var text = String(input.value || '').replace(/^\s+|\s+$/g, '');
+      if (!text) return;
+      input.value = '';
+      var st = { lastWho: null, lastKind: null };
+      msgAppend(contents.group, { kind: 'out', text: text }, st);
+      scrollDown();
+      var typing = msgTyping();
+      setTimeout(function () {
+        if (!root.isConnected) return;
+        contents.group.appendChild(typing);
+        scrollDown();
+        setTimeout(function () {
+          if (!root.isConnected) return;
+          if (typing.parentNode) typing.parentNode.removeChild(typing);
+          msgAppend(contents.group, {
+            kind: 'in', who: 'bt',
+            text: MSG_REPLIES[replyIdx++ % MSG_REPLIES.length]
+          }, st);
+          scrollDown();
+        }, 500);
+      }, 700);
+    }
+    input.addEventListener('keydown', function (e) {
+      if (e && e.key === 'Enter') sendMsg();
+    });
+    send.addEventListener('click', sendMsg);
+
+    setActive('group');
+    return root;
+  }
+
+  /* ---------- whatsapp: WhatsApp-Web replica ----------
+     web.whatsapp.com refuses framing (CSP frame-ancestors), so this is an
+     honest replica that links out to the real thing. */
+
+  var WA_COLORS = { chris: '#1fa855', navam: '#e542a3', jim: '#0291eb', yudha: '#91ac01', gabe: '#ba53de' };
+  var WA_URL = 'https://web.whatsapp.com';
+
+  function waBubbleIn(who, quote, time) {
+    var bubble = el('div', 'tb-wa-bubble tb-wa-in');
+    var whoEl = el('span', 'tb-wa-who');
+    whoEl.textContent = MSG_PEOPLE[who].name;
+    whoEl.style.color = WA_COLORS[who] || '#1fa855';
+    var text = el('span', 'tb-wa-text');
+    text.textContent = quote;
+    var meta = el('span', 'tb-wa-meta');
+    meta.textContent = time;
+    bubble.appendChild(whoEl);
+    bubble.appendChild(text);
+    bubble.appendChild(meta);
+    return bubble;
+  }
+
+  function waBubbleOut(text, time) {
+    var bubble = el('div', 'tb-wa-bubble tb-wa-out');
+    var textEl = el('span', 'tb-wa-text');
+    textEl.textContent = text;
+    var meta = el('span', 'tb-wa-meta');
+    var timeEl = el('span', 'tb-wa-time');
+    timeEl.textContent = time + ' ';
+    meta.appendChild(timeEl);
+    meta.appendChild(el('span', 'tb-wa-ticks', '✓✓'));
+    bubble.appendChild(textEl);
+    bubble.appendChild(meta);
+    return bubble;
+  }
+
+  function renderWhatsapp() {
+    var root = el('div', 'tb-wa');
+
+    /* header bar: avatar + title + link out to the real thing */
+    var header = el('div', 'tb-wa-header');
+    header.appendChild(el('div', 'tb-wa-avatar', '✆'));
+    header.appendChild(el('div', 'tb-wa-title', 'WhatsApp Web'));
+    var open = el('a', 'tb-wa-open', 'Open real WhatsApp Web ↗');
+    open.setAttribute('href', WA_URL);
+    open.setAttribute('target', '_blank');
+    open.setAttribute('rel', 'noopener');
+    header.appendChild(open);
+    root.appendChild(header);
+
+    /* honesty strip */
+    root.appendChild(el('div', 'tb-wa-note',
+      "WhatsApp doesn't allow embedding (frame-ancestors) — this is a replica."));
+
+    var body = el('div', 'tb-wa-body');
+
+    /* chat list */
+    var list = el('div', 'tb-wa-list');
+    [
+      { name: 'boring notch fans 🎧', grad: MSG_PEOPLE.bt.grad, icon: '🎧',
+        preview: 'you\'re all the best 🙏 ❤️', time: '8:44 PM', unread: 4 },
+      { name: 'Download squad', grad: 'linear-gradient(135deg,#00a884,#075e54)',
+        preview: 'unzip and double-click, that\'s it', time: '7:12 PM' },
+      { name: 'Mom ❤️', grad: 'linear-gradient(135deg,#f7b6c2,#e542a3)',
+        preview: 'what is a notch?', time: '6:58 PM' }
+    ].forEach(function (conv, i) {
+      var row = el('div', 'tb-wa-row' + (i === 0 ? ' tb-wa-row-sel' : ''));
+      var avatar = el('div', 'tb-wa-row-avatar');
+      avatar.style.background = conv.grad;
+      avatar.textContent = conv.icon || conv.name.charAt(0);
+      var meta = el('div', 'tb-wa-row-meta');
+      var top = el('div', 'tb-wa-row-top');
+      var nameEl = el('span', 'tb-wa-row-name');
+      nameEl.textContent = conv.name;
+      var timeEl = el('span', 'tb-wa-row-time');
+      timeEl.textContent = conv.time;
+      top.appendChild(nameEl);
+      top.appendChild(timeEl);
+      var bottom = el('div', 'tb-wa-row-bottom');
+      var prev = el('span', 'tb-wa-row-prev');
+      prev.textContent = conv.preview;
+      bottom.appendChild(prev);
+      if (conv.unread) bottom.appendChild(el('span', 'tb-wa-unread', String(conv.unread)));
+      meta.appendChild(top);
+      meta.appendChild(bottom);
+      row.appendChild(avatar);
+      row.appendChild(meta);
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+
+    /* conversation: the real quotes, WhatsApp-group style */
+    var chat = el('div', 'tb-wa-chat');
+    chat.appendChild(el('div', 'tb-wa-day', 'TODAY'));
+    chat.appendChild(waBubbleIn('chris', MSG_PEOPLE.chris.quotes[0], '8:40 PM'));
+    chat.appendChild(waBubbleIn('navam', MSG_PEOPLE.navam.quotes[0], '8:41 PM'));
+    chat.appendChild(waBubbleIn('jim', MSG_PEOPLE.jim.quotes[0], '8:42 PM'));
+    chat.appendChild(waBubbleIn('yudha', MSG_PEOPLE.yudha.quotes[0], '8:43 PM'));
+    chat.appendChild(waBubbleIn('gabe', MSG_PEOPLE.gabe.quotes[0], '8:44 PM'));
+    chat.appendChild(waBubbleOut("you're all the best 🙏 ❤️", '8:44 PM'));
+
+    /* CTA bubble: green button linking out to the real WhatsApp Web */
+    var ctaBubble = el('div', 'tb-wa-bubble tb-wa-out tb-wa-cta-bubble');
+    var cta = el('a', 'tb-wa-cta', 'Chat with us on WhatsApp ↗');
+    cta.setAttribute('href', WA_URL);
+    cta.setAttribute('target', '_blank');
+    cta.setAttribute('rel', 'noopener');
+    ctaBubble.appendChild(cta);
+    chat.appendChild(ctaBubble);
+
+    body.appendChild(chat);
+    root.appendChild(body);
+    return root;
+  }
+
+  /* ---------- terminal: fake zsh with a boring CLI ---------- */
+
+  function renderTerminal() {
+    var root = el('div', 'tb-term');
+
+    var PROMPT = 'harsh@boringbook ~ % ';
+    var currentInput = null;
+
+    function scrollBottom() {
+      try { root.scrollTop = root.scrollHeight; } catch (e) { /* shim-safe */ }
+    }
+
+    /* output lines and prompt rows are appended straight to root, in order —
+       async command output (version) then always lands after its command */
+    function print(text) {
+      String(text).split('\n').forEach(function (line) {
+        root.appendChild(el('div', 'tb-term-line', esc(line)));
+      });
+    }
+
+    function spawnPrompt() {
+      var row = el('div', 'tb-term-prompt');
+      row.appendChild(el('span', 'tb-term-ps1', PROMPT));
+      var input = el('input', 'tb-term-input');
+      input.type = 'text';
+      input.size = 1;
+      input.setAttribute('spellcheck', 'false');
+      input.setAttribute('autocomplete', 'off');
+      input.setAttribute('aria-label', 'terminal input');
+      var cursor = el('span', 'tb-term-cursor');
+      row.appendChild(input);
+      row.appendChild(cursor);
+      root.appendChild(row);
+      input.addEventListener('input', function () {
+        input.size = Math.max(1, String(input.value).length + 1);
+      });
+      input.addEventListener('keydown', function (e) {
+        if (e && e.key === 'Enter') exec(input, row, cursor);
+      });
+      currentInput = input;
+      try { input.focus(); } catch (e) { /* shim-safe */ }
+      scrollBottom();
+    }
+
+    function openOut(url) {
+      try { window.open(url, '_blank'); } catch (e) { /* best effort */ }
+    }
+
+    function fireApp(app) {
+      try {
+        window.dispatchEvent(new CustomEvent('tb:open-app', { detail: { app: app } }));
+      } catch (e) { /* fire-and-forget */ }
+    }
+
+    function cowsay(text) {
+      text = String(text || 'moo').slice(0, 40);
+      var w = text.length + 2;
+      print([
+        ' ' + new Array(w + 1).join('_'),
+        '< ' + text + ' >',
+        ' ' + new Array(w + 1).join('-'),
+        '        \\   ^__^',
+        '         \\  (oo)\\_______',
+        '            (__)\\       )\\/\\',
+        '                ||----w |',
+        '                ||     ||'
+      ].join('\n'));
+    }
+
+    var HELP = [
+      '  help               this list',
+      '  about              what is boring.notch',
+      '  version            latest release tag',
+      '  download           open GitHub releases',
+      '  repo               open the repo',
+      '  coffee             fuel us (buymeacoffee)',
+      '  music              start the notch',
+      '  office             visit the boring office',
+      '  cowsay <text>      moo',
+      '  clear              wipe the screen',
+      '  hello              hi'
+    ].join('\n');
+
+    function handle(line) {
+      var trimmed = String(line).replace(/^\s+|\s+$/g, '');
+      var sp = trimmed.indexOf(' ');
+      var cmd = sp === -1 ? trimmed : trimmed.slice(0, sp);
+      var rest = sp === -1 ? '' : trimmed.slice(sp + 1);
+      switch (cmd) {
+        case '':
+          spawnPrompt();
+          break;
+        case 'help':
+          print(HELP);
+          spawnPrompt();
+          break;
+        case 'about':
+          print('boring.notch — the notch your MacBook deserved.\n' +
+            'open source · free · 10.5k stars and climbing.\n' +
+            'this website is its desktop. the terminal is fake. the love is real.');
+          spawnPrompt();
+          break;
+        case 'version':
+          if (typeof cfg().getLatestTag === 'function') {
+            cfg().getLatestTag(function (tag) {
+              print('boring.notch ' + tag + ' (latest)');
+              spawnPrompt();
+            });
+          } else {
+            print('boring.notch v2.7.3 (latest)');
+            spawnPrompt();
+          }
+          break;
+        case 'download':
+          openOut(link('githubReleases'));
+          print('opening releases…');
+          spawnPrompt();
+          break;
+        case 'repo':
+          openOut(link('github'));
+          print('opening github…');
+          spawnPrompt();
+          break;
+        case 'coffee':
+          openOut(link('buymeacoffee'));
+          print('☕ thanks!');
+          spawnPrompt();
+          break;
+        case 'music':
+          fireApp('music');
+          print('🎵 starting the notch…');
+          spawnPrompt();
+          break;
+        case 'office':
+          fireApp('office');
+          print('🏢 opening the office…');
+          spawnPrompt();
+          break;
+        case 'cowsay':
+          cowsay(rest || 'moo');
+          spawnPrompt();
+          break;
+        case 'clear':
+          clearKids(root);
+          spawnPrompt();
+          break;
+        case 'sudo':
+          if (trimmed === 'sudo make me a sandwich') {
+            print('ok ☕');
+          } else {
+            print(trimmed.split(' ')[0] + ': permission denied (nice try)');
+          }
+          spawnPrompt();
+          break;
+        case 'hello':
+          print('hi. yes. this is the terminal.');
+          spawnPrompt();
+          break;
+        default:
+          print('zsh: command not found: ' + cmd);
+          spawnPrompt();
+      }
+      scrollBottom();
+    }
+
+    function exec(inputEl, row, cursor) {
+      var line = String(inputEl.value || '');
+      row.removeChild(inputEl);
+      row.removeChild(cursor);
+      row.appendChild(el('span', 'tb-term-typed', esc(line)));
+      currentInput = null;
+      handle(line);
+    }
+
+    /* click anywhere focuses the live input */
+    root.addEventListener('click', function () {
+      if (currentInput) {
+        try { currentInput.focus(); } catch (e) { /* shim-safe */ }
+      }
+    });
+
+    print('Last login: ' + new Date().toString().slice(0, 24) + ' on ttys000');
+    print('boring.notch OS 26.0 — type `help`');
+    spawnPrompt();
+    return root;
+  }
+
   /* ---------- public API ---------- */
 
   window.TBApps = {
@@ -575,6 +1153,9 @@
           case 'office': return renderOffice();
           case 'folder': return renderFolder(opts);
           case 'viewer': return renderViewer(opts);
+          case 'messages': return renderMessages();
+          case 'whatsapp': return renderWhatsapp();
+          case 'terminal': return renderTerminal();
           default: break;
         }
       } catch (e) {

@@ -34,6 +34,27 @@
       top: 400,
       urlLabel: "office.theboring.name",
     },
+    messages: {
+      title: "Messages",
+      chrome: "plain",
+      emoji: "💬",
+      width: 680,
+      height: 520,
+    },
+    whatsapp: {
+      title: "WhatsApp",
+      chrome: "plain",
+      emoji: "💚",
+      width: 720,
+      height: 540,
+    },
+    terminal: {
+      title: "Terminal — zsh",
+      chrome: "plain",
+      emoji: "⬛",
+      width: 620,
+      height: 440,
+    },
   };
   /* Fallback-card external link per app (read live from TB_CONFIG). */
   var FALLBACK_LINKS = {

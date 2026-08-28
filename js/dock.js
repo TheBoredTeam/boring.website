@@ -25,7 +25,7 @@
   var ICONS = [
     { id: 'finder',   label: 'Finder',          icon: 'assets/icons/finder.png',       app: 'about'    },
     { id: 'apps',     label: 'Apps',      icon: 'assets/icons/apps.png'      },
-    { id: 'messages', label: 'Messages',  icon: 'assets/icons/messages.png'  },
+    { id: 'messages', label: 'Messages',  icon: 'assets/icons/messages.png',  app: 'messages' },
     { id: 'facetime', label: 'FaceTime',  icon: 'assets/icons/facetime.png'  },
     { id: 'music',    label: 'Boring.Notch',    icon: 'assets/icons/boring-notch.png', app: 'music'    },
     { id: 'github',   label: 'GitHub',          icon: 'assets/icons/github.png',       app: 'safari'   },
@@ -43,8 +43,8 @@
     { id: 'spotify',  label: 'Spotify',   icon: 'assets/icons/spotify.png'   },
     { id: 'slack',    label: 'Slack',     icon: 'assets/icons/slack.png'     },
     { id: 'xcode',    label: 'Xcode',     icon: 'assets/icons/xcode.png'     },
-    { id: 'terminal', label: 'Terminal',  icon: 'assets/icons/terminal.png'  },
-    { id: 'whatsapp', label: 'WhatsApp',  icon: 'assets/icons/whatsapp.png'  },
+    { id: 'terminal', label: 'Terminal',  icon: 'assets/icons/terminal.png',  app: 'terminal' },
+    { id: 'whatsapp', label: 'WhatsApp',  icon: 'assets/icons/whatsapp.png',  app: 'whatsapp' },
     null,
     { id: 'trash',    label: 'Trash',           icon: 'https://s3-new.macosicons.com/macosicons/parse/macOS_Bin_full_n13LwuIChY_lowResPng-46c4e9cea2.png', app: null      }
   ];

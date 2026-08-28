@@ -63,6 +63,9 @@
     { glyph: '⬇️', label: 'Downloads', detail: { app: 'download' } },
     { glyph: '☕', label: 'Buy Me a Coffee', detail: { app: 'coffee' } },
     { glyph: '🖥️', label: 'About This Mac', detail: { app: 'about' } },
+    { glyph: '💬', label: 'Messages', detail: { app: 'messages' } },
+    { glyph: '💚', label: 'WhatsApp', detail: { app: 'whatsapp' } },
+    { glyph: '⬛', label: 'Terminal', detail: { app: 'terminal' } },
     { glyph: '📁', label: 'boring.notch Folder', detail: { app: 'folder', folder: 'project', title: 'boring.notch' } },
     { glyph: '🖼️', label: 'wallpapers Folder', detail: { app: 'folder', folder: 'wallpapers', title: 'wallpapers' } },
   ];
