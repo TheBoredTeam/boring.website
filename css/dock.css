@@ -1,0 +1,200 @@
+/* css/dock.css — macOS-style Dock. Owned by Dev C. All classes prefixed tb-.
+   Rendered into <div id="dock-root"> (positioning handled by Dev A). */
+
+.tb-dock {
+  display: flex;
+  align-items: flex-end;
+  padding: 8px 10px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.28),
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* One item = tooltip + icon button + running dot, in a fixed 52px layout box.
+   Magnification scales the button via transform, so neighbors never reflow. */
+.tb-dock-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 52px;
+  height: 52px;
+}
+
+.tb-dock-icon {
+  display: block;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.12s ease-out;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tb-dock-icon:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 2px;
+  border-radius: 14px;
+}
+
+.tb-dock-icon-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px !important;
+  font-size: 30px;
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tb-dock-icon:active .tb-dock-icon-img {
+  filter: brightness(0.82);
+}
+
+/* PNG app icons: full-bleed squircles that fill the tile edge-to-edge.
+   Most artwork carries its own rounded corners; the 12px radius clips the
+   odd full-bleed square image (e.g. Buy Me a Coffee) to the same squircle
+   silhouette so every icon reads the same size. */
+.tb-dock-icon-img-file {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+/* Dark pill label above the icon; shown on hover / keyboard focus. */
+.tb-dock-tooltip {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(24, 24, 28, 0.88);
+  color: #fff;
+  font: 500 12px/1.2 -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.tb-dock-item:hover .tb-dock-tooltip,
+.tb-dock-item:focus-within .tb-dock-tooltip {
+  opacity: 1;
+}
+
+/* Running indicator: 4px dark dot, 4px below the icon, hidden by default. */
+.tb-dock-dot {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.78);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+
+.tb-dock-dot--on {
+  opacity: 1;
+}
+
+/* 1px vertical separator between icon groups. */
+.tb-dock-separator {
+  align-self: stretch;
+  width: 1px;
+  margin: 8px 4px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 1px;
+}
+
+/* Trash "no" wiggle — plays on click instead of dispatching an event. */
+@keyframes tb-dock-wiggle {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  20%      { transform: translateX(-3px) rotate(-6deg); }
+  40%      { transform: translateX(3px) rotate(5deg); }
+  60%      { transform: translateX(-2px) rotate(-4deg); }
+  80%      { transform: translateX(2px) rotate(3deg); }
+}
+
+.tb-dock-icon--wiggle {
+  animation: tb-dock-wiggle 0.4s ease;
+}
+
+/* ---- Crowded-dock safety (22 icons ≈ 1300px+ wide) ----
+   Never wrap (flex-wrap defaults to nowrap) and never overflow the viewport:
+   cap the tray to the viewport width and let the fixed 52px item boxes shrink
+   down to a 36px floor. (flex items already default to flex-shrink: 1, but
+   their automatic content-based min-width equals the 52px button — without the
+   explicit min-width floor the tray cannot shrink and overflows.) Tooltips sit
+   above the icons and are NOT clipped, since no overflow property is set. */
+.tb-dock {
+  max-width: calc(100vw - 24px);
+}
+
+.tb-dock-item {
+  flex-shrink: 1;
+  min-width: 36px;
+}
+
+/* ---- responsive: phones ----
+   Desktop rules above are untouched; everything below only applies inside
+   this media query. 22 icons cannot fit a phone at a tappable size, so the
+   purely decorative icons (no app, no href — clicking only wiggles) drop
+   out, and the 8 functional ones (Finder, Safari, Boring.Notch, GitHub,
+   Downloads, Coffee, Claude, Trash) stay ~36px tappable. nth-of-type counts
+   the tray's div children in ICONS order: 1-4 first group, 5 separator,
+   6-8 second group, 9-22 decorative, 23 separator, 24 Trash. Hover
+   magnification simply never fires on touch — no JS change needed. */
+/* Phones/tablets: NEVER shrink and NEVER hide icons — the tray scrolls
+   horizontally at full 52px size (touch-friendly), scrollbar suppressed.
+   Hover magnification is disabled in js on these widths. */
+@media (max-width: 768px) {
+  .tb-dock {
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 18px;
+    max-width: calc(100vw - 16px);
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;        /* Firefox */
+    -ms-overflow-style: none;     /* legacy Edge */
+  }
+
+  .tb-dock::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tb-dock-item {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    flex-shrink: 0;
+  }
+
+  .tb-dock-separator {
+    flex-shrink: 0;
+    margin: 8px 4px;
+  }
+}
