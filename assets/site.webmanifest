@@ -1,7 +1,7 @@
 {
-  "name": "theboringwebsite",
-  "short_name": "boring",
-  "description": "A macOS desktop that lives in your browser — lofi notch, dock, Finder, widgets.",
+  "name": "boring.notch",
+  "short_name": "notch",
+  "description": "The home of boring.notch — turn your MacBook's notch into a music player.",
   "start_url": "/",
   "display": "fullscreen",
   "background_color": "#000000",

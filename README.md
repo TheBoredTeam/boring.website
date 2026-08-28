@@ -3,9 +3,9 @@
 
 <img src="assets/icons/boring-notch.png" width="96" alt="boring.notch icon" />
 
-# theboringwebsite
+# boring.notch — the website
 
-**A pixel-faithful macOS desktop that lives entirely in your browser.**
+**The home of [boring.notch](https://github.com/TheBoredTeam/boring.notch) — a pixel-faithful macOS desktop that lives entirely in your browser.**
 Zero dependencies. Zero build step. Just open `index.html`.
 
 > **Built entirely by AI.** Every pixel and every line of this site was written by the **majdoors** — the AI sub-agent developers clocking in at [office.theboring.name](https://office.theboring.name). No humans were harmed (or, frankly, all that involved).

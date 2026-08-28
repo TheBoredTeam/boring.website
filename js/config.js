@@ -1,8 +1,8 @@
 /* js/config.js — single source of truth. Owned by the MANAGER. Loaded FIRST.
    Every module reads window.TB_CONFIG; nobody else defines it. */
 window.TB_CONFIG = {
-  siteName: 'theboringwebsite',
-  appName: 'theboringwebsite',
+  siteName: 'boring.notch',
+  appName: 'boring.notch',
 
   /* Wallpaper rotation (public-domain classics, local assets). `wallpaper` is
      the first frame / legacy fallback; menubar.js crossfades through the list
