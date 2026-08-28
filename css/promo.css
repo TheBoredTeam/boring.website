@@ -1,0 +1,200 @@
+/* css/promo.css — left-edge promo column. Owned by Dev 4 (Promo Column).
+   Rendered into #promo-root (positioned by css/main.css: fixed, left edge,
+   click-through). .tb-promo re-enables pointer events. All classes tb-
+   prefixed, everything scoped under #promo-root. */
+
+/* ---------- column container ---------- */
+
+#promo-root .tb-promo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  pointer-events: auto;
+}
+
+/* ---------- shared card chrome ---------- */
+
+/* shared macOS-widget chrome for every promo card: dark frosted glass,
+   identical to the right-side widgets (radius 20px, whisper border) */
+#promo-root .tb-promo-card {
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 20px;
+  color: #fff;
+  background: rgba(28, 28, 30, 0.55);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+}
+
+/* banner cards (discord + office): flex rows, hover lift */
+#promo-root .tb-promo-card--discord,
+#promo-root .tb-promo-card--office {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  transition: transform 0.18s ease;
+}
+
+#promo-root .tb-promo-card--discord:hover,
+#promo-root .tb-promo-card--office:hover {
+  transform: translateY(-2px);
+}
+
+/* shared banner text block (discord + office) */
+#promo-root .tb-promo-banner-text {
+  flex: 1;
+  min-width: 0;
+}
+
+#promo-root .tb-promo-banner-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+#promo-root .tb-promo-banner-sub {
+  margin-top: 2px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ---------- 1. download card (the star) ---------- */
+
+#promo-root .tb-promo-card--download {
+  padding: 14px;
+}
+
+#promo-root .tb-promo-dl-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#promo-root .tb-promo-dl-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: block;
+}
+
+#promo-root .tb-promo-dl-title {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+#promo-root .tb-promo-dl-sub {
+  margin-top: 2px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* full-width macOS-style action button: flat system green, no glow/bob */
+#promo-root .tb-promo-download-btn {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 34px;
+  margin-top: 12px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #34c759, #2fb350);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 0.15s ease;
+}
+
+#promo-root .tb-promo-download-btn:hover {
+  filter: brightness(1.05);
+}
+
+#promo-root .tb-promo-dl-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+#promo-root .tb-promo-dl-version {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+#promo-root .tb-promo-dl-github {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+}
+
+#promo-root .tb-promo-dl-github:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* ---------- 2. discord banner (glass card; blurple only as an icon chip) ---------- */
+
+#promo-root .tb-promo-discord-emoji {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  background: #5865F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+#promo-root .tb-promo-discord-pill {
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+#promo-root a.tb-promo-discord-pill:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* invite-missing variant: non-interactive span, dims the pill */
+#promo-root .tb-promo-discord-pill--soon {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* ---------- 3. theboringoffice banner (glass card; orange confined to chip + link) ---------- */
+
+#promo-root .tb-promo-office-emoji {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  background: rgba(255, 159, 10, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+#promo-root .tb-promo-office-link {
+  color: #ff9f0a;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+#promo-root .tb-promo-office-link:hover {
+  text-decoration: underline;
+}
