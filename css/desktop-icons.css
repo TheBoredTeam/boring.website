@@ -1,0 +1,94 @@
+/* css/desktop-icons.css — macOS-style desktop icons. Owned by Dev 2 (Dev F).
+   Scoped under #icons-root (full-area fixed layer from main.css, click-through
+   — .tb-icons fills it as the positioning canvas and stays click-through; only
+   the icons themselves take pointer events). Icons are absolutely positioned
+   by desktop-icons.js (inline left/top) and freely draggable. All classes
+   tb- prefixed. */
+
+/* positioning canvas: fills #icons-root, never blocks the desktop beneath */
+#icons-root .tb-icons {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* absolutely positioned by JS via inline left/top; only the icon hit-tests */
+#icons-root .tb-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  pointer-events: auto;
+  touch-action: none; /* let pointermove drive the drag on touchscreens */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .12s ease;
+}
+
+/* mid-drag: raised above siblings, grab cursor, subtle grow. Position keeps
+   tracking the pointer via inline left/top — transform carries scale only */
+#icons-root .tb-icon.tb-dragging {
+  z-index: 10;
+  cursor: grabbing;
+  transform: scale(1.06);
+}
+
+/* 56px glyph box — folder svg (56×42) and doc svg (42×56) both center inside */
+#icons-root .tb-icon-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+}
+
+#icons-root .tb-icon-glyph svg {
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .25));
+}
+
+/* 11px white label, max 2 lines, centered, word-break, heavy text shadow */
+#icons-root .tb-icon-label {
+  margin-top: 2px;
+  max-width: 84px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .8);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* selection: dark rounded highlight behind the glyph (padding 4px / margin
+   -4px grows the background without shifting layout) + blue-gray pill label */
+#icons-root .tb-icon[aria-pressed="true"] .tb-icon-glyph {
+  background: rgba(0, 0, 0, .35);
+  padding: 4px;
+  margin: -4px;
+}
+
+#icons-root .tb-icon[aria-pressed="true"] .tb-icon-label {
+  background: rgba(60, 60, 67, .75);
+}
+
+/* keyboard focus hint when focused but not yet selected — once selected,
+   the selection highlight itself is the focus indicator */
+#icons-root .tb-icon:focus-visible:not([aria-pressed="true"]) .tb-icon-glyph {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .55);
+}

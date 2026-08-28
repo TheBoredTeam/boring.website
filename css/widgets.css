@@ -1,0 +1,384 @@
+/* css/widgets.css — Sonoma-style desktop widget column. Owned by Dev W.
+   Rendered into <div id="widgets-root"> (positioned by css/main.css: fixed,
+   right edge, under app windows, click-through). .tb-widgets re-enables
+   pointer events for the column. All classes tb- prefixed, everything
+   scoped under #widgets-root. */
+
+/* ---------- grid container ---------- */
+
+/* Two 158px columns; a wide widget spans 158 + 14 + 158 = 330px. */
+#widgets-root .tb-widgets {
+  display: grid;
+  grid-template-columns: repeat(2, 158px);
+  gap: 14px;
+  pointer-events: auto;
+}
+
+/* phones: the grid goes fluid (fills the column) and the analog
+   faces shrink so all four fit the narrower world-clock card */
+@media (max-width: 768px) {
+  #widgets-root .tb-widgets {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #widgets-root .tb-clock-face {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* ---------- shared card chrome (every widget, small or wide) ---------- */
+
+#widgets-root .tb-widget {
+  box-sizing: border-box;
+  background: rgba(28, 28, 30, 0.55);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  padding: 14px;
+  text-align: left;
+  overflow: hidden;
+}
+
+#widgets-root .tb-widget--wide {
+  grid-column: span 2;
+}
+
+/* ---------- 1. calendar ---------- */
+
+#widgets-root .tb-cal-weekday {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ff3b30; /* macOS Calendar red */
+}
+
+#widgets-root .tb-cal-day {
+  margin-top: 2px;
+  font-size: 40px;
+  font-weight: 200;
+  line-height: 1.05;
+}
+
+#widgets-root .tb-cal-tomorrow {
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+#widgets-root .tb-cal-event {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  min-width: 0;
+}
+
+#widgets-root .tb-cal-event-emoji {
+  flex: 0 0 auto;
+  font-size: 11px;
+}
+
+#widgets-root .tb-cal-event-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: 11px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 2. weather (live, static fallback) ---------- */
+
+/* Live cards anchor the tiny "offline" badge bottom-right. */
+#widgets-root .tb-widget--weather,
+#widgets-root .tb-widget--stocks {
+  position: relative;
+}
+
+#widgets-root .tb-widget-note {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+#widgets-root .tb-weather-city {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#widgets-root .tb-weather-temp {
+  margin-top: 2px;
+  font-size: 40px;
+  font-weight: 200;
+  line-height: 1.1;
+}
+
+#widgets-root .tb-weather-icon {
+  margin-top: 2px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+#widgets-root .tb-weather-cond {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+#widgets-root .tb-weather-hilo {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+/* ---------- 3. world clock (wide) ---------- */
+
+#widgets-root .tb-clock-cities {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+#widgets-root .tb-clock-city {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+/* 64px analog face: dark disc, numerals + 3 rotated div hands + center dot. */
+#widgets-root .tb-clock-face {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #1c1c1e;
+}
+
+/* Numerals stay upright: translate to center, swing out, counter-rotate. */
+#widgets-root .tb-clock-num {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 8px;
+  font-weight: 500;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Hands pivot on their bottom edge at the face center; js sets the angle
+   as `translateX(-50%) rotate(Ndeg)`. */
+#widgets-root .tb-clock-hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  border-radius: 2px;
+}
+
+#widgets-root .tb-clock-hand--hour {
+  width: 4px;
+  height: 30%;
+  background: #fff;
+}
+
+#widgets-root .tb-clock-hand--minute {
+  width: 2.5px;
+  height: 44%;
+  background: #fff;
+}
+
+#widgets-root .tb-clock-hand--second {
+  width: 1px;
+  height: 46%;
+  background: #ff9f0a; /* macOS orange sweep */
+}
+
+#widgets-root .tb-clock-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ff9f0a;
+  transform: translate(-50%, -50%);
+}
+
+#widgets-root .tb-clock-name {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+#widgets-root .tb-clock-today {
+  margin-top: 1px;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+#widgets-root .tb-clock-offset {
+  margin-top: 1px;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- 4. markets (live crypto, static fallback) ---------- */
+
+#widgets-root .tb-stocks-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 2px 0;
+}
+
+#widgets-root .tb-stocks-up {
+  flex: 0 0 auto;
+  font-size: 10px;
+  color: #30d158;
+}
+
+#widgets-root .tb-stocks-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#widgets-root .tb-stocks-value {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: #fff;
+  text-align: right;
+}
+
+#widgets-root .tb-stocks-divider {
+  height: 1px;
+  margin: 8px 0;
+  background: #333;
+}
+
+#widgets-root .tb-stocks-source {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+#widgets-root .tb-stocks-headline {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Live market rows (replace the static stock rows after first fetch). */
+
+#widgets-root .tb-market-symbol {
+  flex: 0 0 auto;
+  width: 14px;
+  font-size: 12px;
+}
+
+#widgets-root .tb-market-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#widgets-root .tb-market-price {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: #fff;
+  text-align: right;
+}
+
+#widgets-root .tb-market-change {
+  flex: 0 0 auto;
+  min-width: 46px;
+  font-size: 10px;
+  text-align: right;
+}
+
+#widgets-root .tb-market-change--up {
+  color: #30d158;
+}
+
+#widgets-root .tb-market-change--down {
+  color: #ff3b30;
+}
+
+/* "CoinGecko · live" left, "updated HH:MM" right, one baseline row. */
+#widgets-root .tb-market-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+#widgets-root .tb-market-updated {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- 5. coffee CTA (whole card is a button) ---------- */
+
+#widgets-root .tb-widget--coffee {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+#widgets-root .tb-widget--coffee:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+#widgets-root .tb-coffee-icon {
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+#widgets-root .tb-coffee-title {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+#widgets-root .tb-coffee-sub {
+  margin-top: 2px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}
