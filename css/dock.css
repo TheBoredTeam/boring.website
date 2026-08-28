@@ -76,6 +76,14 @@
   border-radius: 12px;
 }
 
+/* full-bleed images (Buy Me a Coffee webp) carry no built-in padding like
+   the macosicons artwork — scale them down so the visual mass matches the
+   neighboring icons (radius grows proportionally to keep the squircle) */
+.tb-dock-icon-img-file[src*="google-play-app"] {
+  transform: scale(0.88);
+  border-radius: 14px;
+}
+
 /* Dark pill label above the icon; shown on hover / keyboard focus. */
 .tb-dock-tooltip {
   position: absolute;
