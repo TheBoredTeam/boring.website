@@ -128,6 +128,15 @@
   .tb-tl { width: 16px; height: 16px; font-size: 12px; }
   .tb-window-title { font-size: 12px; }
   .tb-window-addressbar { height: 32px; flex: 0 0 32px; }
+
+  /* the YouTube demo window becomes a mini-player: shorter, parked at the
+     bottom edge just above the dock */
+  .tb-window[data-app="video"] {
+    top: auto !important;
+    bottom: 96px !important;
+    height: 36vh !important;
+    max-height: 300px;
+  }
 }
 
 @media (max-width: 480px) {
