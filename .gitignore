@@ -1,0 +1,12 @@
+# macOS junk
+.DS_Store
+
+# theboringoffice harness (local agent config, not part of the site)
+.opencode/
+
+# dependencies (there are none, but just in case)
+node_modules/
+
+# wrangler local state
+.wrangler/
+.dev.vars
