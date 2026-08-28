@@ -63,7 +63,7 @@
     { glyph: '⬇️', label: 'Downloads', detail: { app: 'download' } },
     { glyph: '☕', label: 'Buy Me a Coffee', detail: { app: 'coffee' } },
     { glyph: '🖥️', label: 'About This Mac', detail: { app: 'about' } },
-    { glyph: '📁', label: 'theboringwebsite Folder', detail: { app: 'folder', folder: 'project', title: 'theboringwebsite' } },
+    { glyph: '📁', label: 'boring.notch Folder', detail: { app: 'folder', folder: 'project', title: 'boring.notch' } },
     { glyph: '🖼️', label: 'wallpapers Folder', detail: { app: 'folder', folder: 'wallpapers', title: 'wallpapers' } },
   ];
 
@@ -92,37 +92,58 @@
     var fade = (typeof cfg.wallpaperFade === 'number' && cfg.wallpaperFade > 0)
       ? cfg.wallpaperFade : 1200;
 
+    /* entries may be plain src strings or {src,title,artist,year,link} */
+    var entries = list.map(function (w) { return (typeof w === 'string') ? { src: w } : w; });
+
     var layers = [el('div', 'tb-wall-layer'), el('div', 'tb-wall-layer')];
     layers.forEach(function (l) {
       l.style.transitionDuration = fade + 'ms';
       desktop.appendChild(l);
     });
 
+    /* artwork attribution chip: names the current piece, links to Commons */
+    var credit = el('a', 'tb-wall-credit');
+    credit.target = '_blank';
+    credit.rel = 'noopener';
+    desktop.appendChild(credit);
+    function updateCredit(entry) {
+      if (entry && entry.title) {
+        credit.textContent = '🖼 ' + entry.title + ' — ' +
+          (entry.artist || 'unknown artist') + (entry.year ? ' (' + entry.year + ')' : '');
+        credit.href = entry.link || '#';
+        credit.classList.add('tb-wall-credit--on');
+      } else {
+        credit.classList.remove('tb-wall-credit--on');
+      }
+    }
+
     /* preload every frame; drop the ones that fail */
     var ok = [];
-    var pending = list.length;
-    list.forEach(function (src) {
+    var pending = entries.length;
+    entries.forEach(function (entry) {
       var img = new Image();
-      img.onload = function () { ok.push(src); if (--pending === 0) start(); };
+      img.onload = function () { ok.push(entry); if (--pending === 0) start(); };
       img.onerror = function () { if (--pending === 0) start(); };
-      img.src = src;
+      img.src = entry.src;
     });
 
     function start() {
       if (!ok.length) return; /* keep the CSS gradient fallback */
       var idx = 0;
       var active = 0;
-      layers[0].style.backgroundImage = 'url("' + ok[0] + '")';
+      layers[0].style.backgroundImage = 'url("' + ok[0].src + '")';
       layers[0].style.opacity = '1';
+      updateCredit(ok[0]);
       if (ok.length === 1) return;
       setInterval(function () {
         idx = (idx + 1) % ok.length;
         var front = layers[active];
         var back = layers[1 - active];
-        back.style.backgroundImage = 'url("' + ok[idx] + '")';
+        back.style.backgroundImage = 'url("' + ok[idx].src + '")';
         back.style.opacity = '1';
         front.style.opacity = '0';
         active = 1 - active;
+        updateCredit(ok[idx]);
       }, interval);
     }
   }

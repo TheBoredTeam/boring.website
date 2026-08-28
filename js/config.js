@@ -8,15 +8,19 @@ window.TB_CONFIG = {
      the first frame / legacy fallback; menubar.js crossfades through the list
      every wallpaperInterval ms with a wallpaperFade ms ease. */
   wallpaper: 'assets/wallpapers/renoir-boating.jpg',
+  /* Public-domain artworks with full attribution — the menubar shows a credit
+     chip for the current piece and links out to its Wikimedia Commons page. */
   wallpapers: [
-    'assets/wallpapers/renoir-boating.jpg',
-    'assets/wallpapers/kruseman-winter.jpg',
-    'assets/wallpapers/courbet-snow.jpg',
-    'assets/wallpapers/friedrich-wanderer.jpg',
-    'assets/wallpapers/monet-magpie.jpg',
-    'assets/wallpapers/sisley-snow.jpg',
+    { src: 'assets/wallpapers/renoir-boating.jpg', title: 'Luncheon of the Boating Party', artist: 'Pierre-Auguste Renoir', year: '1881', link: 'https://commons.wikimedia.org/wiki/File:Pierre-Auguste_Renoir_-_Luncheon_of_the_Boating_Party_-_Google_Art_Project.jpg' },
+    { src: 'assets/wallpapers/courbet-snow.jpg', title: 'Effet de neige', artist: 'Gustave Courbet', year: '1866–68', link: 'https://commons.wikimedia.org/wiki/File:Gustave_Courbet_-_Effet_de_neige_(1860s).jpg' },
+    { src: 'assets/wallpapers/monet-magpie.jpg', title: 'The Magpie', artist: 'Claude Monet', year: '1868–69', link: 'https://commons.wikimedia.org/wiki/File:Claude_Monet_-_The_Magpie_-_Google_Art_Project.jpg' },
+    { src: 'assets/wallpapers/davinci-last-supper.jpg', title: 'The Last Supper', artist: 'Leonardo da Vinci', year: '1495–98', link: 'https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_(1452-1519)_-_The_Last_Supper_(1495-1498).jpg' },
+    { src: 'assets/wallpapers/kenzler-winter.jpg', title: 'Winter Landscape in the Sun', artist: 'Carl Kenzler', year: '', link: 'https://commons.wikimedia.org/wiki/File:Carl_Kenzler_-_Winter_Landscape_in_the_Sun.jpg' },
+    { src: 'assets/wallpapers/vangogh-yellow-house.jpg', title: 'The Yellow House (The Street)', artist: 'Vincent van Gogh', year: '1888', link: 'https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_The_yellow_house_(%60The_street%27)_-_Google_Art_Project.jpg' },
+    { src: 'assets/wallpapers/vangogh-harvest.jpg', title: 'The Harvest (De oogst)', artist: 'Vincent van Gogh', year: '1888', link: 'https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_De_oogst_-_Google_Art_Project.jpg' },
+    { src: 'assets/wallpapers/kruseman-castle.jpg', title: 'Winterlandschap met schaatsers bij een kasteel', artist: 'Frederik Marinus Kruseman', year: '1886', link: 'https://commons.wikimedia.org/wiki/File:Frederik_Marinus_Kruseman_-_Winterlandschap_met_schaatsers_bij_een_kasteel.jpg' },
   ],
-  wallpaperInterval: 5000,
+  wallpaperInterval: 15000,
   wallpaperFade: 1400,
 
   links: {

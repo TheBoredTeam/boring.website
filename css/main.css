@@ -51,6 +51,35 @@ body {
   display: block;
 }
 
+/* wallpaper attribution chip (bottom-left; links to the artwork's Commons page) */
+.tb-wall-credit {
+  position: fixed;
+  left: 12px;
+  bottom: 10px;
+  z-index: 1;
+  font-size: 11px;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.tb-wall-credit--on {
+  opacity: 0.85;
+  pointer-events: auto;
+}
+
+.tb-wall-credit:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .tb-wall-credit { bottom: 104px; }
+}
+
 /* Desktop furniture layers: folders top-right, widget column below them.
    z-index 2 → above the wallpaper (0), below windows (10). Roots are
    click-through; children re-enable pointer events. */

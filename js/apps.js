@@ -299,11 +299,13 @@
       ])),
       vfDir('wallpapers', 'assets/wallpapers', vfImages('assets/wallpapers', [
         ['renoir-boating.jpg', '2.1 MB'],
-        ['kruseman-winter.jpg', '1.7 MB'],
         ['courbet-snow.jpg', '2.1 MB'],
-        ['friedrich-wanderer.jpg', '1.3 MB'],
-        ['monet-magpie.jpg', '1.4 MB'],
-        ['sisley-snow.jpg', '2.2 MB']
+        ['monet-magpie.jpg', '1.5 MB'],
+        ['davinci-last-supper.jpg', '2.0 MB'],
+        ['kenzler-winter.jpg', '2.2 MB'],
+        ['vangogh-yellow-house.jpg', '2.4 MB'],
+        ['vangogh-harvest.jpg', '3.2 MB'],
+        ['kruseman-castle.jpg', '1.7 MB']
       ]))
     ])
   ]);
