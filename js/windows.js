@@ -501,10 +501,11 @@
         closeWindow(top);
       }
     });
-    /* Boot: YouTube + theboringoffice sit already-open on the desktop, SIDE
-       BY SIDE with a 24px gap (never overlapping), centered as a pair.
-       Closing deletes their records, so nothing re-opens them afterwards.
-       Skipped on narrow screens — windows open from dock/promo instead. */
+    /* Boot: the YouTube demo window sits already-open on EVERY screen (it's
+       the product trailer; the @768 window rules render it near-fullscreen
+       on phones). theboringoffice joins it SIDE BY SIDE with a 24px gap only
+       on wide screens — the live iframe embed is a desktop experience.
+       Closing deletes their records, so nothing re-opens them afterwards. */
     if (root.clientWidth > 900) {
       var pairW = 480 + 24 + 700;
       var startX = Math.max(14, Math.round((root.clientWidth - pairW) / 2));
@@ -515,6 +516,8 @@
         width: 700,
         height: 480,
       });
+    } else {
+      openApp("video");
     }
   }
 
