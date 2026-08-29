@@ -55,6 +55,42 @@
       width: 620,
       height: 440,
     },
+    facetime: {
+      title: "FaceTime",
+      chrome: "plain",
+      emoji: "📹",
+      width: 640,
+      height: 480,
+    },
+    /* Launchpad grid, opened by the dock's 'apps' icon. */
+    apps: {
+      title: "Applications",
+      chrome: "plain",
+      emoji: "🧩",
+      width: 760,
+      height: 560,
+    },
+    discord: {
+      title: "Discord",
+      chrome: "plain",
+      emoji: "💬",
+      width: 520,
+      height: 560,
+    },
+    settings: {
+      title: "System Settings",
+      chrome: "plain",
+      emoji: "⚙️",
+      width: 720,
+      height: 520,
+    },
+    spotify: {
+      title: "Spotify",
+      chrome: "plain",
+      emoji: "🟢",
+      width: 560,
+      height: 600,
+    },
   };
   /* Fallback-card external link per app (read live from TB_CONFIG). */
   var FALLBACK_LINKS = {

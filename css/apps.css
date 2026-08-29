@@ -1011,3 +1011,307 @@
   0%, 50% { opacity: 1; }
   50.01%, 100% { opacity: 0; }
 }
+
+/* ---------- facetime: dark audio-call replica ---------- */
+
+.tb-ft {
+  position: relative;
+  height: 100%;
+  background: #1c1c1e;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: #fff;
+  overflow: hidden;
+  text-align: center;
+}
+
+.tb-ft * { box-sizing: border-box; }
+
+/* center stage: callee icon + name + state line */
+.tb-ft-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 96px;
+}
+
+.tb-ft-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 22%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.tb-ft-icon-ended { filter: grayscale(1) brightness(0.55); }
+
+.tb-ft-name { font-size: 22px; font-weight: 600; margin-top: 18px; }
+
+.tb-ft-state {
+  font-size: 14px;
+  color: #8e8e93;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* PiP self-view, bottom-right */
+.tb-ft-pip {
+  position: absolute;
+  right: 16px;
+  bottom: 104px;
+  width: 120px;
+  height: 160px;
+  background: #2c2c2e;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.tb-ft-pip-emoji { font-size: 40px; line-height: 1; }
+.tb-ft-pip-label { font-size: 11px; color: #8e8e93; margin-top: 8px; }
+
+/* bottom control bar */
+.tb-ft-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.tb-ft-btn {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-family: inherit;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tb-ft-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
+.tb-ft-btn:disabled { opacity: 0.35; cursor: default; }
+
+/* diagonal slash over toggled-off mic/video */
+.tb-ft-btn-off::after {
+  content: '';
+  position: absolute;
+  width: 62%;
+  height: 2px;
+  border-radius: 2px;
+  background: #fff;
+  transform: rotate(-45deg);
+}
+
+.tb-ft-btn-end { background: #ff453a; font-size: 24px; }
+.tb-ft-btn-end:hover:not(:disabled) { background: #ff5147; }
+.tb-ft-btn-end:disabled { background: #ff453a; }
+
+/* ---------- apps: macOS Applications window (launcher grid) ---------- */
+
+.tb-launch {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: #1d1d1f;
+  text-align: left;
+}
+
+.tb-launch * { box-sizing: border-box; }
+
+.tb-launch-toolbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid #ececf0;
+}
+
+.tb-launch-title { font-size: 20px; font-weight: 700; }
+
+.tb-launch-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.tb-launch-pill {
+  font-family: inherit;
+  font-size: 12px;
+  color: #1d1d1f;
+  background: #fff;
+  border: 1px solid #d9d9de;
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.tb-launch-pill:hover { background: #f2f2f5; }
+
+.tb-launch-pill-active,
+.tb-launch-pill-active:hover { background: #1d1d1f; color: #fff; border-color: #1d1d1f; }
+
+.tb-launch-grid {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 18px;
+  padding: 18px;
+  align-content: start;
+}
+
+.tb-launch-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.tb-launch-cell:hover { background: #f0f0f4; }
+
+.tb-launch-icon { width: 64px; height: 64px; display: block; }
+
+.tb-launch-label { font-size: 12px; color: #1d1d1f; text-align: center; }
+
+/* ---------- discord: join-card replica ---------- */
+
+.tb-dc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: #313338;
+  padding: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: #fff;
+  text-align: center;
+}
+
+.tb-dc * { box-sizing: border-box; }
+
+.tb-dc-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #5865f2, #7b8cff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.tb-dc-invite {
+  font-size: 12px;
+  color: #b5bac1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 16px;
+}
+
+.tb-dc-name { font-size: 22px; font-weight: 700; margin-top: 6px; }
+
+.tb-dc-desc { font-size: 13px; color: #b5bac1; margin-top: 4px; }
+
+.tb-dc-members {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: #b5bac1;
+  margin-top: 12px;
+}
+
+.tb-dc-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.tb-dc-dot-online { background: #23a55a; }
+.tb-dc-dot-total { background: #80848e; }
+
+.tb-dc-note {
+  width: 100%;
+  max-width: 340px;
+  font-size: 11px;
+  color: #b5bac1;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 18px;
+}
+
+.tb-dc-accept {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 340px;
+  height: 40px;
+  background: #5865f2;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-top: 14px;
+}
+
+.tb-dc-accept:hover { background: #4752c4; }
+
+.tb-dc-caption { font-size: 11px; color: #80848e; margin-top: 12px; }
+
+/* ---------- spotify: official embed player with slim title bar ---------- */
+
+.tb-sp { display: flex; flex-direction: column; background: #191414; }
+
+.tb-sp-bar {
+  flex-shrink: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  background: #191414;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
+.tb-sp-dot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #1db954;
+}
+
+.tb-sp-frame { flex: 1; min-height: 0; width: 100%; border: 0; display: block; }

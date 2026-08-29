@@ -73,3 +73,18 @@ window.TB_CONFIG = {
     fallbackTitle: 'Spotify Playlist',
   },
 };
+
+/* User-changeable settings — the System Settings app writes these via its
+   commit() path (mutate + persist + dispatch 'tb:settings'); consumers read
+   here and listen for the event. Defaults merge under any saved state. */
+window.TB_SETTINGS = Object.assign({
+  wallpaperInterval: 15000,
+  wallpaperSrc: 'assets/wallpapers/renoir-boating.jpg',
+  dockMagnification: true,
+  dockMaxScale: 1.6,
+  volume: 0.8,
+  brightness: 100,
+}, (function () {
+  try { return JSON.parse(localStorage.getItem('tb-settings') || '{}'); }
+  catch (e) { return {}; }
+})());

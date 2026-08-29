@@ -1139,6 +1139,237 @@
     return root;
   }
 
+  /* ---------- facetime: dark audio-call replica (no real media) ---------- */
+
+  function fmtClock(totalSecs) {
+    var m = Math.floor(totalSecs / 60);
+    var s = totalSecs % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function renderFaceTime() {
+    var root = el('div', 'tb-ft');
+
+    /* center stage: callee icon + name + live state line */
+    var stage = el('div', 'tb-ft-stage');
+    var icon = el('img', 'tb-ft-icon');
+    icon.src = 'assets/icons/boring-notch.png';
+    icon.alt = 'boring.notch';
+    icon.addEventListener('error', function () { icon.style.visibility = 'hidden'; });
+    stage.appendChild(icon);
+    stage.appendChild(el('div', 'tb-ft-name', 'boring.notch'));
+    var stateLine = el('div', 'tb-ft-state', 'FaceTime Audio');
+    stage.appendChild(stateLine);
+    root.appendChild(stage);
+
+    /* PiP self-view, bottom-right */
+    root.appendChild(el('div', 'tb-ft-pip',
+      '<div class="tb-ft-pip-emoji">🧑</div><div class="tb-ft-pip-label">You</div>'));
+
+    /* bottom control bar: mic / video / share / messages / end */
+    var bar = el('div', 'tb-ft-controls');
+    var micBtn = el('button', 'tb-ft-btn', '🎤');
+    micBtn.type = 'button';
+    micBtn.setAttribute('aria-label', 'Mute microphone');
+    var camBtn = el('button', 'tb-ft-btn', '📹');
+    camBtn.type = 'button';
+    camBtn.setAttribute('aria-label', 'Toggle video');
+    var shareBtn = el('button', 'tb-ft-btn', '🖥️');
+    shareBtn.type = 'button';
+    shareBtn.setAttribute('aria-label', 'Share screen');
+    var msgBtn = el('button', 'tb-ft-btn', '💬');
+    msgBtn.type = 'button';
+    msgBtn.setAttribute('aria-label', 'Open Messages');
+    var endBtn = el('button', 'tb-ft-btn tb-ft-btn-end', '✕');
+    endBtn.type = 'button';
+    endBtn.setAttribute('aria-label', 'End call');
+    bar.appendChild(micBtn);
+    bar.appendChild(camBtn);
+    bar.appendChild(shareBtn);
+    bar.appendChild(msgBtn);
+    bar.appendChild(endBtn);
+    root.appendChild(bar);
+
+    var ended = false;
+    var secs = 0;
+    var timer = null;
+
+    micBtn.addEventListener('click', function () {
+      micBtn.classList.toggle('tb-ft-btn-off');
+    });
+    camBtn.addEventListener('click', function () {
+      camBtn.classList.toggle('tb-ft-btn-off');
+    });
+    msgBtn.addEventListener('click', function () {
+      try {
+        window.dispatchEvent(new CustomEvent('tb:open-app', { detail: { app: 'messages' } }));
+      } catch (e) { /* fire-and-forget */ }
+    });
+    endBtn.addEventListener('click', function () {
+      if (ended) return;
+      ended = true;
+      if (timer !== null) {
+        try { clearInterval(timer); } catch (e) { /* shim-safe */ }
+        timer = null;
+      }
+      stateLine.textContent = 'Call ended';
+      icon.classList.add('tb-ft-icon-ended');
+      var btns = [micBtn, camBtn, shareBtn, msgBtn, endBtn];
+      for (var i = 0; i < btns.length; i++) btns[i].disabled = true;
+    });
+
+    /* ring for 1.8s, then "connect" and count up in M:SS */
+    try {
+      setTimeout(function () {
+        if (ended) return;
+        stateLine.textContent = fmtClock(secs);
+        timer = setInterval(function () {
+          if (ended) return;
+          secs += 1;
+          stateLine.textContent = fmtClock(secs);
+        }, 1000);
+      }, 1800);
+    } catch (e) { /* timers unavailable — static "FaceTime Audio" stays */ }
+
+    return root;
+  }
+
+  /* ---------- apps: macOS Applications window (launcher grid) ---------- */
+
+  var LAUNCH_APPS = [
+    { icon: 'assets/icons/safari.png',           label: 'Safari',          app: 'safari',   cat: 'Utilities' },
+    { icon: 'assets/icons/boring-notch.png',     label: 'Boring.Notch',    app: 'music',    cat: 'Entertainment' },
+    { icon: 'assets/icons/messages.png',         label: 'Messages',        app: 'messages', cat: 'Social' },
+    { icon: 'assets/icons/whatsapp.png',         label: 'WhatsApp',        app: 'whatsapp', cat: 'Social' },
+    { icon: 'assets/icons/terminal.png',         label: 'Terminal',        app: 'terminal', cat: 'Utilities' },
+    { icon: 'assets/icons/facetime.png',         label: 'FaceTime',        app: 'facetime', cat: 'Social' },
+    { icon: 'assets/icons/settings.png',         label: 'Settings',        app: 'settings', cat: 'Utilities' },
+    { icon: 'assets/icons/discord.png',          label: 'Discord',         app: 'discord',  cat: 'Social' },
+    { icon: 'assets/icons/spotify.png',          label: 'Spotify',         app: 'spotify',  cat: 'Entertainment' },
+    { icon: 'assets/icons/downloads.png',        label: 'Downloads',       app: 'download', cat: 'Utilities' },
+    { icon: 'assets/icons/google-play-app.webp', label: 'Buy Me a Coffee', app: 'coffee',   cat: 'Entertainment' },
+    { icon: 'assets/icons/finder.png',           label: 'Finder',          app: 'about',    cat: 'Utilities' },
+    { icon: 'assets/icons/github.png',           label: 'GitHub',          app: 'safari',   cat: 'Productivity' },
+    { icon: 'assets/icons/app-store.png',        label: 'App Store',       app: 'download', cat: 'Productivity' },
+    { icon: 'assets/icons/apps.png',             label: 'Launchpad',       app: 'apps',     cat: 'Utilities' },
+    { icon: 'assets/icons/claude.png',           label: 'Claude',          href: 'https://claude.ai', cat: 'Productivity' }
+  ];
+
+  var LAUNCH_CATS = ['All', 'Social', 'Utilities', 'Entertainment', 'Productivity'];
+
+  function renderApps() {
+    var root = el('div', 'tb-launch');
+
+    /* toolbar: title + category filter pills */
+    var toolbar = el('div', 'tb-launch-toolbar');
+    toolbar.appendChild(el('div', 'tb-launch-title', 'Applications'));
+    var pills = el('div', 'tb-launch-pills');
+    toolbar.appendChild(pills);
+    root.appendChild(toolbar);
+
+    var grid = el('div', 'tb-launch-grid');
+    root.appendChild(grid);
+
+    var active = 'All';
+    var pillEls = [];
+
+    function openEntry(entry) {
+      if (entry.href) {
+        try { window.open(entry.href, '_blank'); } catch (e) { /* best effort */ }
+        return;
+      }
+      try {
+        window.dispatchEvent(new CustomEvent('tb:open-app', { detail: { app: entry.app } }));
+      } catch (e) { /* fire-and-forget */ }
+    }
+
+    function renderGrid() {
+      clearKids(grid);
+      LAUNCH_APPS.forEach(function (entry) {
+        if (active !== 'All' && entry.cat !== active) return;
+        var cell = el('button', 'tb-launch-cell');
+        cell.type = 'button';
+        var img = el('img', 'tb-launch-icon');
+        img.src = entry.icon;
+        img.alt = entry.label;
+        img.addEventListener('error', function () { img.style.visibility = 'hidden'; });
+        cell.appendChild(img);
+        cell.appendChild(el('span', 'tb-launch-label', esc(entry.label)));
+        cell.addEventListener('click', function () { openEntry(entry); });
+        grid.appendChild(cell);
+      });
+    }
+
+    LAUNCH_CATS.forEach(function (cat) {
+      var pill = el('button', 'tb-launch-pill' + (cat === active ? ' tb-launch-pill-active' : ''), esc(cat));
+      pill.type = 'button';
+      pill.addEventListener('click', function () {
+        active = cat;
+        pillEls.forEach(function (p) {
+          p.el.classList.toggle('tb-launch-pill-active', p.cat === active);
+        });
+        renderGrid();
+      });
+      pillEls.push({ cat: cat, el: pill });
+      pills.appendChild(pill);
+    });
+
+    renderGrid();
+    return root;
+  }
+
+  /* ---------- discord: join-card replica ----------
+     discord.com refuses framing (X-Frame-Options: deny), so this is an
+     honest replica of the invite page, linking out to the real invite.
+     Title/description/member total are the invite's live og: meta. */
+
+  function renderDiscord() {
+    var root = el('div', 'tb-dc');
+
+    root.appendChild(el('div', 'tb-dc-avatar', '🎧'));
+    root.appendChild(el('div', 'tb-dc-invite', "You've been invited to join"));
+    root.appendChild(el('div', 'tb-dc-name', 'boring.notch'));
+    root.appendChild(el('div', 'tb-dc-desc', 'The Official Server For Boring Notch! | 5161 members'));
+    root.appendChild(el('div', 'tb-dc-members',
+      '<span class="tb-dc-presence"><span class="tb-dc-dot tb-dc-dot-online"></span>1,204 Online</span>' +
+      '<span class="tb-dc-presence"><span class="tb-dc-dot tb-dc-dot-total"></span>5,161 Members</span>'));
+    root.appendChild(el('div', 'tb-dc-note',
+      'Discord blocks embedding (X-Frame-Options: deny) — this is the join card replica.'));
+
+    var accept = el('a', 'tb-dc-accept', 'Accept Invite');
+    accept.setAttribute('href', link('discord'));
+    accept.setAttribute('target', '_blank');
+    accept.setAttribute('rel', 'noopener');
+    root.appendChild(accept);
+
+    root.appendChild(el('div', 'tb-dc-caption', 'discord.gg/boring-notch'));
+    return root;
+  }
+
+  /* ---------- spotify: official embed player (genuinely iframeable) ---------- */
+
+  function renderSpotify() {
+    var wrap = el('div', 'tb-video tb-sp');
+
+    /* slim title bar above the player — never covers the controls */
+    var bar = el('div', 'tb-sp-bar');
+    bar.appendChild(el('span', 'tb-sp-dot'));
+    bar.appendChild(el('span', '', 'Spotify · boring lofi'));
+    wrap.appendChild(bar);
+
+    var frame = document.createElement('iframe');
+    frame.className = 'tb-sp-frame';
+    frame.setAttribute('src', 'https://open.spotify.com/embed/playlist/2iFVkT5FwlAPxDpmAZIEQr?utm_source=generator');
+    frame.setAttribute('width', '100%');
+    frame.setAttribute('height', '100%');
+    frame.setAttribute('frameborder', '0');
+    frame.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+    frame.setAttribute('loading', 'lazy');
+    frame.title = 'Spotify player';
+    wrap.appendChild(frame);
+    return wrap;
+  }
+
   /* ---------- public API ---------- */
 
   window.TBApps = {
@@ -1156,6 +1387,11 @@
           case 'messages': return renderMessages();
           case 'whatsapp': return renderWhatsapp();
           case 'terminal': return renderTerminal();
+          case 'facetime': return renderFaceTime();
+          case 'apps': return renderApps();
+          case 'discord': return renderDiscord();
+          case 'spotify': return renderSpotify();
+          case 'settings': return (typeof window.TBSettingsUI === 'function') ? window.TBSettingsUI(opts) : el('div', 'tb-app-unknown', 'Settings failed to load');
           default: break;
         }
       } catch (e) {

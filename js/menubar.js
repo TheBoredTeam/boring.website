@@ -66,6 +66,11 @@
     { glyph: '💬', label: 'Messages', detail: { app: 'messages' } },
     { glyph: '💚', label: 'WhatsApp', detail: { app: 'whatsapp' } },
     { glyph: '⬛', label: 'Terminal', detail: { app: 'terminal' } },
+    { glyph: '📹', label: 'FaceTime', detail: { app: 'facetime' } },
+    { glyph: '🧩', label: 'Applications', detail: { app: 'apps' } },
+    { glyph: '💬', label: 'Discord', detail: { app: 'discord' } },
+    { glyph: '⚙️', label: 'System Settings', detail: { app: 'settings' } },
+    { glyph: '🟢', label: 'Spotify', detail: { app: 'spotify' } },
     { glyph: '📁', label: 'boring.notch Folder', detail: { app: 'folder', folder: 'project', title: 'boring.notch' } },
     { glyph: '🖼️', label: 'wallpapers Folder', detail: { app: 'folder', folder: 'wallpapers', title: 'wallpapers' } },
   ];
@@ -90,13 +95,25 @@
       list = [cfg.wallpaper];
     }
     if (!list.length) return;
-    var interval = (typeof cfg.wallpaperInterval === 'number' && cfg.wallpaperInterval >= 2000)
-      ? cfg.wallpaperInterval : 5000;
+    var settings = (typeof window.TB_SETTINGS === 'object' && window.TB_SETTINGS) || {};
+    var interval = (typeof settings.wallpaperInterval === 'number' && settings.wallpaperInterval >= 2000)
+      ? settings.wallpaperInterval
+      : (typeof cfg.wallpaperInterval === 'number' && cfg.wallpaperInterval >= 2000)
+        ? cfg.wallpaperInterval : 5000;
     var fade = (typeof cfg.wallpaperFade === 'number' && cfg.wallpaperFade > 0)
       ? cfg.wallpaperFade : 1200;
 
-    /* entries may be plain src strings or {src,title,artist,year,link} */
+    /* entries may be plain src strings or {src,title,artist,year,link};
+       a wallpaper chosen in System Settings rotates first */
     var entries = list.map(function (w) { return (typeof w === 'string') ? { src: w } : w; });
+    if (typeof settings.wallpaperSrc === 'string' && settings.wallpaperSrc) {
+      var picked = -1;
+      for (var pi = 0; pi < entries.length; pi++) {
+        if (entries[pi].src === settings.wallpaperSrc) { picked = pi; break; }
+      }
+      if (picked > 0) { entries.unshift(entries.splice(picked, 1)[0]); }
+      else if (picked < 0) { entries.unshift({ src: settings.wallpaperSrc }); }
+    }
 
     var layers = [el('div', 'tb-wall-layer'), el('div', 'tb-wall-layer')];
     layers.forEach(function (l) {
@@ -138,7 +155,8 @@
       layers[0].style.opacity = '1';
       updateCredit(ok[0]);
       if (ok.length === 1) return;
-      setInterval(function () {
+      var timer = null;
+      function tick() {
         idx = (idx + 1) % ok.length;
         var front = layers[active];
         var back = layers[1 - active];
@@ -147,7 +165,37 @@
         front.style.opacity = '0';
         active = 1 - active;
         updateCredit(ok[idx]);
-      }, interval);
+      }
+      function arm(ms) {
+        if (timer) clearInterval(timer);
+        timer = setInterval(tick, ms);
+      }
+      arm(interval);
+
+      /* System Settings changes land here live: new interval re-arms the
+         rotation; a picked wallpaper crossfades in immediately */
+      window.addEventListener('tb:settings', function (e) {
+        var d = e && e.detail;
+        if (!d) return;
+        if (d.key === 'wallpaperInterval' && typeof d.value === 'number' && d.value >= 2000) {
+          arm(d.value);
+        } else if (d.key === 'wallpaperSrc' && typeof d.value === 'string' && d.value) {
+          var hit = -1;
+          for (var i = 0; i < ok.length; i++) {
+            if (ok[i].src === d.value) { hit = i; break; }
+          }
+          if (hit >= 0 && hit !== idx) {
+            idx = hit;
+            var f2 = layers[active];
+            var b2 = layers[1 - active];
+            b2.style.backgroundImage = 'url("' + ok[idx].src + '")';
+            b2.style.opacity = '1';
+            f2.style.opacity = '0';
+            active = 1 - active;
+            updateCredit(ok[idx]);
+          }
+        }
+      });
     }
   }
 
@@ -629,6 +677,15 @@
       dim.style.opacity = ((100 - v) / 100 * 0.55).toFixed(3);
       try { localStorage.setItem('tb-brightness', String(v)); } catch (e) { /* no storage */ }
     }
+
+    /* System Settings' Appearance slider drives the same overlay */
+    window.addEventListener('tb:settings', function (e) {
+      var d = e && e.detail;
+      if (d && d.key === 'brightness' && typeof d.value === 'number') {
+        applyBrightness(d.value);
+        if (bright) { bright.value = d.value; }
+      }
+    });
 
     var brightRow = el('div', 'tb-cc-row');
     var brightIcon = el('span', 'tb-cc-ricon');

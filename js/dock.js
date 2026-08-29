@@ -24,9 +24,9 @@
      tab instead of dispatching 'tb:open-app'. */
   var ICONS = [
     { id: 'finder',   label: 'Finder',          icon: 'assets/icons/finder.png',       app: 'about'    },
-    { id: 'apps',     label: 'Apps',      icon: 'assets/icons/apps.png'      },
+    { id: 'apps',     label: 'Apps',      icon: 'assets/icons/apps.png',       app: 'apps'     },
     { id: 'messages', label: 'Messages',  icon: 'assets/icons/messages.png',  app: 'messages' },
-    { id: 'facetime', label: 'FaceTime',  icon: 'assets/icons/facetime.png'  },
+    { id: 'facetime', label: 'FaceTime',  icon: 'assets/icons/facetime.png',   app: 'facetime' },
     { id: 'music',    label: 'Boring.Notch',    icon: 'assets/icons/boring-notch.png', app: 'music'    },
     { id: 'github',   label: 'GitHub',          icon: 'assets/icons/github.png',       app: 'safari'   },
     { id: 'music2',   label: 'Music',     icon: 'assets/icons/music.png'     },
@@ -38,9 +38,9 @@
     { id: 'download', label: 'Downloads',       icon: 'assets/icons/downloads.png',    app: 'download' },
     { id: 'coffee',   label: 'Buy Me a Coffee', icon: 'assets/icons/google-play-app.webp', app: 'coffee' },
     { id: 'claude',   label: 'Claude',          icon: 'assets/icons/claude.png',       href: 'https://claude.ai' },
-    { id: 'discord',  label: 'Discord',   icon: 'assets/icons/discord.png'   },
-    { id: 'settings', label: 'Settings',  icon: 'assets/icons/settings.png'  },
-    { id: 'spotify',  label: 'Spotify',   icon: 'assets/icons/spotify.png'   },
+    { id: 'discord',  label: 'Discord',   icon: 'assets/icons/discord.png',    app: 'discord'  },
+    { id: 'settings', label: 'Settings',  icon: 'assets/icons/settings.png',   app: 'settings' },
+    { id: 'spotify',  label: 'Spotify',   icon: 'assets/icons/spotify.png',    app: 'spotify'  },
     { id: 'slack',    label: 'Slack',     icon: 'assets/icons/slack.png'     },
     { id: 'xcode',    label: 'Xcode',     icon: 'assets/icons/xcode.png'     },
     { id: 'terminal', label: 'Terminal',  icon: 'assets/icons/terminal.png',  app: 'terminal' },
@@ -155,13 +155,15 @@
       if (!restCenters) { cacheRestCenters(); }
       var scales = [];
       var i;
+      var maxScale = (window.TB_SETTINGS && typeof window.TB_SETTINGS.dockMaxScale === 'number')
+        ? window.TB_SETTINGS.dockMaxScale : MAX_SCALE;
       for (i = 0; i < items.length; i++) {
         var dist = Math.abs(clientX - restCenters[i]);
         var scale = 1;
         if (dist < RANGE) {
           /* cosine falloff: 1 at the cursor, 0 at the range edge */
           var t = (Math.cos((dist / RANGE) * Math.PI) + 1) / 2;
-          scale = 1 + (MAX_SCALE - 1) * t;
+          scale = 1 + (maxScale - 1) * t;
         }
         scales.push(scale);
       }
@@ -200,9 +202,15 @@
        the tray scrolls instead (scroll offsets would corrupt the math) */
     tray.addEventListener('mousemove', function (e) {
       if (window.innerWidth <= 768) { return; }
+      if (window.TB_SETTINGS && window.TB_SETTINGS.dockMagnification === false) { return; }
       magnify(e.clientX);
     });
     tray.addEventListener('mouseleave', reset);
+    /* System Settings toggle: snap back to rest when magnification turns off */
+    window.addEventListener('tb:settings', function (e) {
+      var d = e && e.detail;
+      if (d && d.key === 'dockMagnification' && d.value === false) { reset(); }
+    });
 
     /* ---- Running-indicator dots ---- */
     function setDot(iconId, on) {
