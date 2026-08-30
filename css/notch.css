@@ -31,18 +31,18 @@
 
 /* Expanded panel hangs flush from the top edge. */
 #notch-root .tb-notch.expanded {
-  width: min(92vw, 700px);
-  height: 280px;
+  width: min(92vw, 600px);
+  height: 210px;
   min-height: 0;
   margin-top: 0;
   border-radius: 0 0 28px 28px;
   cursor: default;
 }
 
-/* The compact single-track player follows the wide, shallow Dynamic Island shape. */
+/* The compact single-track player: boring.notch-style stacked panel. */
 #notch-root .tb-notch.expanded.compact {
-  width: min(92vw, 560px);
-  height: 150px;
+  width: min(92vw, 340px);
+  height: 140px;
   border-radius: 0 0 24px 24px;
 }
 
@@ -197,19 +197,22 @@
 }
 
 /* ---------- single-track compact player ----------
-   Shallow Dynamic-Island-style bar: art left, title/artist/progress column,
-   transport controls in one row on the right, battery pinned top-right. */
+   boring.notch compact layout — three stacked rows fill the panel:
+   row 1: album art left, title/artist beside it, battery on the right edge;
+   row 2: full-width progress bar with elapsed/remaining time labels;
+   row 3: transport controls centered horizontally. */
 #notch-root .tb-single-track {
   position: absolute; inset: 0;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   grid-template-areas:
-    "art copy controls"
-    "art progress controls";
-  column-gap: 14px; row-gap: 8px;
+    "art copy status"
+    "progress progress progress"
+    "controls controls controls";
+  column-gap: 14px; row-gap: 18px;
   align-items: center; align-content: center;
-  padding: 0 18px;
+  padding: 20px 20px 16px;
   opacity: 0; transform: translateY(-10px) scale(0.96); filter: blur(5px);
   pointer-events: none;
   transition: opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1), transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1), filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
@@ -217,7 +220,7 @@
 #notch-root .tb-notch.expanded .tb-single-track {
   opacity: 1; transform: translateY(0) scale(1); filter: blur(0); pointer-events: auto;
 }
-#notch-root .tb-track-status { position: absolute; top: 10px; right: 18px; display: flex; justify-content: flex-end; align-items: center; }
+#notch-root .tb-track-status { grid-area: status; justify-self: end; align-self: center; display: flex; justify-content: flex-end; align-items: center; }
 #notch-root .tb-track-mode { display: none; color: #8e8e93; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 #notch-root .tb-track-battery { display: flex; align-items: center; gap: 6px; color: #fff; font-size: 12px; font-weight: 600; }
 #notch-root .tb-track-status .tb-battery-icon { width: 24px; height: 12px; display: block; }
@@ -238,6 +241,9 @@
   display: flex; align-items: center; justify-content: center; font-size: 24px;
   color: #fff; background: linear-gradient(135deg, #6f5d39, #b58b51 52%, #1c5b3b);
 }
+#notch-root .compact .tb-track-art img {
+  width: 34px; height:34px;
+}
 #notch-root .tb-track-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
 #notch-root .tb-track-copy { grid-area: copy; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 #notch-root .tb-track-title { font-size: 17px; font-weight: 600; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -249,7 +255,7 @@
 #notch-root .tb-track-progress { appearance: none; flex: 1 1 auto; min-width: 0; width: 100%; height: 5px; border-radius: 999px; background: linear-gradient(to right, #fff 0%, #fff var(--tb-progress, 0%), #343434 var(--tb-progress, 0%), #343434 100%); accent-color: #fff; cursor: pointer; }
 #notch-root .tb-track-progress::-webkit-slider-thumb { appearance: none; width: 0; height: 0; }
 #notch-root .tb-track-progress:disabled { cursor: default; opacity: .75; }
-#notch-root .tb-track-controls { grid-area: controls; display: flex; justify-content: center; align-items: center; gap: 18px; }
+#notch-root .tb-track-controls { grid-area: controls; display: flex; justify-content: center; align-items: center; gap: 20px; }
 #notch-root .tb-track-btn { display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 0; background: transparent; color: #fff; cursor: pointer; }
 #notch-root .tb-track-btn svg { width: 28px; height: 28px; }
 #notch-root .tb-track-play svg { width: 38px; height: 38px; }
@@ -263,12 +269,12 @@
 }
 #notch-root .tb-notch.expanded + .tb-compact-toggle { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 #notch-root .tb-compact-toggle:hover { background: #303035; }
-#notch-root .tb-notch.expanded.compact + .tb-compact-toggle { top: 160px; }
-#notch-root .tb-notch.expanded:not(.compact) + .tb-compact-toggle { top: 290px; }
+#notch-root .tb-notch.expanded.compact + .tb-compact-toggle { top: 200px; }
+#notch-root .tb-notch.expanded:not(.compact) + .tb-compact-toggle { top: 220px; }
 
 /* ---------- full player ---------- */
 #notch-root .tb-full-player {
-  position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr) 200px 168px;
+  position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr) 200px 120px;
   align-items: center; gap: 18px; padding: 56px 20px 18px;
   opacity: 0; transform: translateY(-10px) scale(.96); filter: blur(5px); pointer-events: none;
   transition: opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1), transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1), filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
@@ -310,9 +316,11 @@
   /* mobile: both modes show the compact single-track bar at ~min(92vw,560px)×220 */
   #notch-root .tb-notch.expanded,
   #notch-root .tb-notch.expanded.compact { width: min(92vw, 560px); height: 220px; border-radius: 0 0 24px 24px; }
-  #notch-root .tb-single-track { padding: 0 16px; column-gap: 12px; }
-  #notch-root .tb-track-status { right: 16px; }
-  #notch-root .tb-track-controls { gap: 12px; }
+  #notch-root .tb-single-track { padding: 20px 16px 16px; column-gap: 12px; row-gap: 24px; }
+  /* main.css hides .tb-battery-pct globally at this width (meant for the
+     menubar); the notch player keeps its percentage, like the reference. */
+  #notch-root .tb-notch .tb-battery-pct { display: inline; }
+  #notch-root .tb-track-controls { gap: 14px; }
   #notch-root .tb-track-btn { width: 30px; height: 30px; }
   #notch-root .tb-track-btn svg { width: 24px; height: 24px; }
   #notch-root .tb-track-play svg { width: 32px; height: 32px; }
