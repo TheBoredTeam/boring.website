@@ -61,16 +61,14 @@ window.TB_CONFIG = {
       .catch(function () { clearTimeout(timer); done(FALLBACK); });
   },
 
-  /* Music: the notch embeds this Spotify playlist via Spotify's free keyless
-     iframe Embed (no API keys, no OAuth — playback happens inside Spotify's
-     own cross-origin player, so the site can't drive its transport). Pill
-     title/artwork come from the keyless oEmbed endpoint at runtime, with a
-     graceful emoji + fallbackTitle when that fetch fails (offline/blocked). */
+  /* Single track displayed in the notch. Supply a same-origin or CORS-enabled
+     audioUrl to enable playback; artworkUrl is optional. */
   music: {
-    playlistUrl: 'https://open.spotify.com/playlist/2iFVkT5FwlAPxDpmAZIEQr',
-    embedUrl: 'https://open.spotify.com/embed/playlist/2iFVkT5FwlAPxDpmAZIEQr?utm_source=generator',
-    oembedUrl: 'https://open.spotify.com/oembed?url=https://open.spotify.com/playlist/2iFVkT5FwlAPxDpmAZIEQr',
-    fallbackTitle: 'Spotify Playlist',
+    id: 'indeed',
+    title: 'Indeed',
+    artist: 'Cheema Y',
+    artworkUrl: '',
+    audioUrl: '',
   },
 };
 
