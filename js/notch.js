@@ -1,6 +1,5 @@
 /* js/notch.js — MacBook-style single-track player.
-   Configure TB_CONFIG.music with title, artist, artworkUrl, and optionally
-   audioUrl. Audio controls are enabled only when an audio URL is supplied. */
+   TB_CONFIG.music: title + artist. audioUrl optional; else iTunes 30s preview. */
 (function () {
   'use strict';
 
@@ -34,19 +33,8 @@
     var compact = true;
     var playing = false;
     var audio = null;
-    var volume = 0.8;
+    var volume = (window.TB_SETTINGS && typeof window.TB_SETTINGS.volume === 'number') ? window.TB_SETTINGS.volume : 0.8;
     var BATTERY_ICON = '<svg class="tb-battery-icon" viewBox="0 0 27 13" aria-hidden="true"><rect x=".5" y=".5" width="22" height="12" rx="3.5"/><rect class="tb-battery-charge" x="2.5" y="2.5" width="18" height="8" rx="1.5"/><path d="M24 4.5v4c1.2-.3 2-1 2-2s-.8-1.7-2-2z"/></svg>';
-
-    if (track.audioUrl && typeof Audio !== 'undefined') {
-      audio = new Audio(track.audioUrl);
-      audio.preload = 'metadata';
-      audio.volume = volume;
-      audio.addEventListener('play', function () { playing = true; renderPlayback(); dispatchState(); });
-      audio.addEventListener('pause', function () { playing = false; renderPlayback(); dispatchState(); });
-      audio.addEventListener('timeupdate', renderProgress);
-      audio.addEventListener('loadedmetadata', renderProgress);
-      audio.addEventListener('ended', function () { playing = false; renderPlayback(); renderProgress(); dispatchState(); });
-    }
 
     mount.innerHTML = [
       '<section class="tb-notch has-played" role="region" aria-label="Music player">',
@@ -59,8 +47,8 @@
       '</div>',
       '<div class="tb-full-player"><nav class="tb-full-tabs" aria-label="Notch views"><button type="button" class="tb-full-tab is-active" data-notch-view="home" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button><button type="button" class="tb-full-tab" data-notch-view="airdrop" aria-label="AirDrop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2-5H7zM4 11h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></button></nav><span class="tb-full-battery"><span class="tb-battery-pct">100%</span>' + BATTERY_ICON + '</span>',
       '<section class="tb-full-now"><div class="tb-full-art"></div><div class="tb-full-copy"><strong class="tb-full-title"></strong><span class="tb-full-artist"></span><div class="tb-full-progress"><span class="tb-full-fill"></span></div><div class="tb-full-times"><span>0:00</span><span>--:--</span></div><div class="tb-full-controls"><button type="button" disabled>' + ICONS.previous + '</button><button type="button" class="tb-full-play" aria-label="Play">' + ICONS.play + '</button><button type="button" disabled>' + ICONS.next + '</button></div></div></section>',
-      '<section class="tb-full-calendar"><div><strong class="tb-full-month"></strong><span class="tb-full-year"></span></div><div class="tb-full-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div><div class="tb-full-days"></div><div class="tb-full-event"><i></i><strong>Anna Haro’s<br>41st Birthday</strong><span>All-day</span></div></section>',
-      '<section class="tb-full-mirror"><span>◉</span><strong>Mirror</strong></section>',
+      '<div class="flex items-center justify-between gap-2"><section class="tb-full-calendar"><div><strong class="tb-full-month"></strong><span class="tb-full-year"></span></div><div class="tb-full-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div><div class="tb-full-days"></div><div class="tb-full-event"><i></i><strong>Anna Haro’s<br>41st Birthday</strong><span>All-day</span></div></section>',
+      '<section class="tb-full-mirror"><span>◉</span><strong>Mirror</strong></section></div>',
       '<section class="tb-airdrop" aria-label="AirDrop"><div class="tb-airdrop-device"><span>◉</span><strong>AirDrop</strong></div><div class="tb-airdrop-drop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0-11 4 4m-4-4-4 4M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><strong>Drop files here</strong></div></section>',
       '</div></section>',
       '<button type="button" class="tb-compact-toggle" aria-pressed="true">Expanded player</button>'
@@ -76,12 +64,15 @@
     var currentEl = mount.querySelector('.tb-track-current');
     var durationEl = mount.querySelector('.tb-track-duration');
 
-    Array.prototype.forEach.call(titleEls, function (el) { el.textContent = track.name; });
-    Array.prototype.forEach.call(artistEls, function (el) { el.textContent = track.artist; });
-    Array.prototype.forEach.call(artEls, function (el) {
-      if (track.artworkUrl) el.innerHTML = '<img src="' + track.artworkUrl + '" alt="">';
-      else el.textContent = '♫';
-    });
+    function paintTrack() {
+      Array.prototype.forEach.call(titleEls, function (el) { el.textContent = track.name; });
+      Array.prototype.forEach.call(artistEls, function (el) { el.textContent = track.artist; });
+      Array.prototype.forEach.call(artEls, function (el) {
+        if (track.artworkUrl) el.innerHTML = '<img src="' + track.artworkUrl + '" alt="">';
+        else el.textContent = '♫';
+      });
+    }
+    paintTrack();
 
     function formatTime(seconds) {
       seconds = Math.max(0, Math.floor(seconds || 0));
@@ -160,7 +151,43 @@
       });
     });
     Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-btn:not(.tb-track-play)'), function (button) { button.disabled = true; });
-    if (!audio) { Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-play, .tb-full-play'), function (button) { button.disabled = true; }); progressEl.disabled = true; }
+
+    function setTransportEnabled(on) {
+      Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-play, .tb-full-play'), function (button) { button.disabled = !on; });
+      progressEl.disabled = !on;
+    }
+    function bindAudio(url) {
+      if (!url || typeof Audio === 'undefined') return;
+      audio = new Audio(url);
+      audio.preload = 'metadata';
+      audio.volume = volume;
+      audio.addEventListener('play', function () { playing = true; renderPlayback(); dispatchState(); });
+      audio.addEventListener('pause', function () { playing = false; renderPlayback(); dispatchState(); });
+      audio.addEventListener('timeupdate', renderProgress);
+      audio.addEventListener('loadedmetadata', renderProgress);
+      audio.addEventListener('ended', function () { playing = false; renderPlayback(); renderProgress(); dispatchState(); });
+      setTransportEnabled(true);
+    }
+    setTransportEnabled(false);
+    if (track.audioUrl) bindAudio(track.audioUrl);
+    else if (typeof fetch === 'function') {
+      /* ponytail: iTunes Search, no key/CORS. Spotify preview_url is dead. */
+      var q = encodeURIComponent((track.artist + ' ' + track.name).trim());
+      fetch('https://itunes.apple.com/search?term=' + q + '&media=music&entity=song&limit=1')
+        .then(function (r) { if (!r.ok) throw new Error('itunes ' + r.status); return r.json(); })
+        .then(function (data) {
+          var hit = data && data.results && data.results[0];
+          if (!hit || !hit.previewUrl) return;
+          if (hit.trackName) track.name = hit.trackName;
+          if (hit.artistName) track.artist = hit.artistName;
+          if (!track.artworkUrl && hit.artworkUrl100) {
+            track.artworkUrl = String(hit.artworkUrl100).replace('100x100bb', '300x300bb');
+          }
+          paintTrack();
+          bindAudio(hit.previewUrl);
+        })
+        .catch(function () {});
+    }
 
     (function buildFullCalendar() {
       var now = new Date();

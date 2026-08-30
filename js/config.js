@@ -61,8 +61,8 @@ window.TB_CONFIG = {
       .catch(function () { clearTimeout(timer); done(FALLBACK); });
   },
 
-  /* Single track displayed in the notch. Supply a same-origin or CORS-enabled
-     audioUrl to enable playback; artworkUrl is optional. */
+  /* Notch now-playing. Empty audioUrl → iTunes Search 30s preview (Spotify
+     Web API no longer ships preview_url; full Spotify play needs Premium SDK). */
   music: {
     id: 'indeed',
     title: 'Indeed',

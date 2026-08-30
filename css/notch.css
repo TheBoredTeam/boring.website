@@ -4,7 +4,11 @@
    Font stack inherited from the page (var(--tb-font) on body). */
 
 #notch-root .tb-notch,
-#notch-root .tb-notch * { box-sizing: border-box; margin: 0; padding: 0; }
+#notch-root .tb-notch * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 #notch-root .tb-notch {
   position: relative;
@@ -17,7 +21,12 @@
   overflow: hidden;
   cursor: pointer;
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45);
-  transition: width 560ms cubic-bezier(0.32,1.22,0.36,1), height 560ms cubic-bezier(0.32,1.22,0.36,1), border-radius 560ms cubic-bezier(0.32,1.22,0.36,1), background 400ms ease, transform 460ms cubic-bezier(0.3,1.6,0.4,1);
+  transition:
+    width 560ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    height 560ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    border-radius 560ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    background 400ms ease,
+    transform 460ms cubic-bezier(0.3, 1.6, 0.4, 1);
   user-select: none;
   -webkit-user-select: none;
 }
@@ -48,14 +57,20 @@
 
 /* ---------- collapsed bar internals ---------- */
 #notch-root .tb-notch-collapsed {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: space-between;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
   padding: 5px 10px;
   opacity: 1;
   transform: translateY(0) scale(1);
   filter: blur(0);
-  transition: opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1), transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1), filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
+  transition:
+    opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
 }
 #notch-root .tb-notch.expanded .tb-notch-collapsed {
   opacity: 0;
@@ -66,41 +81,89 @@
 
 #notch-root .tb-collapsed-art {
   position: relative;
-  width: 22px; height: 22px; border-radius: 6px; flex: 0 0 auto;
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #191414, #1DB954); /* Spotify ink → green */
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-#notch-root .tb-collapsed-art-emoji { font-size: 13px; line-height: 1; }
+
+#notch-root .tb-collapsed-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+#notch-root .tb-collapsed-art-emoji {
+  font-size: 13px;
+  line-height: 1;
+}
 #notch-root .tb-collapsed-art-img {
-  width: 100%; height: 100%;
-  object-fit: cover; border-radius: 6px; display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
 }
 
 #notch-root .tb-collapsed-title {
-  flex: 1 1 auto; min-width: 0;
-  font-size: 11px; color: #fff;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 11px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Static EQ silhouette for the collapsed player. */
-#notch-root .tb-notch-eq { display: flex; align-items: flex-end; gap: 2px; height: 12px; flex: 0 0 auto; }
-#notch-root .tb-notch-eq span { width: 2.5px; border-radius: 1.5px; background: #333; }
-#notch-root .tb-notch-eq span:nth-child(1) { height: 45%; }
-#notch-root .tb-notch-eq span:nth-child(2) { height: 80%; }
-#notch-root .tb-notch-eq span:nth-child(3) { height: 100%; }
-#notch-root .tb-notch-eq span:nth-child(4) { height: 60%; }
-#notch-root .tb-notch-eq span:nth-child(5) { height: 35%; }
+#notch-root .tb-notch-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+  flex: 0 0 auto;
+}
+#notch-root .tb-notch-eq span {
+  width: 2.5px;
+  border-radius: 1.5px;
+  background: #333;
+}
+#notch-root .tb-notch-eq span:nth-child(1) {
+  height: 45%;
+}
+#notch-root .tb-notch-eq span:nth-child(2) {
+  height: 80%;
+}
+#notch-root .tb-notch-eq span:nth-child(3) {
+  height: 100%;
+}
+#notch-root .tb-notch-eq span:nth-child(4) {
+  height: 60%;
+}
+#notch-root .tb-notch-eq span:nth-child(5) {
+  height: 35%;
+}
 
 /* ---------- expanded panel internals ---------- */
 #notch-root .tb-notch-expanded {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
   padding: 12px 18px;
   opacity: 0;
   transform: translateY(-10px) scale(0.96);
   filter: blur(5px);
   pointer-events: none;
-  transition: opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1), transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1), filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
+  transition:
+    opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
 }
 #notch-root .tb-notch.expanded .tb-notch-expanded {
   opacity: 1;
@@ -111,81 +174,201 @@
 
 /* top row: circle buttons left, glyphs + battery right */
 #notch-root .tb-panel-top {
-  display: flex; align-items: center; justify-content: space-between;
-  height: 26px; flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 26px;
+  flex: 0 0 auto;
 }
-#notch-root .tb-panel-top-left { display: flex; align-items: center; gap: 8px; }
+#notch-root .tb-panel-top-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 #notch-root .tb-circle-btn {
-  width: 26px; height: 26px; border-radius: 50%;
-  background: #1c1c1e; color: #fff; border: none; font: inherit;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: background 0.15s ease;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1c1c1e;
+  color: #fff;
+  border: none;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
-#notch-root button.tb-circle-btn:hover { background: #2c2c2e; }
-#notch-root .tb-circle-btn svg { width: 12px; height: 12px; display: block; }
-#notch-root .tb-circle-static { cursor: default; }
+#notch-root button.tb-circle-btn:hover {
+  background: #2c2c2e;
+}
+#notch-root .tb-circle-btn svg {
+  width: 12px;
+  height: 12px;
+  display: block;
+}
+#notch-root .tb-circle-static {
+  cursor: default;
+}
 
-#notch-root .tb-panel-top-right { display: flex; align-items: center; gap: 14px; }
-#notch-root .tb-top-glyph { color: #fff; display: flex; align-items: center; }
-#notch-root .tb-top-glyph svg { width: 18px; height: 18px; display: block; }
-#notch-root .tb-battery { display: flex; align-items: center; gap: 6px; }
-#notch-root .tb-battery-pct { font-size: 13px; color: #fff; }
-#notch-root .tb-battery-icon { width: 24px; height: auto; display: block; }
-#notch-root .tb-battery-outline { fill: none; stroke: rgba(255, 255, 255, 0.45); stroke-width: 1; }
-#notch-root .tb-battery-fill { fill: #fff; }
-#notch-root .tb-battery-tip { fill: rgba(255, 255, 255, 0.45); }
+#notch-root .tb-panel-top-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+#notch-root .tb-top-glyph {
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+#notch-root .tb-top-glyph svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+#notch-root .tb-battery {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#notch-root .tb-battery-pct {
+  font-size: 13px;
+  color: #fff;
+}
+#notch-root .tb-battery-icon {
+  width: 24px;
+  height: auto;
+  display: block;
+}
+#notch-root .tb-battery-outline {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 1;
+}
+#notch-root .tb-battery-fill {
+  fill: #fff;
+}
+#notch-root .tb-battery-tip {
+  fill: rgba(255, 255, 255, 0.45);
+}
 
 /* body row: Spotify embed + calendar */
 #notch-root .tb-panel-body {
-  display: flex; gap: 18px; margin-top: 8px;
-  flex: 1 1 auto; min-height: 0;
+  display: flex;
+  gap: 18px;
+  margin-top: 8px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
-
 
 /* calendar section: month header, weekday header, one real week row, events */
 #notch-root .tb-cal-section {
-  flex: 0 0 36%; min-width: 250px;
-  display: flex; flex-direction: column;
+  flex: 0 0 36%;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
 }
-#notch-root .tb-cal-head { display: flex; align-items: baseline; gap: 6px; }
-#notch-root .tb-cal-month { font-size: 15px; font-weight: 700; color: #fff; }
-#notch-root .tb-cal-year { font-size: 15px; font-weight: 400; color: #6e6e6e; }
+#notch-root .tb-cal-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+#notch-root .tb-cal-month {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+#notch-root .tb-cal-year {
+  font-size: 15px;
+  font-weight: 400;
+  color: #6e6e6e;
+}
 
-#notch-root .tb-cal-weekwrap { position: relative; margin-top: 4px; }
+#notch-root .tb-cal-weekwrap {
+  position: relative;
+  margin-top: 4px;
+}
 #notch-root .tb-cal-weekdays {
-  display: grid; grid-template-columns: repeat(7, 1fr);
-  font-size: 10px; color: #6e6e6e; text-align: center;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 10px;
+  color: #6e6e6e;
+  text-align: center;
 }
 #notch-root .tb-cal-weekrow {
-  display: grid; grid-template-columns: repeat(7, 1fr);
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   margin-top: 4px;
 }
 #notch-root .tb-cal-day {
   justify-self: center;
-  width: 22px; height: 22px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; color: #fff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #fff;
 }
-#notch-root .tb-cal-day.tb-cal-today { background: #0A84FF; color: #fff; }
+#notch-root .tb-cal-day.tb-cal-today {
+  background: #0a84ff;
+  color: #fff;
+}
 #notch-root .tb-cal-chev {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  color: #6e6e6e; font-size: 14px; cursor: default;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6e6e6e;
+  font-size: 14px;
+  cursor: default;
 }
-#notch-root .tb-cal-chev-l { left: -14px; }
-#notch-root .tb-cal-chev-r { right: -14px; }
+#notch-root .tb-cal-chev-l {
+  left: -14px;
+}
+#notch-root .tb-cal-chev-r {
+  right: -14px;
+}
 
 /* events list: two rows, hairline separator between */
-#notch-root .tb-events { margin-top: auto; padding-top: 4px; }
-#notch-root .tb-event { display: flex; align-items: center; gap: 7px; padding: 3px 0; }
-#notch-root .tb-event + .tb-event { border-top: 1px solid #1c1c1e; }
-#notch-root .tb-event-bar { width: 4px; height: 16px; border-radius: 2px; flex: 0 0 auto; }
-#notch-root .tb-event-bar-green { background: #30D158; }
-#notch-root .tb-event-bar-purple { background: #BF5AF2; }
-#notch-root .tb-event-text {
-  font-size: 11px; color: #fff;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+#notch-root .tb-events {
+  margin-top: auto;
+  padding-top: 4px;
 }
-#notch-root .tb-event-when { margin-left: auto; font-size: 10px; color: #6e6e6e; flex: 0 0 auto; }
+#notch-root .tb-event {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 0;
+}
+#notch-root .tb-event + .tb-event {
+  border-top: 1px solid #1c1c1e;
+}
+#notch-root .tb-event-bar {
+  width: 4px;
+  height: 16px;
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+#notch-root .tb-event-bar-green {
+  background: #30d158;
+}
+#notch-root .tb-event-bar-purple {
+  background: #bf5af2;
+}
+#notch-root .tb-event-text {
+  font-size: 11px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#notch-root .tb-event-when {
+  margin-left: auto;
+  font-size: 10px;
+  color: #6e6e6e;
+  flex: 0 0 auto;
+}
 
 @media (prefers-reduced-motion: reduce) {
   #notch-root .tb-notch,
@@ -193,7 +376,9 @@
   #notch-root .tb-notch-expanded,
   #notch-root .tb-single-track,
   #notch-root .tb-full-player,
-  #notch-root .tb-compact-toggle { transition: none; }
+  #notch-root .tb-compact-toggle {
+    transition: none;
+  }
 }
 
 /* ---------- single-track compact player ----------
@@ -202,7 +387,8 @@
    row 2: full-width progress bar with elapsed/remaining time labels;
    row 3: transport controls centered horizontally. */
 #notch-root .tb-single-track {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-rows: auto auto auto;
@@ -210,147 +396,605 @@
     "art copy status"
     "progress progress progress"
     "controls controls controls";
-  column-gap: 14px; row-gap: 18px;
-  align-items: center; align-content: center;
+  column-gap: 14px;
+  row-gap: 18px;
+  align-items: center;
+  align-content: center;
   padding: 20px 20px 16px;
-  opacity: 0; transform: translateY(-10px) scale(0.96); filter: blur(5px);
+  opacity: 0;
+  transform: translateY(-10px) scale(0.96);
+  filter: blur(5px);
   pointer-events: none;
-  transition: opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1), transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1), filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
+  transition:
+    opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
 }
 #notch-root .tb-notch.expanded .tb-single-track {
-  opacity: 1; transform: translateY(0) scale(1); filter: blur(0); pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  pointer-events: auto;
 }
-#notch-root .tb-track-status { grid-area: status; justify-self: end; align-self: center; display: flex; justify-content: flex-end; align-items: center; }
-#notch-root .tb-track-mode { display: none; color: #8e8e93; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-#notch-root .tb-track-battery { display: flex; align-items: center; gap: 6px; color: #fff; font-size: 12px; font-weight: 600; }
-#notch-root .tb-track-status .tb-battery-icon { width: 24px; height: 12px; display: block; }
-#notch-root .tb-battery-outline { fill: none; stroke: #a4a4a6; stroke-width: 1.5; }
-#notch-root .tb-battery-charge { fill: #31d158; }
-#notch-root .tb-battery-tip { fill: #a4a4a6; }
-#notch-root .tb-battery-bolt { fill: #fff; }
-#notch-root .tb-full-battery { position: absolute; top: 18px; right: 20px; display: flex; align-items: center; gap: 5px; color: #fff; font-size: 12px; font-weight: 600; }
-#notch-root .tb-full-battery .tb-battery-icon { width: 23px; height: 12px; }
-#notch-root .tb-full-battery .tb-battery-charge { rx: 2px; }
-#notch-root .tb-full-battery .tb-battery-bolt { display: none; }
-#notch-root .tb-track-battery:not(.is-charging) .tb-battery-bolt { display: none; }
+#notch-root .tb-track-status {
+  grid-area: status;
+  justify-self: end;
+  align-self: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+#notch-root .tb-track-mode {
+  display: none;
+  color: #8e8e93;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+#notch-root .tb-track-battery {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+#notch-root .tb-track-status .tb-battery-icon {
+  width: 24px;
+  height: 12px;
+  display: block;
+}
+#notch-root .tb-battery-outline {
+  fill: none;
+  stroke: #a4a4a6;
+  stroke-width: 1.5;
+}
+#notch-root .tb-battery-charge {
+  fill: #31d158;
+}
+#notch-root .tb-battery-tip {
+  fill: #a4a4a6;
+}
+#notch-root .tb-battery-bolt {
+  fill: #fff;
+}
+#notch-root .tb-full-battery {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+#notch-root .tb-full-battery .tb-battery-icon {
+  width: 23px;
+  height: 12px;
+}
+#notch-root .tb-full-battery .tb-battery-charge {
+  rx: 2px;
+}
+#notch-root .tb-full-battery .tb-battery-bolt {
+  display: none;
+}
+#notch-root .tb-track-battery:not(.is-charging) .tb-battery-bolt {
+  display: none;
+}
 /* info becomes transparent so art/copy join the single-track grid directly */
-#notch-root .tb-track-info { display: contents; }
+#notch-root .tb-track-info {
+  display: contents;
+}
 #notch-root .tb-track-art {
   grid-area: art;
-  width: 56px; height: 56px; flex: 0 0 auto; border-radius: 12px; overflow: hidden;
-  display: flex; align-items: center; justify-content: center; font-size: 24px;
-  color: #fff; background: linear-gradient(135deg, #6f5d39, #b58b51 52%, #1c5b3b);
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #fff;
+  background: linear-gradient(135deg, #6f5d39, #b58b51 52%, #1c5b3b);
 }
 #notch-root .compact .tb-track-art {
-  width: 38px; height:38px;
+  width: 38px;
+  height: 38px;
 }
-#notch-root .compact .tb-track-btn, #notch-root .compact .tb-track-btn svg {
-  width: 22px !important; height: 22px !important;
+#notch-root .compact .tb-track-btn,
+#notch-root .compact .tb-track-btn svg {
+  width: 22px !important;
+  height: 22px !important;
 }
-#notch-root .tb-track-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
-#notch-root .tb-track-copy { grid-area: copy; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-#notch-root .tb-track-title { font-size: 17px; font-weight: 600; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-#notch-root .tb-track-artist { color: #aaa097; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-#notch-root .tb-track-level { display: none; }
-#notch-root .tb-track-progress-row { grid-area: progress; display: flex; align-items: center; gap: 10px; color: #aaa097; font-size: 12px; font-weight: 600; }
+#notch-root .tb-track-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#notch-root .tb-track-copy {
+  grid-area: copy;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+#notch-root .tb-track-title {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#notch-root .tb-track-artist {
+  color: #aaa097;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#notch-root .tb-track-level {
+  display: none;
+}
+#notch-root .tb-track-progress-row {
+  grid-area: progress;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #aaa097;
+  font-size: 12px;
+  font-weight: 600;
+}
 /* time labels must never wrap ("--:--" breaks after hyphens) or shrink */
-#notch-root .tb-track-current, #notch-root .tb-track-duration { flex: 0 0 auto; white-space: nowrap; }
-#notch-root .tb-track-progress { appearance: none; flex: 1 1 auto; min-width: 0; width: 100%; height: 5px; border-radius: 999px; background: linear-gradient(to right, #fff 0%, #fff var(--tb-progress, 0%), #343434 var(--tb-progress, 0%), #343434 100%); accent-color: #fff; cursor: pointer; }
-#notch-root .tb-track-progress::-webkit-slider-thumb { appearance: none; width: 0; height: 0; }
-#notch-root .tb-track-progress:disabled { cursor: default; opacity: .75; }
-#notch-root .tb-track-controls { grid-area: controls; display: flex; justify-content: center; align-items: center; gap: 20px; }
-#notch-root .tb-track-btn { display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 0; background: transparent; color: #fff; cursor: pointer; }
-#notch-root .tb-track-btn svg { width: 28px; height: 28px; }
-#notch-root .tb-track-play svg { width: 38px; height: 38px; }
-#notch-root .tb-track-btn:disabled { color: #fff; cursor: default; opacity: .7; }
-#notch-root .tb-compact-toggle {
-  position: absolute; top: 290px; left: 50%; transform: translate(-50%, -8px);
-  border: 1px solid rgba(255,255,255,.2); border-radius: 999px; background: rgba(20,20,22,.92); color: #fff;
-  padding: 6px 12px; font: 600 11px/1 var(--tb-font, system-ui, sans-serif); white-space: nowrap;
-  cursor: pointer; opacity: 0; pointer-events: none;
-  transition: opacity 220ms ease, transform 220ms ease, background 150ms ease;
+#notch-root .tb-track-current,
+#notch-root .tb-track-duration {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
-#notch-root .tb-notch.expanded + .tb-compact-toggle { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-#notch-root .tb-compact-toggle:hover { background: #303035; }
-#notch-root .tb-notch.expanded.compact + .tb-compact-toggle { top: 200px; }
-#notch-root .tb-notch.expanded:not(.compact) + .tb-compact-toggle { top: 220px; }
+#notch-root .tb-track-progress {
+  appearance: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #fff 0%,
+    #fff var(--tb-progress, 0%),
+    #343434 var(--tb-progress, 0%),
+    #343434 100%
+  );
+  accent-color: #fff;
+  cursor: pointer;
+}
+#notch-root .tb-track-progress::-webkit-slider-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+}
+#notch-root .tb-track-progress:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+#notch-root .tb-track-controls {
+  grid-area: controls;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+#notch-root .tb-track-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+#notch-root .tb-track-btn svg {
+  width: 28px;
+  height: 28px;
+}
+#notch-root .tb-track-play svg {
+  width: 38px;
+  height: 38px;
+}
+#notch-root .tb-track-btn:disabled {
+  color: #fff;
+  cursor: default;
+  opacity: 0.7;
+}
+#notch-root .tb-compact-toggle {
+  position: absolute;
+  top: 290px;
+  left: 50%;
+  transform: translate(-50%, -8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(20, 20, 22, 0.92);
+  color: #fff;
+  padding: 6px 12px;
+  font: 600 11px/1 var(--tb-font, system-ui, sans-serif);
+  white-space: nowrap;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    background 150ms ease;
+}
+#notch-root .tb-notch.expanded + .tb-compact-toggle {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+#notch-root .tb-compact-toggle:hover {
+  background: #303035;
+}
+#notch-root .tb-notch.expanded.compact + .tb-compact-toggle {
+  top: 200px;
+}
+#notch-root .tb-notch.expanded:not(.compact) + .tb-compact-toggle {
+  top: 220px;
+}
 
 /* ---------- full player ---------- */
 #notch-root .tb-full-player {
-  position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr) 200px 120px;
-  align-items: center; gap: 18px; padding: 56px 20px 18px;
-  opacity: 0; transform: translateY(-10px) scale(.96); filter: blur(5px); pointer-events: none;
-  transition: opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1), transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1), filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 0.7fr 1fr;
+  align-items: center;
+  gap: 18px;
+  padding: 42px 20px 18px;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.96);
+  filter: blur(5px);
+  pointer-events: none;
+  transition:
+    opacity 380ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    transform 560ms cubic-bezier(0.32, 1.22, 0.36, 1),
+    filter 460ms cubic-bezier(0.32, 1.22, 0.36, 1);
 }
-#notch-root .tb-notch.expanded:not(.compact) .tb-full-player { opacity: 1; transform: none; filter: none; pointer-events: auto; }
-#notch-root .tb-notch:not(.compact) .tb-single-track { opacity: 0; pointer-events: none; }
-#notch-root .tb-full-now { display: flex; gap: 14px; align-items: center; min-width: 0; }
-#notch-root .tb-full-art { width: 88px; height: 88px; flex: 0 0 auto; overflow: hidden; border-radius: 12px; display: grid; place-items: center; font-size: 34px; background: linear-gradient(135deg, #0a2a49, #345d79 55%, #070d14); }
-#notch-root .tb-full-art img { width: 100%; height: 100%; object-fit: cover; }
-#notch-root .tb-full-copy { flex: 1; min-width: 0; }
-#notch-root .tb-full-title { display: block; font-size: 18px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-#notch-root .tb-full-artist { display: block; margin-top: 3px; color: #36a5ff; font-size: 13px; }
-#notch-root .tb-full-progress { height: 4px; margin-top: 12px; overflow: hidden; border-radius: 999px; background: #313136; }
-#notch-root .tb-full-fill { display: block; width: 70%; height: 100%; background: #fff; }
-#notch-root .tb-full-times { display: flex; justify-content: space-between; margin-top: 6px; color: #36a5ff; font-size: 12px; font-weight: 600; }
-#notch-root .tb-full-times span { flex: 0 0 auto; white-space: nowrap; }
-#notch-root .tb-full-controls { display: flex; gap: 22px; margin-top: 12px; }
-#notch-root .tb-full-controls button { width: 34px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; background: transparent; color: #fff; }
-#notch-root .tb-full-controls svg { width: 20px; height: 20px; }
-#notch-root .tb-full-controls .tb-full-play svg { width: 28px; height: 28px; }
-#notch-root .tb-full-controls button:disabled { opacity: .9; }
-#notch-root .tb-full-calendar { align-self: center; min-width: 0; }
-#notch-root .tb-full-calendar > div:first-child { display: flex; gap: 10px; align-items: baseline; font-size: 17px; }
-#notch-root .tb-full-year { color: #8e8e93; font-weight: 400; }
-#notch-root .tb-full-weekdays, #notch-root .tb-full-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
-#notch-root .tb-full-weekdays { margin-top: 8px; color: #a7a7ab; font-size: 10px; }
-#notch-root .tb-full-days { margin-top: 6px; font-size: 13px; font-weight: 600; }
-#notch-root .tb-full-days span { justify-self: center; display: grid; place-items: center; width: 26px; height: 26px; }
-#notch-root .tb-full-days .today { border-radius: 50%; background: #0879ed; }
-#notch-root .tb-full-event { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; line-height: 1.2; }
-#notch-root .tb-full-event i { width: 4px; height: 32px; border-radius: 99px; background: #a9c1df; }
-#notch-root .tb-full-event span { margin-left: auto; align-self: flex-start; font-size: 11px; }
-#notch-root .tb-full-mirror { align-self: stretch; min-height: 0; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; background: #171717; color: #aaaab0; font-size: 13px; }
-#notch-root .tb-full-mirror span { font-size: 34px; line-height: .8; }
+#notch-root .tb-notch.expanded:not(.compact) .tb-full-player {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  pointer-events: auto;
+}
+#notch-root .tb-notch:not(.compact) .tb-single-track {
+  opacity: 0;
+  pointer-events: none;
+}
+#notch-root .tb-full-now {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  min-width: 0;
+}
+#notch-root .tb-full-art {
+  width: 88px;
+  height: 88px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  background: linear-gradient(135deg, #0a2a49, #345d79 55%, #070d14);
+}
+#notch-root .tb-full-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#notch-root .tb-full-copy {
+  flex: 1;
+  min-width: 0;
+}
+#notch-root .tb-full-title {
+  display: block;
+  font-size: 18px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#notch-root .tb-full-artist {
+  display: block;
+  margin-top: 3px;
+  color: #36a5ff;
+  font-size: 13px;
+}
+#notch-root .tb-full-progress {
+  height: 4px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #313136;
+}
+#notch-root .tb-full-fill {
+  display: block;
+  width: 70%;
+  height: 100%;
+  background: #fff;
+}
+#notch-root .tb-full-times {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: #36a5ff;
+  font-size: 12px;
+  font-weight: 600;
+}
+#notch-root .tb-full-times span {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+#notch-root .tb-full-controls {
+  display: flex;
+  gap: 22px;
+  margin-top: 12px;
+}
+#notch-root .tb-full-controls button {
+  width: 34px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+}
+#notch-root .tb-full-controls svg {
+  width: 20px;
+  height: 20px;
+}
+#notch-root .tb-full-controls .tb-full-play svg {
+  width: 28px;
+  height: 28px;
+}
+#notch-root .tb-full-controls button:disabled {
+  opacity: 0.9;
+}
+#notch-root .tb-full-calendar {
+  align-self: center;
+  min-width: 0;
+}
+#notch-root .tb-full-calendar > div:first-child {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 17px;
+}
+#notch-root .tb-full-year {
+  color: #8e8e93;
+  font-weight: 400;
+}
+#notch-root .tb-full-weekdays,
+#notch-root .tb-full-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+#notch-root .tb-full-weekdays {
+  margin-top: 8px;
+  color: #a7a7ab;
+  font-size: 10px;
+}
+#notch-root .tb-full-days {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+#notch-root .tb-full-days span {
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+}
+#notch-root .tb-full-days .today {
+  border-radius: 50%;
+  background: #0879ed;
+}
+#notch-root .tb-full-event {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+#notch-root .tb-full-event i {
+  width: 4px;
+  height: 32px;
+  border-radius: 99px;
+  background: #a9c1df;
+}
+#notch-root .tb-full-event span {
+  margin-left: auto;
+  align-self: flex-start;
+  font-size: 11px;
+}
+#notch-root .tb-full-mirror {
+  align-self: stretch;
+  min-height: 0;
+  border-radius: 16px;
+  display: flex;
+  height: 120px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 35%;
+  background: #171717;
+  color: #aaaab0;
+  font-size: 13px;
+}
+#notch-root .tb-full-mirror span {
+  font-size: 34px;
+  line-height: 0.8;
+}
 
 @media (max-width: 768px) {
-  #notch-root .tb-notch { width: 180px; height: 32px; }
-  #notch-root .tb-notch.has-played:not(.expanded) { width: min(88vw, 300px); height: 32px; }
-  /* mobile: both modes show the compact single-track bar at ~min(92vw,560px)×220 */
-  #notch-root .tb-notch.expanded,
-  #notch-root .tb-notch.expanded.compact { width: min(92vw, 560px); height: 220px; border-radius: 0 0 24px 24px; }
-  #notch-root .tb-single-track { padding: 20px 16px 16px; column-gap: 12px; row-gap: 24px; }
+  #notch-root .tb-notch {
+    width: 180px;
+    height: 32px;
+  }
+  #notch-root .tb-notch.has-played:not(.expanded) {
+    width: min(88vw, 300px);
+    height: 32px;
+  }
+  #notch-root .tb-single-track {
+    padding: 20px 16px 16px;
+    column-gap: 12px;
+    row-gap: 24px;
+  }
   /* main.css hides .tb-battery-pct globally at this width (meant for the
      menubar); the notch player keeps its percentage, like the reference. */
-  #notch-root .tb-notch .tb-battery-pct { display: inline; }
-  #notch-root .tb-track-controls { gap: 14px; }
-  #notch-root .tb-track-btn { width: 30px; height: 30px; }
-  #notch-root .tb-track-btn svg { width: 24px; height: 24px; }
-  #notch-root .tb-track-play svg { width: 32px; height: 32px; }
-  #notch-root .tb-full-player { display: none; }
-  #notch-root .tb-notch.expanded:not(.compact) .tb-single-track { opacity: 1; transform: none; filter: none; pointer-events: auto; }
-  #notch-root .tb-track-title { font-size: 17px; }
-  #notch-root .tb-track-artist { font-size: 13px; }
-  #notch-root .tb-track-art { width: 56px; height: 56px; }
+  #notch-root .tb-notch .tb-battery-pct {
+    display: inline;
+  }
+  #notch-root .tb-track-controls {
+    gap: 14px;
+  }
+  #notch-root .tb-track-btn {
+    width: 30px;
+    height: 30px;
+  }
+  #notch-root .tb-track-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+  #notch-root .tb-track-play svg {
+    width: 32px;
+    height: 32px;
+  }
+  #notch-root .tb-notch.expanded:not(.compact) .tb-single-track {
+    opacity: 1;
+    transform: none;
+    display: none;
+    filter: none;
+    pointer-events: auto;
+  }
+  #notch-root .tb-track-title {
+    font-size: 17px;
+  }
+  #notch-root .tb-track-artist {
+    font-size: 13px;
+  }
+  #notch-root .tb-track-art {
+    width: 56px;
+    height: 56px;
+  }
   #notch-root .tb-notch.expanded.compact + .tb-compact-toggle,
-  #notch-root .tb-notch.expanded:not(.compact) + .tb-compact-toggle { top: 230px; }
+  #notch-root .tb-notch.expanded:not(.compact) + .tb-compact-toggle {
+    top: 230px;
+  }
 }
 
 /* Full-player tabs and AirDrop pane. */
-#notch-root .tb-full-tabs { position: absolute; top: 12px; left: 18px; display: flex; gap: 8px; }
-#notch-root .tb-full-tab { width: 32px; height: 28px; padding: 0; border: 0; border-radius: 999px; display: grid; place-items: center; color: #a6a6ac; background: transparent; cursor: pointer; }
-#notch-root .tb-full-tab.is-active { color: #fff; background: #1c1c1e; }
-#notch-root .tb-full-tab svg { width: 16px; height: 16px; fill: currentColor; }
-#notch-root .tb-airdrop { position: absolute; inset: 56px 20px 18px; display: grid; grid-template-columns: 120px 1fr; gap: 16px; opacity: 0; pointer-events: none; transform: translateY(-4px); transition: opacity 180ms ease, transform 220ms ease; }
-#notch-root .tb-airdrop-device, #notch-root .tb-airdrop-drop { border: 2px dashed #202023; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aaaab0; }
-#notch-root .tb-airdrop-device { gap: 6px; font-size: 14px; color: #fff; }
-#notch-root .tb-airdrop-device span { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: #252525; color: #0a84ff; font-size: 24px; }
-#notch-root .tb-airdrop-drop { gap: 8px; font-size: 15px; }
-#notch-root .tb-airdrop-drop svg { width: 28px; height: 28px; fill: none; stroke: #aaaab0; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+#notch-root .tb-full-tabs {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  display: flex;
+  gap: 8px;
+}
+#notch-root .tb-full-tab {
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #a6a6ac;
+  background: transparent;
+  cursor: pointer;
+}
+#notch-root .tb-full-tab.is-active {
+  color: #fff;
+  background: #1c1c1e;
+}
+#notch-root .tb-full-tab svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+#notch-root .tb-airdrop {
+  position: absolute;
+  inset: 56px 20px 18px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease;
+}
+#notch-root .tb-airdrop-device,
+#notch-root .tb-airdrop-drop {
+  border: 2px dashed #202023;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #aaaab0;
+}
+#notch-root .tb-airdrop-device {
+  gap: 6px;
+  font-size: 14px;
+  color: #fff;
+}
+#notch-root .tb-airdrop-device span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #252525;
+  color: #0a84ff;
+  font-size: 24px;
+}
+#notch-root .tb-airdrop-drop {
+  gap: 8px;
+  font-size: 15px;
+}
+#notch-root .tb-airdrop-drop svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: #aaaab0;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 #notch-root .tb-full-player.is-airdrop .tb-full-now,
 #notch-root .tb-full-player.is-airdrop .tb-full-calendar,
-#notch-root .tb-full-player.is-airdrop .tb-full-mirror { opacity: 0; pointer-events: none; }
-#notch-root .tb-full-player.is-airdrop .tb-airdrop { opacity: 1; pointer-events: auto; transform: none; }
+#notch-root .tb-full-player.is-airdrop .tb-full-mirror {
+  opacity: 0;
+  pointer-events: none;
+}
+#notch-root .tb-full-player.is-airdrop .tb-airdrop {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
 
 /* (mode toggle visibility restored — the rules at .tb-compact-toggle above
    handle its show/hide; nothing overrides them here) */

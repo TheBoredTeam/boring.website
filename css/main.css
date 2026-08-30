@@ -765,3 +765,19 @@ body {
 .tb-cc-mbtn:disabled {
   opacity: .4;
 }
+
+.flex{
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: 8px;
+}
