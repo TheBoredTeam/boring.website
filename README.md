@@ -8,7 +8,7 @@
 **The home of [boring.notch](https://github.com/TheBoredTeam/boring.notch) — a pixel-faithful macOS desktop that lives entirely in your browser.**
 Zero dependencies. Zero build step. Just open `index.html`.
 
-> **Built entirely by AI.** Every pixel and every line of this site was written by the **majdoors** — the AI sub-agent developers clocking in at [office.theboring.name](https://office.theboring.name). No humans were harmed (or, frankly, all that involved).
+> **Built entirely by AI.** Every pixel and every line of this site was written by the **majdoors** — the AI sub-agent developers clocking in at [boringfloor.com](https://boringfloor.com). No humans were harmed (or, frankly, all that involved).
 
 [![made with](https://img.shields.io/badge/made%20with-%E2%98%95-brown)](#)
 [![zero dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen)](#)
@@ -17,7 +17,7 @@ Zero dependencies. Zero build step. Just open `index.html`.
 
 <img src="assets/screenshot-desktop.jpg" alt="theboringwebsite — a macOS desktop in the browser" width="100%" />
 
-[Live site](#) · [boring.notch for macOS](https://github.com/TheBoredTeam/boring.notch) · [theboringoffice](https://office.theboring.name) · [Discord](https://discord.com/invite/HznxBpnJmQ) · [Buy us a coffee](https://buymeacoffee.com/jfxh67wvfxq)
+[Live site](#) · [boring.notch for macOS](https://github.com/TheBoredTeam/boring.notch) · [theboringoffice](https://boringfloor.com) · [Discord](https://discord.com/invite/HznxBpnJmQ) · [Buy us a coffee](https://buymeacoffee.com/jfxh67wvfxq)
 
 </div>
 
@@ -28,7 +28,7 @@ Zero dependencies. Zero build step. Just open `index.html`.
 | | |
 |---|---|
 | 🎵 **Functional Dynamic-Island notch** | Streams six hand-verified lofi radio stations (SomaFM, Zeno, Chillhop). Boots in the playing state — album art, colorful EQ — and real audio arms on your first click. Live calendar week-strip, battery, transport controls. |
-| 🧭 **In-page Safari** | A full window manager (drag, minimize, zoom, Esc) with a Safari-chrome window showing a replica of the [boring.notch repo](https://github.com/TheBoredTeam/boring.notch) — and a **genuine live embed of [theboringoffice](https://office.theboring.name)**. |
+| 🧭 **In-page Safari** | A full window manager (drag, minimize, zoom, Esc) with a Safari-chrome window showing a replica of the [boring.notch repo](https://github.com/TheBoredTeam/boring.notch) — and a **genuine live embed of [theboringoffice](https://boringfloor.com)**. |
 | 🗂️ **A real Finder** | Draggable desktop folders, navigable virtual filesystem of this site's own source, back/forward history, sidebar favorites, and a Preview window that renders the actual code (line numbers included) and images. |
 | 🧩 **Sonoma widgets with live data** | Calendar, real weather (Open-Meteo), four analog world clocks, and live crypto markets (CoinGecko). Keyless, CORS-friendly APIs only. |
 | 🚀 **macOS Dock** | 22 real app icons, cosine-falloff magnification with neighbors that *push apart* like the real thing, running indicators, and a wiggling Trash. |
@@ -77,7 +77,7 @@ no bundlers, no tears.
 ## The boring universe
 
 - **[boring.notch](https://github.com/TheBoredTeam/boring.notch)** — the real macOS notch app this site demos. Free & open source.
-- **[theboringoffice](https://office.theboring.name)** — AI agents that run your boring work (it runs live inside a window on the desktop).
+- **[theboringoffice](https://boringfloor.com)** — AI agents that run your boring work (it runs live inside a window on the desktop).
 - **[Discord](https://discord.com/invite/HznxBpnJmQ)** — lofi, code & questionable life choices.
 - **[Buy Me a Coffee](https://buymeacoffee.com/jfxh67wvfxq)** — keeps the notch spinning.
 

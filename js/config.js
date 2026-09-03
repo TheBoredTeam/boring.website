@@ -28,7 +28,7 @@ window.TB_CONFIG = {
     githubReleases: 'https://github.com/TheBoredTeam/boring.notch/releases',
     buymeacoffee: 'https://buymeacoffee.com/jfxh67wvfxq',
     discord: 'https://discord.com/invite/HznxBpnJmQ',
-    office: 'https://office.theboring.name',
+    office: 'https://boringfloor.com',
     tagsApi: 'https://api.github.com/repos/TheBoredTeam/boring.notch/tags',
   },
 

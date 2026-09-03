@@ -3,7 +3,7 @@
    root is click-through, .tb-promo re-enables pointer events). Four
    cards: the boring.notch DOWNLOAD card (the star), a Discord invite
    banner, a theboringoffice banner, and a yellow sticky note (the whole
-   note links to office.theboring.name). All outbound hrefs come from
+   note links to boringfloor.com). All outbound hrefs come from
    window.TB_CONFIG.links and degrade to '#' (discord degrades to a
    non-interactive "invite soon" pill; the sticky note falls back to its
    hardcoded URL) when config is absent — zero console errors either way. */
@@ -16,7 +16,7 @@
 
   /* sticky note target — same URL as TB_CONFIG.links.office; hardcoded
      fallback so the note still links out when config never loads */
-  var STICKY_URL = 'https://office.theboring.name';
+  var STICKY_URL = 'https://boringfloor.com';
 
   /* Inline SVG down-arrow for the download button (no emoji — this glyph
      is what the bob keyframes animate). */
@@ -144,7 +144,7 @@
     card.appendChild(text);
 
     card.appendChild(outbound(
-      el('a', 'tb-promo-office-link', 'office.theboring.name ↗'),
+      el('a', 'tb-promo-office-link', 'boringfloor.com ↗'),
       link(links, 'office')));
 
     /* card body → open the in-page window; the ↗ link stays outbound */
@@ -175,7 +175,7 @@
     text.appendChild(
       el('div', 'tb-promo-sticky-line', 'built with 💛 by the majdoors'));
     text.appendChild(
-      el('div', 'tb-promo-sticky-url', 'office.theboring.name'));
+      el('div', 'tb-promo-sticky-url', 'boringfloor.com'));
     note.appendChild(text);
 
     return note;

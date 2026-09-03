@@ -227,7 +227,7 @@
   }
 
   /* ---------- office: live theboringoffice product window ----------
-     office.theboring.name sends no X-Frame-Options / frame-ancestors, so
+     boringfloor.com sends no X-Frame-Options / frame-ancestors, so
      unlike github.com it can be genuinely iframed — a real live embed. */
   function renderOffice() {
     var wrap = el('div', 'tb-video tb-office');

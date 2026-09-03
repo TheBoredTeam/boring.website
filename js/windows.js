@@ -32,7 +32,7 @@
       width: 900,
       height: 520,
       top: 400,
-      urlLabel: "office.theboring.name",
+      urlLabel: "boringfloor.com",
     },
     messages: {
       title: "Messages",
