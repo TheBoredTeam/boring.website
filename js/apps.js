@@ -226,26 +226,6 @@
     return root;
   }
 
-  /* ---------- office: live theboringoffice product window ----------
-     boringfloor.com sends no X-Frame-Options / frame-ancestors, so
-     unlike github.com it can be genuinely iframed — a real live embed. */
-  function renderOffice() {
-    var wrap = el('div', 'tb-video tb-office');
-    var src = link('office'); /* '#' when config is missing */
-    if (src && src !== '#') {
-      var frame = document.createElement('iframe');
-      frame.setAttribute('loading', 'lazy');
-      frame.style.cssText = 'position:absolute;top:0;left:0;height:100%;width:100%';
-      frame.title = 'theboringoffice';
-      frame.setAttribute('referrerpolicy', 'no-referrer');
-      frame.src = src;
-      wrap.appendChild(frame);
-    } else {
-      wrap.appendChild(el('div', 'tb-app-unknown', 'theboringoffice — link unavailable'));
-    }
-    return wrap;
-  }
-
   /* ---------- VFS: virtual filesystem mirroring the real project ---------- */
 
   var README_TEXT = [
@@ -1086,7 +1066,7 @@
           spawnPrompt();
           break;
         case 'office':
-          fireApp('office');
+          openOut(link('office'));
           print('🏢 opening the office…');
           spawnPrompt();
           break;
@@ -1390,7 +1370,6 @@
           case 'coffee': return renderCoffee();
           case 'about': return renderAbout();
           case 'video': return renderVideo();
-          case 'office': return renderOffice();
           case 'folder': return renderFolder(opts);
           case 'viewer': return renderViewer(opts);
           case 'messages': return renderMessages();
