@@ -36,7 +36,6 @@
 #promo-root .tb-promo-card--discord,
 #promo-root .tb-promo-card--office {
   text-decoration:none;
-  color:inherit;
   display: flex;
   align-items: center;
   gap: 12px;
