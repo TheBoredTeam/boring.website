@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "extensions": [
+    {
+      "id": "theboringteam.boringnotch.lockscreen-lyrics",
+      "slug": "lock-screen",
+      "name": "Lock Screen",
+      "tagline": "Your music. Your focus. Even while you're away.",
+      "description": "Give your lock screen a little more life. Follow your music with synced lyrics, settle into a Focus session, or keep the next thing in view with Glance. One extension. One permanent unlock.",
+      "developer": {
+        "name": "TheBoredTeam",
+        "url": "https://github.com/TheBoredTeam"
+      },
+      "categories": [
+        "Music",
+        "Productivity"
+      ],
+      "price": {
+        "amount": 1,
+        "currency": "USD",
+        "billing": "one-time"
+      },
+      "status": "coming-soon",
+      "statusNote": "In development. The signed extension and a compatible Boring Notch release are not available yet. Purchasing will open here when they're ready.",
+      "version": "1.0 preview",
+      "icon": "assets/extensions/lock-screen.svg",
+      "artwork": "assets/extensions/lock-screen-preview.svg",
+      "artworkAlt": "Illustration of a dark Mac lock screen with a small notch and original sample lyrics. Product preview, not a screenshot.",
+      "featured": true,
+      "heroTitle": "Good things happen\neven on pause.",
+      "purchaseUrl": "https://buymeacoffee.com/jfxh67wvfxq/e/580376",
+      "supportUrl": "https://discord.com/invite/HznxBpnJmQ",
+      "requirements": [
+        "macOS 14 or later",
+        "Boring Notch with extension support (upcoming release)",
+        "The Lock Screen extension installed and activated"
+      ],
+      "features": [
+        {
+          "title": "Stay in the song",
+          "description": "Synced lyrics, album artwork, and a minimal player. Word highlighting is available for tracks with community word timings."
+        },
+        {
+          "title": "Find your focus",
+          "description": "Keep a Focus session in view with a quiet timer and optional break reminders."
+        },
+        {
+          "title": "A glance is enough",
+          "description": "See useful details and optionally your next calendar event, without unlocking your Mac."
+        },
+        {
+          "title": "One small purchase",
+          "description": "Music, Focus, and Glance are all included for $1, once. No subscription or separate mode purchases."
+        }
+      ],
+      "privacy": "Lyrics lookup sends track metadata to LRCLIB, Apple's public music catalog, and the AMLL community database. Calendar details and notifications are optional. Anything shown on your lock screen can be seen by people nearby.",
+      "installSteps": [
+        "Wait for the compatible Boring Notch release and signed extension package.",
+        "Purchase the extension, then download its .bnplugin package from the publisher.",
+        "In Boring Notch, open Settings → Extensions → Install extension and review the publisher.",
+        "Open Lock Screen's settings and activate your license code. One unlock includes all three modes."
+      ],
+      "previews": [
+        {
+          "image": "assets/extensions/lock-screen-preview.svg",
+          "alt": "Illustration of a dark Mac lock screen with a small notch and original sample lyrics. Product preview, not a screenshot.",
+          "caption": "Design preview · Stay in the song"
+        },
+        {
+          "image": "assets/extensions/lock-screen-focus.svg",
+          "alt": "Design illustration of a quiet Focus timer and an optional sample calendar event on a green landscape.",
+          "caption": "Design preview · Focus and Glance, included"
+        }
+      ]
+    },
+    {
+      "id": "com.example.boringnotch.now-playing",
+      "slug": "now-playing-example",
+      "name": "Now Playing Example",
+      "tagline": "A small beginning for your next big idea.",
+      "description": "A free, open-source starter for extension developers. Show the current track, control playback, and learn how to give your extension its own settings. Build it locally to explore the public extension API.",
+      "developer": {
+        "name": "TheBoredTeam",
+        "url": "https://github.com/TheBoredTeam"
+      },
+      "categories": [
+        "Developer tools",
+        "Music"
+      ],
+      "price": {
+        "amount": 0,
+        "currency": "USD",
+        "billing": "free"
+      },
+      "status": "preview",
+      "statusNote": "Developer preview. Source code is available now; this is an example to build with Xcode, not a signed download for everyday use.",
+      "version": "API v1 preview",
+      "icon": "assets/extensions/now-playing.svg",
+      "artwork": "assets/extensions/now-playing-preview.svg",
+      "artworkAlt": "Illustration of a compact Now Playing panel with a track title and a playback button.",
+      "featured": false,
+      "sourceUrl": "https://github.com/TheBoredTeam/boring.notch/tree/e4ca1a8ba000b95cda742cf74c5c2bfa656af4fd/examples/now-playing-extension",
+      "supportUrl": "https://github.com/TheBoredTeam/boring.notch/issues",
+      "requirements": [
+        "macOS 14 or later",
+        "Xcode command-line tools",
+        "A Debug Boring Notch build from the extension-host preview branch"
+      ],
+      "features": [
+        {
+          "title": "Start with something working",
+          "description": "A complete example with a settings view, media updates, and a playback command."
+        },
+        {
+          "title": "Make it your own",
+          "description": "Use the documented C API to create your own free or paid extension. Each developer manages their own distribution and access."
+        }
+      ],
+      "privacy": "The example receives track title, artist, and playback state from Boring Notch. It does not use a license service or request artwork.",
+      "installSteps": [
+        "Open the source and follow the included README.",
+        "Build the example and run the supplied smoke test.",
+        "Launch a compatible Debug Boring Notch build with development extensions enabled.",
+        "Open Settings → Extensions to try the example. Development builds are not intended for general distribution."
+      ]
+    }
+  ]
+}
