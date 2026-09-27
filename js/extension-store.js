@@ -5,7 +5,7 @@
   var model = window.TBExtensionCatalog, catalog, main, search, results, editorial, count, filterButtons, pageTitle, collectionTitle;
   var embedded = new URLSearchParams(location.search).get('embedded') === '1';
   var guide = 'https://github.com/TheBoredTeam/boring.notch/blob/e4ca1a8ba000b95cda742cf74c5c2bfa656af4fd/docs/extensions.md';
-  var submit = 'https://github.com/TheBoredTeam/boring.website/blob/main/extensions/README.md';
+  var submit = 'https://github.com/TheBoredTeam/boring.website/blob/01e566b377b2ba0e5bbf61dbdf65dc48ba3449df/extensions/README.md';
   var statusNames = { available: 'Available', preview: 'Developer preview', 'coming-soon': 'Coming soon' };
   var state = readState();
   var paths = {
