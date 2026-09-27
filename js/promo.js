@@ -98,6 +98,15 @@
       outbound(el('a', 'tb-promo-dl-github', 'GitHub ↗'), link(links, 'github')));
     card.appendChild(meta);
 
+    var extensions = el('a', 'tb-promo-extensions-link', 'Explore extensions →');
+    extensions.href = 'extensions/';
+    extensions.addEventListener('click', function (event) {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !window.TBWindows) return;
+      event.preventDefault();
+      window.TBWindows.open({ app: 'appstore' });
+    });
+    card.appendChild(extensions);
+
     return card;
   }
 

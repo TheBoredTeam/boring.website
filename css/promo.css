@@ -1,3 +1,7 @@
+.tb-promo-extensions-link { display:block; margin-top:15px; padding-top:13px; border-top:1px solid #ffffff25; color:#fff; text-align:center; font-size:12px; text-decoration:none; }
+.tb-promo-extensions-link:hover { text-decoration:underline; }
+.tb-promo-extensions-link:focus-visible { outline:2px solid white; outline-offset:4px; }
+
 /* css/promo.css — left-edge promo column. Owned by Dev 4 (Promo Column).
    Rendered into #promo-root (positioned by css/main.css: fixed, left edge,
    click-through). .tb-promo re-enables pointer events. All classes tb-

@@ -36,7 +36,22 @@ Zero dependencies. Zero build step. Just open `index.html`.
 | 🖼️ **Rotating gallery wallpaper** | Renoir, Kruseman, Courbet, Friedrich, Monet, Sisley — public-domain masters, crossfading every 5 seconds. |
 | 📱 **Responsive** | On phones the desktop becomes a clean scrolling feed of the same cards; windows go near-fullscreen. |
 
-## Run it
+## Extension Store
+
+The App Store dock icon, Applications grid, Spotlight, and the download card open the extension collection. The same storefront is directly accessible at `/extensions/`, with shareable detail links such as `/extensions/?extension=lock-screen`.
+
+Manage every listing in [`extensions/catalog.json`](extensions/catalog.json). Adding an entry updates cards, categories, search, prices, and detail views without changing the renderer or adding a backend. See [the catalog guide](extensions/README.md) for the schema, release rules, and submission workflow.
+
+Lock Screen is listed as one $1 permanent bundle and marked **coming soon**. The free Now Playing Example is a **developer preview**, with source instead of a consumer download. These states keep unreleased listings from offering a purchase or install button prematurely.
+
+```sh
+node scripts/validate-extensions.cjs
+node --test tests/*.test.cjs
+```
+
+The website still has no dependencies or build step. Serve it over HTTP to load the JSON catalog (a `file://` tab cannot fetch it).
+
+## Run it locally
 
 
 ```bash

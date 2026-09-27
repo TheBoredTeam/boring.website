@@ -1250,7 +1250,7 @@
     { icon: 'assets/icons/google-play-app.webp', label: 'Buy Me a Coffee', app: 'coffee',   cat: 'Entertainment' },
     { icon: 'assets/icons/finder.png',           label: 'Finder',          app: 'about',    cat: 'Utilities' },
     { icon: 'assets/icons/github.png',           label: 'GitHub',          app: 'safari',   cat: 'Productivity' },
-    { icon: 'assets/icons/app-store.png',        label: 'App Store',       app: 'download', cat: 'Productivity' },
+    { icon: 'assets/icons/app-store.png',        label: 'App Store',       app: 'appstore', cat: 'Productivity' },
     { icon: 'assets/icons/apps.png',             label: 'Launchpad',       app: 'apps',     cat: 'Utilities' },
     { icon: 'assets/icons/claude.png',           label: 'Claude',          href: 'https://claude.ai', cat: 'Productivity' }
   ];
@@ -1372,10 +1372,19 @@
 
   /* ---------- public API ---------- */
 
+  function renderExtensionStore() {
+    var frame = document.createElement('iframe');
+    frame.className = 'tb-extension-store-frame';
+    frame.src = 'extensions/?embedded=1';
+    frame.title = 'Boring Notch Extension Store';
+    return frame;
+  }
+
   window.TBApps = {
     render: function (appId, opts) {
       try {
         switch (appId) {
+          case 'appstore': return renderExtensionStore();
           case 'safari': return renderSafari();
           case 'download': return renderDownload();
           case 'coffee': return renderCoffee();

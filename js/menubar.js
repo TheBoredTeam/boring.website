@@ -58,6 +58,7 @@
 
   /* Spotlight's fixed app registry: label + glyph + the exact tb:open-app detail. */
   var SPOTLIGHT_APPS = [
+    { glyph: '🧩', label: 'App Store — Extensions', detail: { app: 'appstore' } },
     { glyph: '🧭', label: 'Safari', detail: { app: 'safari' } },
     { glyph: '🎵', label: 'Boring.Notch', detail: { app: 'music' } },
     { glyph: '⬇️', label: 'Downloads', detail: { app: 'download' } },
