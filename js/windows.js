@@ -619,13 +619,14 @@
         closeWindow(top);
       }
     });
-    /* The store replaces the former boringfloor embed as the default window.
-       Keep the trailer beside it when there is room, and underneath otherwise. */
-    var pairW = 480 + 24 + 1020;
-    if (root.clientWidth >= pairW + 28) {
-      var startX = Math.round((root.clientWidth - pairW) / 2);
-      openApp("video", { left: startX, top: 120 });
-      openApp("appstore", { left: startX + 504, top: 38 });
+    /* Reference layout: store on the right, trailer lower on the left.
+       Geometry scales with the desktop and keeps the dock clear. */
+    if (root.clientWidth > 900 && window.TBWindowGeometry) {
+      var layout = window.TBWindowGeometry.initialLayout(
+        { width:window.innerWidth, height:window.innerHeight }, root.getBoundingClientRect().top
+      );
+      openApp("video", layout.video);
+      openApp("appstore", layout.store);
     } else {
       openApp("video");
       openApp("appstore");

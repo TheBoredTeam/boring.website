@@ -38,7 +38,7 @@ Zero dependencies. Zero build step. Just open `index.html`.
 
 ## Extension Store
 
-The Extensions Store opens by default, replacing the boringfloor embed. Drag any edge or corner to resize it, or focus the bottom-right resize control and use arrow keys (Shift for larger steps). Phone layouts use a fitted window.
+The Extensions Store opens by default on the right, with the YouTube trailer lower on the left, replacing the boringfloor embed. Drag any edge or corner to resize it, or focus the bottom-right resize control and use arrow keys (Shift for larger steps). Phone layouts use a fitted window.
 
 The App Store dock icon, Applications grid, Spotlight, and the download card open the extension collection. The same storefront is directly accessible at `/extensions/`, with shareable detail links such as `/extensions/?extension=lock-screen`.
 

@@ -21,5 +21,19 @@
     if (direction.includes('n')) { r.top = clamp(r.top + dy, b.top, bottom - b.minHeight); r.height = bottom - r.top; }
     return r;
   }
-  return { fit:fit, resize:resize };
+  function initialLayout(viewport, insetTop) {
+    var area = { width:viewport.width, height:viewport.height - insetTop };
+    var store = fit({
+      left:Math.round(viewport.width * 0.342), top:Math.round(viewport.height * 0.259) - insetTop,
+      width:clamp(Math.round(viewport.width * 0.533), 800, 1120), height:clamp(Math.round(viewport.height * 0.567), 420, 800)
+    }, area);
+    var videoWidth = clamp(Math.round(viewport.width * 0.268), 300, 540);
+    var videoHeight = Math.round(videoWidth * 340 / 480);
+    return { store:store, video:{
+      left:Math.round(viewport.width * 0.0415),
+      top:clamp(Math.round(viewport.height * 0.557) - insetTop, 8, Math.max(8, area.height - videoHeight - 110)),
+      width:videoWidth, height:videoHeight
+    } };
+  }
+  return { fit:fit, resize:resize, initialLayout:initialLayout };
 }));
