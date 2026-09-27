@@ -26,15 +26,6 @@
       width: 480,
       height: 340,
     },
-    office: {
-      title: "theboringoffice",
-      chrome: "safari",
-      emoji: "🏢",
-      width: 900,
-      height: 520,
-      top: 400,
-      urlLabel: "boringfloor.com",
-    },
     messages: {
       title: "Messages",
       chrome: "plain",
@@ -95,6 +86,7 @@
   };
   /* Fallback-card external link per app (read live from TB_CONFIG). */
   var FALLBACK_LINKS = {
+    appstore: function () { return "extensions/"; },
     safari: function (c) {
       return c && c.links && c.links.github;
     },
@@ -214,6 +206,7 @@
     el.style.transform = "";
     el.style.opacity = "";
     el.style.pointerEvents = "";
+    if (rec.app === "appstore" && window.innerWidth > 768) fitStore(rec);
     focusWindow(rec);
     dispatchState(rec.app, "restored");
   }
@@ -244,6 +237,7 @@
       el.style.height = window.innerHeight * 0.82 + "px";
       rec.zoomed = true;
     }
+    if (rec.app === "appstore" && window.innerWidth > 768) fitStore(rec);
     setTimeout(function () {
       el.classList.remove("tb-animating");
     }, 420);
@@ -331,6 +325,65 @@
       titlebar.addEventListener("touchmove", move, { passive: false });
       titlebar.addEventListener("touchend", up);
       titlebar.addEventListener("touchcancel", up);
+    });
+  }
+
+  /* ---- App Store resizing; listeners exist only during an active gesture ---- */
+  function storeViewport() { return { width:root.clientWidth, height:root.clientHeight }; }
+  function storeRect(rec) {
+    return { left:rec.el.offsetLeft, top:rec.el.offsetTop, width:rec.el.offsetWidth, height:rec.el.offsetHeight };
+  }
+  function applyStoreRect(rec, rect) {
+    ["left", "top", "width", "height"].forEach(function (key) { rec.el.style[key] = rect[key] + "px"; });
+  }
+  function fitStore(rec) {
+    if (window.TBWindowGeometry) applyStoreRect(rec, window.TBWindowGeometry.fit(storeRect(rec), storeViewport()));
+  }
+  function attachResize(rec) {
+    if (!window.TBWindowGeometry) return;
+    ["n", "s", "e", "w", "ne", "nw", "se", "sw"].forEach(function (direction) {
+      var handle = el(direction === "se" ? "button" : "div", "tb-resize-handle tb-resize-" + direction);
+      if (direction === "se") {
+        handle.type = "button";
+        handle.setAttribute("aria-label", "Resize Extension Store. Use arrow keys; hold Shift for larger steps.");
+        handle.addEventListener("keydown", function (event) {
+          var step = event.shiftKey ? 50 : 10;
+          var delta = { ArrowLeft:[-step,0], ArrowRight:[step,0], ArrowUp:[0,-step], ArrowDown:[0,step] }[event.key];
+          if (!delta) return;
+          event.preventDefault(); event.stopPropagation();
+          rec.zoomed = false; rec.preZoom = null;
+          applyStoreRect(rec, window.TBWindowGeometry.resize(storeRect(rec), "se", delta[0], delta[1], storeViewport()));
+        });
+      } else handle.setAttribute("aria-hidden", "true");
+      handle.addEventListener("pointerdown", function (event) {
+        if (event.button !== 0 || rec.state !== "open" || window.innerWidth <= 768) return;
+        event.preventDefault(); event.stopPropagation(); focusWindow(rec);
+        if (direction === "se") handle.focus({ preventScroll:true });
+        fitStore(rec);
+        var start = storeRect(rec), x = event.clientX, y = event.clientY, pointer = event.pointerId;
+        rec.zoomed = false; rec.preZoom = null; rec.el.classList.remove("tb-animating");
+        root.classList.add("tb-resizing");
+        try { handle.setPointerCapture(pointer); } catch (_) { /* document listeners still finish the gesture */ }
+        function move(next) {
+          if (next.pointerId !== pointer) return;
+          applyStoreRect(rec, window.TBWindowGeometry.resize(start, direction, next.clientX - x, next.clientY - y, storeViewport()));
+        }
+        function finish(next) {
+          if (next.pointerId !== undefined && next.pointerId !== pointer) return;
+          root.classList.remove("tb-resizing");
+          document.removeEventListener("pointermove", move);
+          document.removeEventListener("pointerup", finish);
+          document.removeEventListener("pointercancel", finish);
+          handle.removeEventListener("lostpointercapture", finish);
+          window.removeEventListener("blur", finish);
+        }
+        document.addEventListener("pointermove", move);
+        document.addEventListener("pointerup", finish);
+        document.addEventListener("pointercancel", finish);
+        handle.addEventListener("lostpointercapture", finish);
+        window.addEventListener("blur", finish);
+      });
+      rec.el.appendChild(handle);
     });
   }
 
@@ -474,6 +527,7 @@
     );
     attachDrag(rec, titlebar);
     attachTouchDragFallback(rec, titlebar);
+    if (app === "appstore") attachResize(rec);
     return rec;
   }
 
@@ -525,6 +579,7 @@
     rec = buildWindow(app, spec);
     windowsByApp[key] = rec;
     root.appendChild(rec.el);
+    if (app === "appstore" && window.innerWidth > 768) fitStore(rec);
     dispatchState(app, "open");
   }
 
@@ -564,24 +619,21 @@
         closeWindow(top);
       }
     });
-    /* Boot: the YouTube demo window sits already-open on EVERY screen (it's
-       the product trailer; the @768 window rules render it near-fullscreen
-       on phones). theboringoffice joins it SIDE BY SIDE with a 24px gap only
-       on wide screens — the live iframe embed is a desktop experience.
-       Closing deletes their records, so nothing re-opens them afterwards. */
-    if (root.clientWidth > 900) {
-      var pairW = 480 + 24 + 700;
-      var startX = Math.max(14, Math.round((root.clientWidth - pairW) / 2));
-      openApp("video", { left: startX, top: 400 });
-      openApp("office", {
-        left: startX + 480 + 24,
-        top: 400,
-        width: 700,
-        height: 480,
-      });
+    /* The store replaces the former boringfloor embed as the default window.
+       Keep the trailer beside it when there is room, and underneath otherwise. */
+    var pairW = 480 + 24 + 1020;
+    if (root.clientWidth >= pairW + 28) {
+      var startX = Math.round((root.clientWidth - pairW) / 2);
+      openApp("video", { left: startX, top: 120 });
+      openApp("appstore", { left: startX + 504, top: 38 });
     } else {
       openApp("video");
+      openApp("appstore");
     }
+    window.addEventListener("resize", function () {
+      var store = windowsByApp.appstore;
+      if (store && store.state === "open" && window.innerWidth > 768) fitStore(store);
+    });
   }
 
   if (document.readyState === "loading") {

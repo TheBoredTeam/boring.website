@@ -28,7 +28,7 @@ Zero dependencies. Zero build step. Just open `index.html`.
 | | |
 |---|---|
 | 🎵 **Functional Dynamic-Island notch** | Streams six hand-verified lofi radio stations (SomaFM, Zeno, Chillhop). Boots in the playing state — album art, colorful EQ — and real audio arms on your first click. Live calendar week-strip, battery, transport controls. |
-| 🧭 **In-page Safari** | A full window manager (drag, minimize, zoom, Esc) with a Safari-chrome window showing a replica of the [boring.notch repo](https://github.com/TheBoredTeam/boring.notch) — and a **genuine live embed of [theboringoffice](https://boringfloor.com)**. |
+| 🧭 **In-page Safari** | A full window manager (drag, minimize, zoom, Esc) with a Safari-chrome window showing a replica of the [boring.notch repo](https://github.com/TheBoredTeam/boring.notch) — plus the resizable Extensions Store. |
 | 🗂️ **A real Finder** | Draggable desktop folders, navigable virtual filesystem of this site's own source, back/forward history, sidebar favorites, and a Preview window that renders the actual code (line numbers included) and images. |
 | 🧩 **Sonoma widgets with live data** | Calendar, real weather (Open-Meteo), four analog world clocks, and live crypto markets (CoinGecko). Keyless, CORS-friendly APIs only. |
 | 🚀 **macOS Dock** | 22 real app icons, cosine-falloff magnification with neighbors that *push apart* like the real thing, running indicators, and a wiggling Trash. |
@@ -37,6 +37,8 @@ Zero dependencies. Zero build step. Just open `index.html`.
 | 📱 **Responsive** | On phones the desktop becomes a clean scrolling feed of the same cards; windows go near-fullscreen. |
 
 ## Extension Store
+
+The Extensions Store opens by default, replacing the boringfloor embed. Drag any edge or corner to resize it, or focus the bottom-right resize control and use arrow keys (Shift for larger steps). Phone layouts use a fitted window.
 
 The App Store dock icon, Applications grid, Spotlight, and the download card open the extension collection. The same storefront is directly accessible at `/extensions/`, with shareable detail links such as `/extensions/?extension=lock-screen`.
 
@@ -92,7 +94,7 @@ no bundlers, no tears.
 ## The boring universe
 
 - **[boring.notch](https://github.com/TheBoredTeam/boring.notch)** — the real macOS notch app this site demos. Free & open source.
-- **[theboringoffice](https://boringfloor.com)** — AI agents that run your boring work (it runs live inside a window on the desktop).
+- **[theboringoffice](https://boringfloor.com)** — AI agents that run your boring work (opens in its own browser tab).
 - **[Discord](https://discord.com/invite/HznxBpnJmQ)** — lofi, code & questionable life choices.
 - **[Buy Me a Coffee](https://buymeacoffee.com/jfxh67wvfxq)** — keeps the notch spinning.
 

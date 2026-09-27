@@ -92,15 +92,28 @@
 /* ---- Content area ---- */
 .tb-window-content { flex: 1; overflow: auto; min-height: 0; }
 
-.tb-window[data-app="appstore"] { background:#fff; max-width:calc(100vw - 28px); max-height:calc(100dvh - 145px); }
+.tb-window[data-app="appstore"] { container-type:inline-size; background:#fff; max-width:calc(100vw - 28px); max-height:calc(100dvh - 145px); }
 .tb-window[data-app="appstore"] .tb-window-titlebar { position:absolute; top:0; left:0; width:220px; height:52px; padding-left:21px; z-index:2; }
 .tb-window[data-app="appstore"] .tb-window-title { display:none; }
 .tb-window[data-app="appstore"] .tb-window-content { overflow:hidden; }
 .tb-extension-store-frame { display:block; width:100%; height:100%; border:0; background:#fff; }
-@media (max-width:788px) {
+@container (max-width:760px) {
   .tb-window[data-app="appstore"] .tb-window-titlebar { position:relative; width:100%; flex:0 0 42px; height:42px; background:#f5f5f8; }
   .tb-window[data-app="appstore"] .tb-window-title { display:block; }
 }
+.tb-resize-handle { position:absolute; z-index:5; touch-action:none; background:transparent; border:0; padding:0; }
+.tb-resize-n,.tb-resize-s { left:12px; right:12px; height:6px; cursor:ns-resize; }
+.tb-resize-n { top:0; } .tb-resize-s { bottom:0; }
+.tb-resize-e,.tb-resize-w { top:12px; bottom:12px; width:6px; cursor:ew-resize; }
+.tb-resize-e { right:0; } .tb-resize-w { left:0; }
+.tb-resize-ne,.tb-resize-nw,.tb-resize-se,.tb-resize-sw { width:14px; height:14px; }
+.tb-resize-ne { top:0; right:0; cursor:nesw-resize; }
+.tb-resize-nw { top:0; left:0; cursor:nwse-resize; }
+.tb-resize-se { bottom:0; right:0; cursor:nwse-resize; }
+.tb-resize-sw { bottom:0; left:0; cursor:nesw-resize; }
+.tb-resize-se::after { content:""; position:absolute; right:4px; bottom:4px; width:7px; height:7px; border-right:2px solid #b9b9c1; border-bottom:2px solid #b9b9c1; border-radius:0 0 3px; }
+.tb-resize-se:focus-visible { outline:2px solid #0071e3; outline-offset:-2px; }
+.tb-resizing iframe { pointer-events:none; }
 
 /* ---- Fallback card (TBApps missing or threw) ---- */
 .tb-fallback {
@@ -121,6 +134,7 @@
    inline width/height). left/top stay inline so dragging keeps working —
    the drag clamp always leaves >=60px of chrome reachable to drag back. */
 @media (max-width: 768px) {
+  .tb-resize-handle { display:none; }
   .tb-window {
     min-width: 0; min-height: 0;
     /* force near-fullscreen geometry over any inline left/top/width/height
