@@ -1,5 +1,5 @@
-/* js/notch.js — MacBook-style single-track player.
-   TB_CONFIG.music: title + artist. audioUrl optional; else iTunes 30s preview. */
+/* js/notch.js — MacBook-style notch player.
+   TB_CONFIG.music.playlist: [{ title, artist, artworkUrl, audioUrl }]. */
 (function () {
   'use strict';
 
@@ -22,13 +22,10 @@
 
     var cfg = typeof window.TB_CONFIG !== 'undefined' ? window.TB_CONFIG : {};
     var music = cfg.music || {};
-    var track = {
-      id: music.id || 'indeed',
-      name: music.title || 'Indeed',
-      artist: music.artist || 'Cheema Y',
-      artworkUrl: music.artworkUrl || '',
-      audioUrl: music.audioUrl || ''
-    };
+    var playlist = (music.playlist || []).filter(function (t) { return t && t.audioUrl; });
+    var index = 0;
+    var shuffle = false;
+    var track = { id: 'none', name: 'Nothing playing', artist: '', artworkUrl: '', audioUrl: '' };
     var expanded = false;
     var compact = true;
     var playing = false;
@@ -42,11 +39,11 @@
       '<div class="tb-single-track">',
       '<div class="tb-track-status"><span class="tb-track-mode">Now Playing</span><span class="tb-track-battery"><span class="tb-battery-pct">100%</span>' + BATTERY_ICON + '</span></div>',
       '<div class="tb-track-info"><div class="tb-track-art"></div><div class="tb-track-copy"><strong class="tb-track-title"></strong><span class="tb-track-artist"></span></div><span class="tb-track-level" aria-hidden="true">▮▮▮▮</span></div>',
-      '<div class="tb-track-progress-row"><span class="tb-track-current">0:00</span><input class="tb-track-progress" type="range" min="0" max="100" value="0" aria-label="Track progress"><span class="tb-track-duration">--:--</span></div>',
-      '<div class="tb-track-controls"><button type="button" class="tb-track-btn" aria-label="Shuffle">' + ICONS.shuffle + '</button><button type="button" class="tb-track-btn" aria-label="Previous track">' + ICONS.previous + '</button><button type="button" class="tb-track-btn tb-track-play" aria-label="Play">' + ICONS.play + '</button><button type="button" class="tb-track-btn" aria-label="Next track">' + ICONS.next + '</button></div>',
+      '<div class="tb-track-progress-row"><span class="tb-track-current">0:00</span><input class="tb-track-progress" type="range" min="0" max="100" value="0" aria-label="Track progress"><span class="tb-track-duration">0:30</span></div>',
+      '<div class="tb-track-controls"><button type="button" class="tb-track-btn tb-track-shuffle" aria-label="Shuffle" aria-pressed="false">' + ICONS.shuffle + '</button><button type="button" class="tb-track-btn tb-track-prev" aria-label="Previous track">' + ICONS.previous + '</button><button type="button" class="tb-track-btn tb-track-play" aria-label="Play">' + ICONS.play + '</button><button type="button" class="tb-track-btn tb-track-next" aria-label="Next track">' + ICONS.next + '</button></div>',
       '</div>',
       '<div class="tb-full-player"><nav class="tb-full-tabs" aria-label="Notch views"><button type="button" class="tb-full-tab is-active" data-notch-view="home" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button><button type="button" class="tb-full-tab" data-notch-view="airdrop" aria-label="AirDrop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-2-5H7zM4 11h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></button></nav><span class="tb-full-battery"><span class="tb-battery-pct">100%</span>' + BATTERY_ICON + '</span>',
-      '<section class="tb-full-now"><div class="tb-full-art"></div><div class="tb-full-copy"><strong class="tb-full-title"></strong><span class="tb-full-artist"></span><div class="tb-full-progress"><span class="tb-full-fill"></span></div><div class="tb-full-times"><span>0:00</span><span>--:--</span></div><div class="tb-full-controls"><button type="button" disabled>' + ICONS.previous + '</button><button type="button" class="tb-full-play" aria-label="Play">' + ICONS.play + '</button><button type="button" disabled>' + ICONS.next + '</button></div></div></section>',
+      '<section class="tb-full-now"><div class="tb-full-art"></div><div class="tb-full-copy"><strong class="tb-full-title"></strong><span class="tb-full-artist"></span><div class="tb-full-progress"><span class="tb-full-fill"></span></div><div class="tb-full-times"><span class="tb-full-current">0:00</span><span class="tb-full-duration">0:30</span></div><div class="tb-full-controls"><button type="button" class="tb-full-prev" aria-label="Previous track">' + ICONS.previous + '</button><button type="button" class="tb-full-play" aria-label="Play">' + ICONS.play + '</button><button type="button" class="tb-full-next" aria-label="Next track">' + ICONS.next + '</button></div></div></section>',
       '<div class="flex items-center justify-between gap-2"><section class="tb-full-calendar"><div><strong class="tb-full-month"></strong><span class="tb-full-year"></span></div><div class="tb-full-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div><div class="tb-full-days"></div><div class="tb-full-event"><i></i><strong>Anna Haro’s<br>41st Birthday</strong><span>All-day</span></div></section>',
       '<section class="tb-full-mirror"><span>◉</span><strong>Mirror</strong></section></div>',
       '<section class="tb-airdrop" aria-label="AirDrop"><div class="tb-airdrop-device"><span>◉</span><strong>AirDrop</strong></div><div class="tb-airdrop-drop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0-11 4 4m-4-4-4 4M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><strong>Drop files here</strong></div></section>',
@@ -63,13 +60,20 @@
     var progressEl = mount.querySelector('.tb-track-progress');
     var currentEl = mount.querySelector('.tb-track-current');
     var durationEl = mount.querySelector('.tb-track-duration');
+    var fullFillEl = mount.querySelector('.tb-full-fill');
+    var fullCurrentEl = mount.querySelector('.tb-full-current');
+    var fullDurationEl = mount.querySelector('.tb-full-duration');
 
     function paintTrack() {
       Array.prototype.forEach.call(titleEls, function (el) { el.textContent = track.name; });
       Array.prototype.forEach.call(artistEls, function (el) { el.textContent = track.artist; });
       Array.prototype.forEach.call(artEls, function (el) {
-        if (track.artworkUrl) el.innerHTML = '<img src="' + track.artworkUrl + '" alt="">';
-        else el.textContent = '♫';
+        el.textContent = '♫';
+        if (!track.artworkUrl) return;
+        var img = document.createElement('img');
+        img.src = track.artworkUrl;
+        img.alt = '';
+        el.replaceChildren(img);
       });
     }
     paintTrack();
@@ -81,10 +85,12 @@
     function renderProgress() {
       if (!audio) return;
       var duration = isFinite(audio.duration) ? audio.duration : 0;
-      progressEl.value = duration ? (audio.currentTime / duration) * 100 : 0;
-      progressEl.style.setProperty('--tb-progress', progressEl.value + '%');
-      currentEl.textContent = formatTime(audio.currentTime);
-      durationEl.textContent = formatTime(duration);
+      var pct = duration ? (audio.currentTime / duration) * 100 : 0;
+      progressEl.value = pct;
+      progressEl.style.setProperty('--tb-progress', pct + '%');
+      fullFillEl.style.width = pct + '%';
+      currentEl.textContent = fullCurrentEl.textContent = formatTime(audio.currentTime);
+      if (duration) durationEl.textContent = fullDurationEl.textContent = formatTime(duration);
     }
     function renderPlayback() {
       Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-play, .tb-full-play'), function (button) {
@@ -150,43 +156,58 @@
         Array.prototype.forEach.call(mount.querySelectorAll('.tb-full-tab'), function (item) { item.classList.toggle('is-active', item === tab); });
       });
     });
-    Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-btn:not(.tb-track-play)'), function (button) { button.disabled = true; });
-
     function setTransportEnabled(on) {
-      Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-play, .tb-full-play'), function (button) { button.disabled = !on; });
+      Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-btn, .tb-full-controls button'), function (button) { button.disabled = !on; });
       progressEl.disabled = !on;
     }
-    function bindAudio(url) {
-      if (!url || typeof Audio === 'undefined') return;
-      audio = new Audio(url);
+    function loadTrack(i, autoplay) {
+      index = (i + playlist.length) % playlist.length;
+      var t = playlist[index];
+      track = { id: 'track-' + index, name: t.title, artist: t.artist || '', artworkUrl: t.artworkUrl || '', audioUrl: t.audioUrl };
+      paintTrack();
+      audio.src = track.audioUrl;
+      progressEl.value = 0;
+      progressEl.style.setProperty('--tb-progress', '0%');
+      fullFillEl.style.width = '0%';
+      currentEl.textContent = fullCurrentEl.textContent = '0:00';
+      if (autoplay) audio.play().catch(function () {});
+      dispatchState();
+    }
+    function step(dir) {
+      if (!audio) return;
+      var wasPlaying = !audio.paused;
+      if (shuffle && playlist.length > 1) {
+        var r = index;
+        while (r === index) r = Math.floor(Math.random() * playlist.length);
+        loadTrack(r, wasPlaying);
+      } else if (dir < 0 && audio.currentTime > 3) {
+        audio.currentTime = 0;
+      } else {
+        loadTrack(index + dir, wasPlaying);
+      }
+    }
+    Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-next, .tb-full-next'), function (b) { b.addEventListener('click', function () { step(1); }); });
+    Array.prototype.forEach.call(mount.querySelectorAll('.tb-track-prev, .tb-full-prev'), function (b) { b.addEventListener('click', function () { step(-1); }); });
+    mount.querySelector('.tb-track-shuffle').addEventListener('click', function () {
+      shuffle = !shuffle;
+      this.setAttribute('aria-pressed', String(shuffle));
+      this.classList.toggle('is-on', shuffle);
+    });
+
+    setTransportEnabled(false);
+    if (playlist.length && typeof Audio !== 'undefined') {
+      audio = new Audio();
       audio.preload = 'metadata';
       audio.volume = volume;
       audio.addEventListener('play', function () { playing = true; renderPlayback(); dispatchState(); });
       audio.addEventListener('pause', function () { playing = false; renderPlayback(); dispatchState(); });
       audio.addEventListener('timeupdate', renderProgress);
       audio.addEventListener('loadedmetadata', renderProgress);
-      audio.addEventListener('ended', function () { playing = false; renderPlayback(); renderProgress(); dispatchState(); });
+      audio.addEventListener('ended', function () { step(1); audio.play().catch(function () {}); });
+      loadTrack(0, false);
       setTransportEnabled(true);
-    }
-    setTransportEnabled(false);
-    if (track.audioUrl) bindAudio(track.audioUrl);
-    else if (typeof fetch === 'function') {
-      /* ponytail: iTunes Search, no key/CORS. Spotify preview_url is dead. */
-      var q = encodeURIComponent((track.artist + ' ' + track.name).trim());
-      fetch('https://itunes.apple.com/search?term=' + q + '&media=music&entity=song&limit=1')
-        .then(function (r) { if (!r.ok) throw new Error('itunes ' + r.status); return r.json(); })
-        .then(function (data) {
-          var hit = data && data.results && data.results[0];
-          if (!hit || !hit.previewUrl) return;
-          if (hit.trackName) track.name = hit.trackName;
-          if (hit.artistName) track.artist = hit.artistName;
-          if (!track.artworkUrl && hit.artworkUrl100) {
-            track.artworkUrl = String(hit.artworkUrl100).replace('100x100bb', '300x300bb');
-          }
-          paintTrack();
-          bindAudio(hit.previewUrl);
-        })
-        .catch(function () {});
+    } else {
+      paintTrack();
     }
 
     (function buildFullCalendar() {
@@ -206,7 +227,7 @@
     window.TBMusic = {
       play: function () { if (audio) audio.play().catch(function () {}); }, pause: function () { if (audio) audio.pause(); },
       toggle: function () { if (audio) { if (audio.paused) audio.play().catch(function () {}); else audio.pause(); } },
-      next: function () {}, prev: function () {}, setVolume: function (v) { volume = Math.min(1, Math.max(0, Number(v) || 0)); if (audio) audio.volume = volume; },
+      next: function () { step(1); }, prev: function () { step(-1); }, setVolume: function (v) { volume = Math.min(1, Math.max(0, Number(v) || 0)); if (audio) audio.volume = volume; },
       state: function () { return { playing: playing, station: track, volume: volume }; }
     };
     initBattery();

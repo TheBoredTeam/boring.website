@@ -15,6 +15,8 @@ Zero dependencies. Zero build step. Just open `index.html`.
 [![license](https://img.shields.io/badge/license-MIT-blue)](#license)
 [![boring.notch](https://img.shields.io/badge/also-boring.notch-black?logo=github)](https://github.com/TheBoredTeam/boring.notch)
 
+<a href="https://boringproducts.xyz/products/boring-notch"><img src="https://boringproducts.xyz/badge.svg?id=39f6e7f6-f6b0-4291-81bc-05edce294ec5" alt="boring.notch on BoringProducts" width="250" height="60"></a>
+
 <img src="assets/screenshot-desktop.jpg" alt="theboringwebsite — a macOS desktop in the browser" width="100%" />
 
 [Live site](#) · [boring.notch for macOS](https://github.com/TheBoredTeam/boring.notch) · [theboringoffice](https://boringfloor.com) · [Discord](https://discord.com/invite/HznxBpnJmQ) · [Buy us a coffee](https://buymeacoffee.com/jfxh67wvfxq)

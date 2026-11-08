@@ -2,8 +2,8 @@
    Mounts one container into #promo-root (positioned by css/main.css; the
    root is click-through, .tb-promo re-enables pointer events). Four
    cards: the boring.notch DOWNLOAD card (the star), a Discord invite
-   banner, a theboringoffice banner, and a yellow sticky note (the whole
-   note links to boringfloor.com). All outbound hrefs come from
+   banner, a BoringProducts banner, and a yellow sticky note (the whole
+   note links to boringproducts.xyz). All outbound hrefs come from
    window.TB_CONFIG.links and degrade to '#' (discord degrades to a
    non-interactive "invite soon" pill; the sticky note falls back to its
    hardcoded URL) when config is absent — zero console errors either way. */
@@ -16,7 +16,7 @@
 
   /* sticky note target — same URL as TB_CONFIG.links.office; hardcoded
      fallback so the note still links out when config never loads */
-  var STICKY_URL = 'https://boringfloor.com';
+  var STICKY_URL = 'https://boringproducts.xyz';
 
   /* Inline SVG down-arrow for the download button (no emoji — this glyph
      is what the bob keyframes animate). */
@@ -98,6 +98,16 @@
       outbound(el('a', 'tb-promo-dl-github', 'GitHub ↗'), link(links, 'github')));
     card.appendChild(meta);
 
+    var badge = outbound(el('a', 'tb-promo-dl-badge'),
+      'https://boringproducts.xyz/products/boring-notch');
+    var badgeImg = document.createElement('img');
+    badgeImg.src = 'https://boringproducts.xyz/badge.svg?id=39f6e7f6-f6b0-4291-81bc-05edce294ec5';
+    badgeImg.alt = 'boring.notch on BoringProducts';
+    badgeImg.width = 250;
+    badgeImg.height = 60;
+    badge.appendChild(badgeImg);
+    card.appendChild(badge);
+
     return card;
   }
 
@@ -127,24 +137,24 @@
     return card;
   }
 
-  /* ---------- 3. theboringoffice banner ---------- */
+  /* ---------- 3. BoringProducts banner ---------- */
 
   function renderOffice(links) {
     var card = el('section', 'tb-promo-card tb-promo-card--office');
     card.style.cursor = 'pointer';
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', 'Open theboringoffice in a window');
-    card.appendChild(el('span', 'tb-promo-office-emoji', '🏢'));
+    card.setAttribute('aria-label', 'Open BoringProducts in a window');
+    card.appendChild(el('span', 'tb-promo-office-emoji', '📮'));
 
     var text = el('div', 'tb-promo-banner-text');
-    text.appendChild(el('div', 'tb-promo-banner-title', 'theboringoffice'));
+    text.appendChild(el('div', 'tb-promo-banner-title', 'BoringProducts'));
     text.appendChild(el('div', 'tb-promo-banner-sub',
-      'AI agents that run your boring work'));
+      'Products without the hype'));
     card.appendChild(text);
 
     card.appendChild(outbound(
-      el('a', 'tb-promo-office-link', 'boringfloor.com ↗'),
+      el('a', 'tb-promo-office-link', 'boringproducts.xyz ↗'),
       link(links, 'office')));
 
     /* card body → open the in-page window; the ↗ link stays outbound */
@@ -175,7 +185,7 @@
     text.appendChild(
       el('div', 'tb-promo-sticky-line', 'built with 💛 by the majdoors'));
     text.appendChild(
-      el('div', 'tb-promo-sticky-url', 'boringfloor.com'));
+      el('div', 'tb-promo-sticky-url', 'boringproducts.xyz'));
     note.appendChild(text);
 
     return note;

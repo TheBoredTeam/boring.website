@@ -259,3 +259,5 @@
     margin-right: auto;
   }
 }
+#promo-root .tb-promo-dl-badge { display:block; margin-top:12px; }
+#promo-root .tb-promo-dl-badge img { display:block; width:100%; height:auto; }

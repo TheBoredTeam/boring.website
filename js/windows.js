@@ -26,13 +26,13 @@
       height: 340,
     },
     office: {
-      title: "theboringoffice",
+      title: "BoringProducts",
       chrome: "safari",
       emoji: "🏢",
       width: 900,
       height: 520,
       top: 400,
-      urlLabel: "boringfloor.com",
+      urlLabel: "boringproducts.xyz",
     },
     messages: {
       title: "Messages",
@@ -564,14 +564,16 @@
        on wide screens — the live iframe embed is a desktop experience.
        Closing deletes their records, so nothing re-opens them afterwards. */
     if (root.clientWidth > 900) {
-      var pairW = 480 + 24 + 700;
+      var officeW = Math.min(1100, root.clientWidth - 480 - 24 - 28);
+      var pairW = 480 + 24 + officeW;
       var startX = Math.max(14, Math.round((root.clientWidth - pairW) / 2));
+      var officeTop = 200;
       openApp("video", { left: startX, top: 400 });
       openApp("office", {
         left: startX + 480 + 24,
-        top: 400,
-        width: 700,
-        height: 480,
+        top: officeTop,
+        width: officeW,
+        height: Math.max(480, root.clientHeight - officeTop - 110),
       });
     } else {
       openApp("video");

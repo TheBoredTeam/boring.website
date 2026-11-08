@@ -236,9 +236,9 @@
       var frame = document.createElement('iframe');
       frame.setAttribute('loading', 'lazy');
       frame.style.cssText = 'position:absolute;top:0;left:0;height:100%;width:100%';
-      frame.title = 'theboringoffice';
+      frame.title = 'BoringProducts';
       frame.setAttribute('referrerpolicy', 'no-referrer');
-      frame.src = src;
+      frame.src = src + '/#pinned'; /* open scrolled to the board */
       wrap.appendChild(frame);
     } else {
       wrap.appendChild(el('div', 'tb-app-unknown', 'theboringoffice — link unavailable'));
