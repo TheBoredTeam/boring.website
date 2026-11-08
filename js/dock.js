@@ -16,8 +16,7 @@
     about: 'finder',
     safari: 'safari',
     download: 'download',
-    coffee: 'coffee',
-    appstore: 'appstore'
+    coffee: 'coffee'
   };
 
   /* null entries render as 1px vertical separators. Defs with an `icon` path
@@ -32,7 +31,7 @@
     { id: 'github',   label: 'GitHub',          icon: 'assets/icons/github.png',       app: 'safari'   },
     { id: 'music2',   label: 'Music',     icon: 'assets/icons/music.png'     },
     { id: 'maps',     label: 'Maps',      icon: 'assets/icons/maps.png'      },
-    { id: 'appstore', label: 'App Store', icon: 'assets/icons/app-store.png', app: 'appstore' },
+    { id: 'appstore', label: 'App Store', icon: 'assets/icons/app-store.png' },
     { id: 'notes',    label: 'Notes',     icon: 'assets/icons/notes.png'     },
     { id: 'safari',   label: 'Safari',          icon: 'assets/icons/safari.png',       app: 'safari'   },
     null,
