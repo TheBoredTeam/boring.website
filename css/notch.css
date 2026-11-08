@@ -608,6 +608,8 @@
   width: 38px;
   height: 38px;
 }
+#notch-root .tb-track-shuffle { opacity: 0.55; }
+#notch-root .tb-track-shuffle.is-on { opacity: 1; color: #31d158; }
 #notch-root .tb-track-btn:disabled {
   color: #fff;
   cursor: default;
@@ -642,7 +644,7 @@
   background: #303035;
 }
 #notch-root .tb-notch.expanded.compact + .tb-compact-toggle {
-  top: 200px;
+  top: 152px;
 }
 #notch-root .tb-notch.expanded:not(.compact) + .tb-compact-toggle {
   top: 220px;
@@ -713,8 +715,11 @@
 #notch-root .tb-full-artist {
   display: block;
   margin-top: 3px;
-  color: #36a5ff;
+  color: #aaa097;
   font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #notch-root .tb-full-progress {
   height: 4px;
@@ -725,15 +730,16 @@
 }
 #notch-root .tb-full-fill {
   display: block;
-  width: 70%;
+  width: 0;
   height: 100%;
   background: #fff;
+  transition: width 250ms linear;
 }
 #notch-root .tb-full-times {
   display: flex;
   justify-content: space-between;
   margin-top: 6px;
-  color: #36a5ff;
+  color: #aaa097;
   font-size: 12px;
   font-weight: 600;
 }
