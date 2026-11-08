@@ -139,9 +139,11 @@
   /* ---------- 3. theboringoffice banner ---------- */
 
   function renderOffice(links) {
-    var card = outbound(el('a', 'tb-promo-card tb-promo-card--office'), link(links, 'office') || STICKY_URL);
+    var card = el('section', 'tb-promo-card tb-promo-card--office');
     card.style.cursor = 'pointer';
-    card.setAttribute('aria-label', 'Visit theboringoffice website');
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', 'Open theboringoffice in a window');
     card.appendChild(el('span', 'tb-promo-office-emoji', '🏢'));
 
     var text = el('div', 'tb-promo-banner-text');
@@ -150,7 +152,21 @@
       'AI agents that run your boring work'));
     card.appendChild(text);
 
-    card.appendChild(el('span', 'tb-promo-office-link', 'boringfloor.com ↗'));
+    card.appendChild(outbound(
+      el('a', 'tb-promo-office-link', 'boringfloor.com ↗'),
+      link(links, 'office')));
+
+    /* card body → open the in-page window; the ↗ link stays outbound */
+    function openWindow() {
+      window.dispatchEvent(new CustomEvent('tb:open-app', { detail: { app: 'office' } }));
+    }
+    card.addEventListener('click', function (e) {
+      if (e.target.closest('a')) { return; }
+      openWindow();
+    });
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openWindow(); }
+    });
     return card;
   }
 
