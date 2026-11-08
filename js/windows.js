@@ -11,7 +11,6 @@
 
   /* App -> window spec (hardcoded per contract). */
   var APP_SPECS = {
-    appstore: { title: "Extension Store", chrome: "plain", emoji: "🧩", width: 1020, height: 710, top: 38 },
     safari: { title: "Safari", chrome: "safari", emoji: "🧭" },
     download: { title: "Downloads", chrome: "plain", emoji: "⬇️" },
     coffee: { title: "Buy Me a Coffee", chrome: "plain", emoji: "☕" },
@@ -393,7 +392,6 @@
       var b = el("button", "tb-tl " + p[0]);
       b.type = "button";
       b.tabIndex = -1;
-      if (app === "appstore") b.tabIndex = 0;
       b.setAttribute("aria-label", p[1]);
       traffic.appendChild(b);
     });
@@ -423,7 +421,6 @@
     var cw = spec.width || Math.min(620, Math.max(480, root.clientWidth - 80));
     var ch =
       spec.height || Math.min(420, Math.max(320, root.clientHeight - 60));
-    if (app === "appstore") cw = Math.min(cw, Math.max(320, root.clientWidth - 28));
     w.style.width = cw + "px";
     w.style.height = ch + "px";
     /* Clamp to >=0: the 480px min-width floor makes the center-cascade
@@ -443,9 +440,6 @@
           ? Math.round(spec.top)
           : Math.round((root.clientHeight - ch) / 2 + count * 24),
       ) + "px";
-    if (app === "appstore") {
-      w.style.left = Math.max(14, Math.min(parseFloat(w.style.left), root.clientWidth - cw - 14)) + "px";
-    }
     w.style.zIndex = String(++zCounter);
 
     var rec = {
